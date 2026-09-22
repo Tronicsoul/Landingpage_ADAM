@@ -1,27 +1,5 @@
-<svg width="104" height="104" viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="adamLogoTitle">
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="adamLogoTitle">
   <title id="adamLogoTitle">Adam Logo</title>
-  <g filter="url(#adamLogoShadow)">
-    <rect x="12" y="2" width="80" height="80" rx="40" fill="#059669" shape-rendering="crispEdges"></rect>
-    <path d="M35.3333 37.8334C35.3333 35.9787 35.896 34.1677 36.9469 32.6395C37.9978 31.1113 39.4875 29.9378 41.2193 29.274C42.9511 28.6103 44.8436 28.4874 46.6467 28.9218C48.4498 29.3561 50.0787 30.3272 51.3183 31.7067C51.4056 31.8 51.5112 31.8745 51.6284 31.9254C51.7457 31.9762 51.8722 32.0025 52 32.0025C52.1278 32.0025 52.2543 31.9762 52.3715 31.9254C52.4888 31.8745 52.5943 31.8 52.6816 31.7067C53.9174 30.3182 55.5467 29.339 57.3527 28.8994C59.1587 28.4598 61.0558 28.5806 62.7914 29.2458C64.5271 29.9111 66.019 31.0891 67.0685 32.6232C68.1181 34.1573 68.6755 35.9746 68.6666 37.8334C68.6666 41.65 66.1666 44.5 63.6666 47L54.5133 55.855C54.2028 56.2117 53.8199 56.4982 53.3901 56.6955C52.9603 56.8928 52.4934 56.9964 52.0205 56.9994C51.5475 57.0024 51.0794 56.9048 50.6471 56.7129C50.2149 56.5211 49.8284 56.2394 49.5133 55.8867L40.3333 47C37.8333 44.5 35.3333 41.6667 35.3333 37.8334Z" fill="white" stroke="white" stroke-width="3.33333" stroke-linecap="round" stroke-linejoin="round"></path>
-  </g>
-  <defs>
-    <filter id="adamLogoShadow" x="0" y="0" width="104" height="104" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
-      <feMorphology radius="4" operator="erode" in="SourceAlpha" result="effect1"></feMorphology>
-      <feOffset dy="4"></feOffset>
-      <feGaussianBlur stdDeviation="3"></feGaussianBlur>
-      <feComposite in2="hardAlpha" operator="out"></feComposite>
-      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"></feColorMatrix>
-      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1"></feBlend>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
-      <feMorphology radius="3" operator="erode" in="SourceAlpha" result="effect2"></feMorphology>
-      <feOffset dy="10"></feOffset>
-      <feGaussianBlur stdDeviation="7.5"></feGaussianBlur>
-      <feComposite in2="hardAlpha" operator="out"></feComposite>
-      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"></feColorMatrix>
-      <feBlend mode="normal" in2="effect1" result="effect2"></feBlend>
-      <feBlend mode="normal" in="SourceGraphic" in2="effect2" result="shape"></feBlend>
-    </filter>
-  </defs>
+  <circle cx="20" cy="20" r="20" fill="#059669"/>
+  <path d="M20 30.5C20 30.5 8 23 8 15.8C8 12.05 10.96 9 14.6 9C17.1 9 19.06 10.45 20 12.55C20.94 10.45 22.9 9 25.4 9C29.04 9 32 12.05 32 15.8C32 23 20 30.5 20 30.5Z" fill="#ffffff"/>
 </svg>

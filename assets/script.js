@@ -91,6 +91,8 @@ function initMobileMenu() {
     menu.classList.toggle("is-open", isOpen);
     toggle.setAttribute("aria-expanded", String(isOpen));
     iconPath.querySelector("path").setAttribute("d", isOpen ? closeIcon : openIcon);
+    // Verhindert Hintergrund-Scroll, solange das Menü als Overlay offen ist.
+    document.documentElement.style.overflow = isOpen ? "hidden" : "";
   }
 
   toggle.addEventListener("click", () => {
@@ -99,6 +101,18 @@ function initMobileMenu() {
 
   menu.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => setOpen(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && menu.classList.contains("is-open")) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  // Beim Wechsel auf Desktop-Breite Overlay-Zustand zurücksetzen.
+  window.matchMedia("(min-width: 860px)").addEventListener("change", (event) => {
+    if (event.matches) setOpen(false);
   });
 }
 
