@@ -75,3 +75,31 @@ function initWaitlistForm(form) {
 }
 
 document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
+
+// Mobile-Menü
+
+function initMobileMenu() {
+  const toggle = document.getElementById("navToggle");
+  const menu = document.getElementById("mobileMenu");
+  const iconPath = document.getElementById("navToggleIcon");
+  if (!toggle || !menu) return;
+
+  const closeIcon = 'M6 6l12 12M18 6L6 18';
+  const openIcon = 'M4 7h16M4 12h16M4 17h16';
+
+  function setOpen(isOpen) {
+    menu.classList.toggle("is-open", isOpen);
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    iconPath.querySelector("path").setAttribute("d", isOpen ? closeIcon : openIcon);
+  }
+
+  toggle.addEventListener("click", () => {
+    setOpen(!menu.classList.contains("is-open"));
+  });
+
+  menu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setOpen(false));
+  });
+}
+
+initMobileMenu();
