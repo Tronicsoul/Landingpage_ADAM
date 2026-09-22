@@ -117,3 +117,29 @@ function initMobileMenu() {
 }
 
 initMobileMenu();
+
+// Manueller Hell-/Dunkel-Modus-Umschalter (überschreibt die Systemeinstellung, per localStorage gemerkt)
+
+function initThemeToggle() {
+  const toggle = document.getElementById("themeToggle");
+  if (!toggle) return;
+
+  function isDark() {
+    return document.documentElement.getAttribute("data-theme") === "dark";
+  }
+
+  toggle.setAttribute("aria-pressed", String(isDark()));
+
+  toggle.addEventListener("click", () => {
+    const next = isDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    toggle.setAttribute("aria-pressed", String(next === "dark"));
+    try {
+      localStorage.setItem("adam-theme", next);
+    } catch (e) {
+      /* localStorage evtl. nicht verfügbar (z. B. privates Fenster) – Umschalten funktioniert trotzdem für die Sitzung */
+    }
+  });
+}
+
+initThemeToggle();

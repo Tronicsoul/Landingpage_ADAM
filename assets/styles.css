@@ -180,15 +180,16 @@ summary:focus-visible {
   justify-content: center;
   gap: var(--space-2);
   font-family: inherit;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   text-decoration: none;
   border: none;
   border-radius: var(--radius-full);
-  padding: var(--space-4) var(--space-6);
-  min-height: 54px;
+  padding: var(--space-3) var(--space-6);
+  min-height: 50px;
   cursor: pointer;
   transition: background-color 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn:active {
@@ -247,8 +248,11 @@ summary:focus-visible {
 }
 
 .brand img {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .brand__name {
@@ -287,22 +291,37 @@ summary:focus-visible {
   display: none;
 }
 
-.nav-toggle {
+.nav-toggle,
+.theme-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   border-radius: var(--radius-sm);
   border: 2px solid var(--border);
   background: var(--background);
   cursor: pointer;
 }
 
-.nav-toggle svg {
-  width: 26px;
-  height: 26px;
+.nav-toggle svg,
+.theme-toggle svg {
+  width: 22px;
+  height: 22px;
   color: var(--text);
+}
+
+.theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
 }
 
 .mobile-menu {
@@ -323,22 +342,20 @@ summary:focus-visible {
 }
 
 .mobile-menu .container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
   padding-block: var(--space-8) var(--space-10);
 }
 
 .mobile-menu ul {
   list-style: none;
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--space-6);
   padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.mobile-menu a {
+/* Nur die Menü-Links, nicht den CTA-Button darunter (der ist kein Kind von <ul>) */
+.mobile-menu ul a {
   display: block;
   padding: var(--space-4) 0;
   font-size: 21px;
@@ -346,10 +363,6 @@ summary:focus-visible {
   color: var(--text);
   text-decoration: none;
   border-bottom: 1px solid var(--border);
-}
-
-.mobile-menu .btn {
-  margin-top: auto;
 }
 
 @media (min-width: 860px) {
@@ -856,8 +869,7 @@ section {
 }
 
 .waitlist-form__fields .btn-primary {
-  align-self: center;
-  padding-inline: var(--space-8);
+  width: 100%;
 }
 
 .form-field {
