@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Adam – Ihre Gesundheit einfach im Überblick</title>
-  <meta name="description" content="Adam hilft Ihnen, Medikamente, Symptome, Diagnosen und Arztbriefe einfach und sicher zu verwalten. Jetzt unverbindlich auf die Warteliste eintragen." />
+  <meta name="description" content="Adam bündelt Medikamente, Symptome, Diagnosen und Arztbriefe übersichtlich an einem Ort – für Patient:innen und für medizinisches Fachpersonal. Jetzt unverbindlich eintragen." />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <script>
     // Vor dem ersten Rendern ausgeführt, damit die Seite nicht kurz im falschen Farbschema aufblitzt.
@@ -19,8 +19,14 @@
     })();
   </script>
   <link rel="stylesheet" href="assets/styles.css" />
+  <!--
+    Webanalyse (Umami, cookiefrei): Sobald eine eigene Umami-Instanz eingerichtet ist,
+    hier das offizielle Script-Tag mit der echten src/data-website-id ergänzen.
+    Siehe datenschutz.html, Abschnitt „Webanalyse“ – die Erklärung beschreibt diesen Einsatz.
+    <script defer src="https://ANALYTICS-DOMAIN/script.js" data-website-id="WEBSITE-ID"></script>
+  -->
 </head>
-<body>
+<body data-audience="patient">
   <a class="skip-link" href="#hauptinhalt">Direkt zum Hauptinhalt springen</a>
 
   <header class="site-header">
@@ -63,6 +69,22 @@
     </div>
   </header>
 
+  <div class="audience-bar">
+    <div class="container audience-bar__inner">
+      <span class="audience-bar__label" id="audienceLabel">Diese Seite richtet sich an:</span>
+      <div class="audience-tabs" role="group" aria-labelledby="audienceLabel">
+        <button type="button" class="audience-tab" data-audience="patient" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+          Patient:innen
+        </button>
+        <button type="button" class="audience-tab" data-audience="aerzte" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3v4a2 2 0 0 1-2 2H3"/><path d="M14 21v-4a2 2 0 0 1 2-2h4"/><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/><circle cx="17" cy="7" r="2"/></svg>
+          Ärzt:innen &amp; Fachpersonal
+        </button>
+      </div>
+    </div>
+  </div>
+
   <main id="hauptinhalt">
 
     <!-- Hero -->
@@ -72,17 +94,31 @@
 
       <div class="container hero__inner">
         <div>
-          <span class="eyebrow">Adam befindet sich in Entwicklung</span>
-          <h1 id="hero-heading">Ihre Gesundheit im Überblick – einfach, sicher und verständlich</h1>
-          <p class="lead">
-            Adam sammelt Medikamente, Symptome, Diagnosen und Arztbriefe an einem Ort –
-            übersichtlich dargestellt und in klarer Sprache erklärt. So behalten Sie und
-            Ihre Angehörigen jederzeit den Überblick.
-          </p>
+          <div data-audience-content="patient">
+            <span class="eyebrow">Adam befindet sich in Entwicklung</span>
+            <h1 id="hero-heading">Ihre Gesundheit im Überblick – einfach, sicher und verständlich</h1>
+            <p class="lead">
+              Adam sammelt Medikamente, Symptome, Diagnosen und Arztbriefe an einem Ort –
+              übersichtlich dargestellt und in klarer Sprache erklärt. So behalten Sie und
+              Ihre Angehörigen jederzeit den Überblick.
+            </p>
+            <div class="hero__actions">
+              <a class="btn btn-primary" href="#warteliste">Jetzt auf die Warteliste eintragen</a>
+              <a class="btn btn-ghost" href="#funktionen">Funktionen entdecken</a>
+            </div>
+          </div>
 
-          <div class="hero__actions">
-            <a class="btn btn-primary" href="#warteliste">Jetzt auf die Warteliste eintragen</a>
-            <a class="btn btn-ghost" href="#funktionen">Funktionen entdecken</a>
+          <div data-audience-content="aerzte">
+            <span class="eyebrow">Für medizinisches Personal</span>
+            <h1>Mehr Überblick für Sie. Besser vorbereitete Patient:innen für das Gespräch.</h1>
+            <p class="lead">
+              Adam bündelt Medikamente, Symptome und Befunde Ihrer Patient:innen übersichtlich
+              an einem Ort – für weniger Rückfragen und mehr Zeit für das Wesentliche im Gespräch.
+            </p>
+            <div class="hero__actions">
+              <a class="btn btn-primary" href="#warteliste">Jetzt Frühzugang sichern</a>
+              <a class="btn btn-ghost" href="#funktionen">Für die Praxis entdecken</a>
+            </div>
           </div>
 
           <p class="hero__trust-note">
@@ -117,10 +153,14 @@
       <div class="container">
         <div class="section-header">
           <span class="eyebrow">Funktionen</span>
-          <h2 class="section-title" id="features-heading">Was Adam für Sie tut</h2>
-          <p class="section-intro">
+          <h2 class="section-title" id="features-heading">Was Adam leistet</h2>
+          <p class="section-intro" data-audience-content="patient">
             Adam ist als persönlicher Begleiter für Ihre Gesundheitsdaten gedacht – klar
             erklärt, ohne unnötige Fachbegriffe.
+          </p>
+          <p class="section-intro" data-audience-content="aerzte">
+            Adam unterstützt Ihre Patient:innen im Alltag – mit spürbarem Effekt auf Ordnung,
+            Zeit und das Gespräch mit Ihnen.
           </p>
         </div>
 
@@ -140,13 +180,26 @@
       <div class="container feature-section__inner">
         <div>
           <span class="feature-section__number">01</span>
-          <h3 id="feature-daten-heading">Alle Gesundheitsdaten an einem Ort</h3>
-          <p>Medikamente, Symptome, Diagnosen und Familiengeschichte übersichtlich gesammelt – ganz ohne Zettelwirtschaft.</p>
-          <ul class="feature-section__points">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Medikamente, Symptome und Diagnosen im Blick</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Familiengeschichte einfach dokumentieren</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Übersichtliches Dashboard statt loser Zettel</li>
-          </ul>
+
+          <div data-audience-content="patient">
+            <h3 id="feature-daten-heading">Alle Gesundheitsdaten an einem Ort</h3>
+            <p>Medikamente, Symptome, Diagnosen und Familiengeschichte übersichtlich gesammelt – ganz ohne Zettelwirtschaft.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Medikamente, Symptome und Diagnosen im Blick</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Familiengeschichte einfach dokumentieren</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Übersichtliches Dashboard statt loser Zettel</li>
+            </ul>
+          </div>
+
+          <div data-audience-content="aerzte">
+            <h3>Der Überblick, bevor das Gespräch beginnt</h3>
+            <p>Medikamente, Symptome, Diagnosen und Familiengeschichte Ihrer Patient:innen auf einen Blick – für weniger Rückfragen und mehr Zeit für das Wesentliche.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Zentrale Übersicht statt verstreuter Zettel und Nachfragen</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Schnellerer Einstieg ins Gespräch</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Weniger administrativer Aufwand im Alltag</li>
+            </ul>
+          </div>
         </div>
         <div>
           <div class="app-preview" aria-hidden="true">
@@ -173,13 +226,26 @@
       <div class="container feature-section__inner">
         <div>
           <span class="feature-section__number">02</span>
-          <h3 id="feature-arztbrief-heading">Arztbriefe einfach hochladen</h3>
-          <p>Foto oder PDF hochladen – Adam liest die wichtigsten Informationen automatisch heraus und trägt sie für Sie ein.</p>
-          <ul class="feature-section__points">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Einfaches Hochladen als Bild oder PDF</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Automatische Erkennung wichtiger Angaben</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Persönliche Daten werden dabei besonders geschützt</li>
-          </ul>
+
+          <div data-audience-content="patient">
+            <h3 id="feature-arztbrief-heading">Arztbriefe einfach hochladen</h3>
+            <p>Foto oder PDF hochladen – Adam liest die wichtigsten Informationen automatisch heraus und trägt sie für Sie ein.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Einfaches Hochladen als Bild oder PDF</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Automatische Erkennung wichtiger Angaben</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Persönliche Daten werden dabei besonders geschützt</li>
+            </ul>
+          </div>
+
+          <div data-audience-content="aerzte">
+            <h3>Vorbefunde schneller erfassen</h3>
+            <p>Ihre Patient:innen können Arztbriefe direkt hochladen – Adam liest die wichtigsten Informationen automatisch heraus, bevor es ins Gespräch geht.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Strukturierte Vorbefunde statt loser Dokumente</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Automatische Ersterfassung wichtiger Angaben</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Persönliche Daten werden dabei besonders geschützt</li>
+            </ul>
+          </div>
         </div>
         <div>
           <div class="app-preview" aria-hidden="true">
@@ -204,13 +270,26 @@
       <div class="container feature-section__inner">
         <div>
           <span class="feature-section__number">03</span>
-          <h3 id="feature-wechselwirkung-heading">Warnung bei Wechselwirkungen</h3>
-          <p>Adam prüft Ihre Medikamente automatisch auf mögliche Wechselwirkungen und macht Sie frühzeitig darauf aufmerksam.</p>
-          <ul class="feature-section__points">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Automatischer Abgleich neuer Medikamente</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Frühzeitiger Hinweis bei möglichen Risiken</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Gute Grundlage für das nächste Arztgespräch</li>
-          </ul>
+
+          <div data-audience-content="patient">
+            <h3 id="feature-wechselwirkung-heading">Warnung bei Wechselwirkungen</h3>
+            <p>Adam prüft Ihre Medikamente automatisch auf mögliche Wechselwirkungen und macht Sie frühzeitig darauf aufmerksam.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Automatischer Abgleich neuer Medikamente</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Frühzeitiger Hinweis bei möglichen Risiken</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Gute Grundlage für das nächste Arztgespräch</li>
+            </ul>
+          </div>
+
+          <div data-audience-content="aerzte">
+            <h3>Mehr Sicherheit bei der Medikation</h3>
+            <p>Adam unterstützt Patient:innen dabei, mögliche Wechselwirkungen frühzeitig zu erkennen – als zusätzliche Sicherheitsebene im Alltag.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Automatischer Abgleich bei neuen Medikamenten</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Frühzeitiger Hinweis bei möglichen Risiken</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Gute Gesprächsgrundlage für die Medikationsprüfung</li>
+            </ul>
+          </div>
         </div>
         <div>
           <div class="app-preview" aria-hidden="true">
@@ -232,13 +311,26 @@
       <div class="container feature-section__inner">
         <div>
           <span class="feature-section__number">04</span>
-          <h3 id="feature-zusammenfassung-heading">Verständliche Zusammenfassungen</h3>
-          <p>Vor dem Arztbesuch fasst Adam Ihre Daten in einfachen, klaren Worten zusammen – im Sprachniveau, das zu Ihnen passt.</p>
-          <ul class="feature-section__points">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Übersicht für den nächsten Arzttermin</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Sprachniveau individuell einstellbar</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Ersetzt kein Arztgespräch, bereitet es aber gut vor</li>
-          </ul>
+
+          <div data-audience-content="patient">
+            <h3 id="feature-zusammenfassung-heading">Verständliche Zusammenfassungen</h3>
+            <p>Vor dem Arztbesuch fasst Adam Ihre Daten in einfachen, klaren Worten zusammen – im Sprachniveau, das zu Ihnen passt.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Übersicht für den nächsten Arzttermin</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Sprachniveau individuell einstellbar</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Ersetzt kein Arztgespräch, bereitet es aber gut vor</li>
+            </ul>
+          </div>
+
+          <div data-audience-content="aerzte">
+            <h3>Patient:innen kommen vorbereitet</h3>
+            <p>Adam hilft Patient:innen, ihre Anliegen zu strukturieren und gezielte Fragen mitzubringen – das Gespräch beginnt, bevor es beginnt.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Strukturierte Übersicht vor dem Termin</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Gezieltere Fragen statt langer Vorgeschichten</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Ersetzt kein Arztgespräch, bereitet es aber gut vor</li>
+            </ul>
+          </div>
         </div>
         <div>
           <div class="app-preview" aria-hidden="true">
@@ -262,13 +354,26 @@
       <div class="container feature-section__inner">
         <div>
           <span class="feature-section__number">05</span>
-          <h3 id="feature-diagnose-heading">Diagnosen einfach erklärt</h3>
-          <p>Medizinische Fachbegriffe und Diagnose-Codes werden für Sie in verständlicher Sprache erklärt.</p>
-          <ul class="feature-section__points">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Diagnose-Codes (ICD-10) verständlich erklärt</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Keine unerklärten Fachbegriffe</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Mehr Sicherheit im Umgang mit der eigenen Diagnose</li>
-          </ul>
+
+          <div data-audience-content="patient">
+            <h3 id="feature-diagnose-heading">Diagnosen einfach erklärt</h3>
+            <p>Medizinische Fachbegriffe und Diagnose-Codes werden für Sie in verständlicher Sprache erklärt.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Diagnose-Codes (ICD-10) verständlich erklärt</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Keine unerklärten Fachbegriffe</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Mehr Sicherheit im Umgang mit der eigenen Diagnose</li>
+            </ul>
+          </div>
+
+          <div data-audience-content="aerzte">
+            <h3>Weniger Erklärungsaufwand</h3>
+            <p>Patient:innen verstehen ihre Diagnosen und Befunde besser – das schafft Raum für das Wesentliche im Gespräch.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Diagnose-Codes (ICD-10) verständlich erklärt</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Weniger Rückfragen zu Fachbegriffen</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Mehr Sicherheit im Umgang mit der eigenen Diagnose</li>
+            </ul>
+          </div>
         </div>
         <div>
           <div class="app-preview" aria-hidden="true">
@@ -291,13 +396,26 @@
       <div class="container feature-section__inner">
         <div>
           <span class="feature-section__number">06</span>
-          <h3 id="feature-tipp-heading">Gesundheitstipps für den Alltag</h3>
-          <p>Regelmäßige, einfach formulierte Tipps unterstützen Sie dabei, gesund zu bleiben.</p>
-          <ul class="feature-section__points">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Kurze, leicht umsetzbare Tipps</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Passend zu Ihrem Alltag</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Direkt im Dashboard sichtbar</li>
-          </ul>
+
+          <div data-audience-content="patient">
+            <h3 id="feature-tipp-heading">Gesundheitstipps für den Alltag</h3>
+            <p>Regelmäßige, einfach formulierte Tipps unterstützen Sie dabei, gesund zu bleiben.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Kurze, leicht umsetzbare Tipps</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Passend zu Ihrem Alltag</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Direkt im Dashboard sichtbar</li>
+            </ul>
+          </div>
+
+          <div data-audience-content="aerzte">
+            <h3>Unterstützung zwischen den Terminen</h3>
+            <p>Regelmäßige, verständliche Tipps helfen Patient:innen, informiert und aktiv an ihrer Gesundheit zu bleiben.</p>
+            <ul class="feature-section__points">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Kurze, leicht umsetzbare Tipps</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Fördert aktives Gesundheitsverhalten</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Direkt im Dashboard Ihrer Patient:innen sichtbar</li>
+            </ul>
+          </div>
         </div>
         <div>
           <div class="app-preview" aria-hidden="true">
@@ -323,7 +441,8 @@
           <span class="eyebrow">Sicherheit &amp; Vertrauen</span>
           <h2 class="section-title" id="trust-heading">Darauf können Sie sich verlassen</h2>
           <p class="section-intro">
-            Gerade bei Gesundheitsdaten ist Vertrauen entscheidend. Deshalb ist uns Transparenz wichtig.
+            Gerade bei Gesundheitsdaten ist Vertrauen entscheidend. Deshalb ist uns Transparenz wichtig –
+            für Patient:innen ebenso wie für medizinisches Fachpersonal.
           </p>
         </div>
 
@@ -337,8 +456,8 @@
               <h3>Ihre Daten sind sicher</h3>
               <p>
                 Wir entwickeln Adam von Anfang an nach den Grundsätzen der
-                Datenschutz-Grundverordnung (DSGVO). Ziel ist es, Ihre Gesundheitsdaten
-                ausschließlich auf Servern in Europa zu verarbeiten und bestmöglich zu schützen.
+                Datenschutz-Grundverordnung (DSGVO). Ihre Daten werden ausschließlich
+                innerhalb der EU/EWR verarbeitet und bestmöglich geschützt.
               </p>
             </div>
           </article>
@@ -364,9 +483,10 @@
             <div>
               <h3>Unterstützung, kein Ersatz</h3>
               <p>
-                Adam gibt Ihnen eine Übersicht und Unterstützung im Alltag. Adam ersetzt
-                keine ärztliche Untersuchung, Diagnose oder Beratung. Wenden Sie sich bei
-                gesundheitlichen Fragen bitte immer an eine Ärztin oder einen Arzt.
+                Adam ist kein Medizinprodukt und stellt keine Diagnose. Adam unterstützt im
+                Alltag und ersetzt keine ärztliche Untersuchung, Diagnose oder Beratung.
+                Wenden Sie sich bei gesundheitlichen Fragen bitte immer an eine Ärztin
+                oder einen Arzt.
               </p>
             </div>
           </article>
@@ -378,9 +498,9 @@
             <div>
               <h3>Wer hinter Adam steht</h3>
               <p>
-                Adam wird von einem Team entwickelt, dem eine klare, einfache und
-                vertrauenswürdige Gesundheitskommunikation für alle Generationen am
-                Herzen liegt. Ausführliche Informationen zum Team folgen in Kürze.
+                Adam ist ein Studienprojekt eines Teams der Fachhochschule Vorarlberg, dem
+                eine klare und vertrauenswürdige Gesundheitskommunikation am Herzen liegt.
+                Alle Angaben finden Sie im <a href="impressum.html">Impressum</a>.
               </p>
             </div>
           </article>
@@ -393,32 +513,102 @@
     <section class="waitlist" id="warteliste" aria-labelledby="warteliste-heading">
       <div class="container">
         <span class="eyebrow">Warteliste</span>
-        <h2 class="section-title" id="warteliste-heading">Seien Sie von Anfang an dabei</h2>
-        <p class="section-intro" style="margin-bottom: var(--space-8);">
-          Tragen Sie sich jetzt unverbindlich ein und erfahren Sie als Erste bzw. Erster,
-          sobald Adam zur Verfügung steht.
-        </p>
+
+        <div data-audience-content="patient">
+          <h2 class="section-title" id="warteliste-heading-patient">Seien Sie von Anfang an dabei</h2>
+          <p class="section-intro" style="margin-bottom: var(--space-8);">
+            Tragen Sie sich jetzt unverbindlich ein und erfahren Sie als Erste bzw. Erster,
+            sobald Adam zur Verfügung steht.
+          </p>
+        </div>
+        <div data-audience-content="aerzte">
+          <h2 class="section-title" id="warteliste-heading-aerzte">Sichern Sie sich den Frühzugang</h2>
+          <p class="section-intro" style="margin-bottom: var(--space-8);">
+            Testen Sie Adam vor dem Launch mit und gestalten Sie mit Ihrem Feedback mit, wie
+            Adam im Praxis- und Klinikalltag unterstützt.
+          </p>
+        </div>
 
         <div class="waitlist-card">
-          <form class="waitlist-form" id="waitlist-form" novalidate>
+
+          <form class="waitlist-form" id="waitlist-form-patient" data-audience-content="patient" novalidate>
             <div class="waitlist-form__fields">
+              <input type="hidden" name="zielgruppe" value="patient" />
               <div class="form-field">
-                <label for="name-footer">Ihr Name</label>
-                <input type="text" id="name-footer" name="name" autocomplete="name" required />
+                <label for="name-patient">Ihr Name</label>
+                <input type="text" id="name-patient" name="name" autocomplete="name" required data-error-message="Bitte geben Sie Ihren Namen ein." />
                 <p class="form-error" data-error-for="name" aria-live="polite"></p>
               </div>
               <div class="form-field">
-                <label for="email-footer">Ihre E-Mail-Adresse</label>
-                <input type="email" id="email-footer" name="email" autocomplete="email" required />
+                <label for="email-patient">Ihre E-Mail-Adresse</label>
+                <input type="email" id="email-patient" name="email" autocomplete="email" required />
                 <p class="form-error" data-error-for="email" aria-live="polite"></p>
               </div>
+              <div class="form-field form-field--checkbox">
+                <label class="checkbox-label">
+                  <input type="checkbox" name="consent" required data-error-message="Bitte stimmen Sie der Datenschutzerklärung zu, um sich einzutragen." />
+                  <span>Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten zur Anmeldung auf die Warteliste einverstanden.</span>
+                </label>
+                <p class="form-error" data-error-for="consent" aria-live="polite"></p>
+              </div>
               <button class="btn btn-primary" type="submit">Jetzt eintragen</button>
-              <p class="form-fineprint">Kostenlos &amp; unverbindlich – wir informieren Sie per E-Mail, sobald Adam startet.</p>
+              <p class="form-fineprint">Kostenlos &amp; unverbindlich. Sie erhalten eine Bestätigungs-E-Mail (Double-Opt-in).</p>
             </div>
             <p class="form-success" tabindex="-1">
-              Vielen Dank! Sie stehen auf der Warteliste und erhalten eine Nachricht, sobald Adam startet.
+              Vielen Dank! Bitte bestätigen Sie Ihre Anmeldung über den Link in der E-Mail, die wir Ihnen in Kürze zusenden.
             </p>
           </form>
+
+          <form class="waitlist-form" id="waitlist-form-aerzte" data-audience-content="aerzte" novalidate>
+            <div class="waitlist-form__fields">
+              <input type="hidden" name="zielgruppe" value="aerzte" />
+              <div class="form-field">
+                <label for="name-aerzte">Ihr Name</label>
+                <input type="text" id="name-aerzte" name="name" autocomplete="name" required data-error-message="Bitte geben Sie Ihren Namen ein." />
+                <p class="form-error" data-error-for="name" aria-live="polite"></p>
+              </div>
+              <div class="form-field">
+                <label for="email-aerzte">Ihre E-Mail-Adresse</label>
+                <input type="email" id="email-aerzte" name="email" autocomplete="email" required />
+                <p class="form-error" data-error-for="email" aria-live="polite"></p>
+              </div>
+              <div class="form-field">
+                <label for="einrichtung-aerzte">Ich bin …</label>
+                <select id="einrichtung-aerzte" name="einrichtung" required data-error-message="Bitte wählen Sie Ihre Einrichtung aus.">
+                  <option value="" disabled selected>Bitte auswählen</option>
+                  <option value="praxis">Praxis</option>
+                  <option value="fachpraxis">Fachpraxis</option>
+                  <option value="krankenhaus">Krankenhaus</option>
+                  <option value="reha">Reha-Einrichtung</option>
+                  <option value="sonstiges">Sonstige medizinische Einrichtung</option>
+                </select>
+                <p class="form-error" data-error-for="einrichtung" aria-live="polite"></p>
+              </div>
+              <div class="form-field">
+                <label for="nutzen-aerzte">Wichtigster Nutzen für Sie</label>
+                <select id="nutzen-aerzte" name="nutzen" required data-error-message="Bitte wählen Sie eine Option aus.">
+                  <option value="" disabled selected>Bitte auswählen</option>
+                  <option value="ordnung">Ordnung &amp; Zeitersparnis</option>
+                  <option value="information">Besser informierte Patient:innen</option>
+                  <option value="beides">Beides gleich wichtig</option>
+                </select>
+                <p class="form-error" data-error-for="nutzen" aria-live="polite"></p>
+              </div>
+              <div class="form-field form-field--checkbox">
+                <label class="checkbox-label">
+                  <input type="checkbox" name="consent" required data-error-message="Bitte stimmen Sie der Datenschutzerklärung zu, um sich einzutragen." />
+                  <span>Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten zur Anmeldung auf die Warteliste einverstanden.</span>
+                </label>
+                <p class="form-error" data-error-for="consent" aria-live="polite"></p>
+              </div>
+              <button class="btn btn-primary" type="submit">Frühzugang sichern</button>
+              <p class="form-fineprint">Kostenlos &amp; unverbindlich. Sie erhalten eine Bestätigungs-E-Mail (Double-Opt-in).</p>
+            </div>
+            <p class="form-success" tabindex="-1">
+              Vielen Dank! Bitte bestätigen Sie Ihre Anmeldung über den Link in der E-Mail, die wir Ihnen in Kürze zusenden.
+            </p>
+          </form>
+
         </div>
       </div>
     </section>
@@ -427,35 +617,44 @@
 
   <footer class="site-footer">
     <div class="container">
+
+      <div class="footer-disclaimer">
+        <strong>Wichtiger Hinweis:</strong> Adam befindet sich in Entwicklung und ist kein
+        zugelassenes Medizinprodukt. Die Inhalte dienen ausschließlich der allgemeinen
+        Information und Unterstützung im Alltag. Sie ersetzen keine ärztliche Diagnose,
+        Beratung oder Behandlung. Bei gesundheitlichen Notfällen wählen Sie bitte den
+        Notruf 144 (Rettung) oder 112.
+      </div>
+
       <div class="footer-grid">
         <div>
           <div class="footer-brand">
             <img src="assets/logo.svg" alt="Adam Logo" width="34" height="34" />
             <span>Adam</span>
           </div>
-          <p>Ihr persönlicher Begleiter für Medikamente, Symptome und Arztbriefe – einfach, sicher, verständlich.</p>
+          <p>Ihr persönlicher Begleiter für Medikamente, Symptome und Arztbriefe – einfach, sicher, verständlich. Für Patient:innen und medizinisches Fachpersonal.</p>
         </div>
 
         <div>
           <h4>Kontakt</h4>
           <ul>
-            <li class="footer-placeholder">[Platzhalter: Kontakt-E-Mail folgt]</li>
-            <li class="footer-placeholder">[Platzhalter: Telefon/Adresse, falls gewünscht]</li>
+            <li><a href="mailto:austrian.digital.assistent@gmail.com">austrian.digital.assistent@gmail.com</a></li>
           </ul>
         </div>
 
         <div>
           <h4>Rechtliches</h4>
           <ul>
-            <li><a href="#" aria-disabled="true">Impressum (folgt)</a></li>
-            <li><a href="#" aria-disabled="true">Datenschutzerklärung (folgt)</a></li>
+            <li><a href="impressum.html">Impressum</a></li>
+            <li><a href="datenschutz.html">Datenschutzerklärung</a></li>
           </ul>
         </div>
       </div>
 
       <p class="footer-note">
-        © 2026 Adam. Adam ist ein Projekt in Entwicklung und noch nicht öffentlich verfügbar.
-        Impressumsangaben werden vor dem Live-Start ergänzt.
+        © 2026 Adam, ein Studienprojekt der Fachhochschule Vorarlberg GmbH. Adam ist ein
+        Projekt in Entwicklung und noch nicht öffentlich verfügbar. Details siehe
+        <a href="impressum.html">Impressum</a> und <a href="datenschutz.html">Datenschutzerklärung</a>.
       </p>
     </div>
   </footer>

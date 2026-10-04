@@ -1,8 +1,9 @@
 // Warteliste: Client-seitige Validierung und optimistische Erfolgsanzeige.
 //
 // Hinweis für die Weiterentwicklung: Es ist noch kein Backend/E-Mail-Dienst angebunden.
-// Sobald ein Endpunkt (z. B. eine eigene API oder ein Newsletter-Anbieter) existiert,
-// den fetch()-Aufruf unten in handleSubmit() durch einen echten Request ersetzen.
+// Sobald ein Endpunkt existiert (eigene API, Newsletter-Anbieter mit Double-Opt-in),
+// den Platzhalter unten in initWaitlistForm() durch einen echten Request ersetzen.
+// Jedes Formular sendet ein verstecktes "zielgruppe"-Feld (patient/aerzte) mit.
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -11,46 +12,52 @@ function isValidEmail(value) {
 function setFieldError(field, errorEl, message) {
   if (message) {
     field.setAttribute("aria-invalid", "true");
-    errorEl.textContent = message;
+    if (errorEl) errorEl.textContent = message;
   } else {
     field.removeAttribute("aria-invalid");
-    errorEl.textContent = "";
+    if (errorEl) errorEl.textContent = "";
   }
 }
 
 function initWaitlistForm(form) {
-  const nameField = form.querySelector('input[name="name"]');
-  const emailField = form.querySelector('input[name="email"]');
-  const nameError = form.querySelector('[data-error-for="name"]');
-  const emailError = form.querySelector('[data-error-for="email"]');
   const successEl = form.querySelector(".form-success");
   const submitBtn = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn.textContent;
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     let hasError = false;
+    let firstInvalid = null;
 
-    if (!nameField.value.trim()) {
-      setFieldError(nameField, nameError, "Bitte geben Sie Ihren Namen ein.");
-      hasError = true;
-    } else {
-      setFieldError(nameField, nameError, "");
-    }
+    form.querySelectorAll("[required]").forEach((field) => {
+      const errorEl = form.querySelector(`[data-error-for="${field.name}"]`);
+      let message = "";
 
-    if (!emailField.value.trim() || !isValidEmail(emailField.value.trim())) {
-      setFieldError(
-        emailField,
-        emailError,
-        "Bitte geben Sie eine gültige E-Mail-Adresse ein."
-      );
-      hasError = true;
-    } else {
-      setFieldError(emailField, emailError, "");
-    }
+      if (field.type === "checkbox") {
+        if (!field.checked) {
+          message = field.dataset.errorMessage || "Bitte bestätigen Sie diesen Punkt.";
+        }
+      } else if (field.tagName === "SELECT") {
+        if (!field.value) {
+          message = field.dataset.errorMessage || "Bitte wählen Sie eine Option aus.";
+        }
+      } else if (field.type === "email") {
+        if (!field.value.trim() || !isValidEmail(field.value.trim())) {
+          message = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+        }
+      } else if (!field.value.trim()) {
+        message = field.dataset.errorMessage || "Bitte füllen Sie dieses Feld aus.";
+      }
+
+      setFieldError(field, errorEl, message);
+      if (message) {
+        hasError = true;
+        if (!firstInvalid) firstInvalid = field;
+      }
+    });
 
     if (hasError) {
-      const firstInvalid = form.querySelector('[aria-invalid="true"]');
       if (firstInvalid) firstInvalid.focus();
       return;
     }
@@ -69,12 +76,53 @@ function initWaitlistForm(form) {
       form.reset();
     } catch (error) {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Jetzt auf die Warteliste eintragen";
+      submitBtn.textContent = originalLabel;
     }
   });
 }
 
 document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
+
+// Zielgruppen-Umschalter (Patient:innen / Ärzt:innen & Fachpersonal)
+//
+// Steuert body[data-audience], damit CSS die passenden Inhalte je Abschnitt ein-/ausblendet.
+// Unterstützt Deep-Links für Kampagnen über ?zielgruppe=aerzte (bzw. ?zielgruppe=patient).
+
+function initAudienceTabs() {
+  const tabs = document.querySelectorAll(".audience-tab");
+  if (!tabs.length) return;
+
+  function setAudience(audience, updateUrl) {
+    document.body.setAttribute("data-audience", audience);
+    tabs.forEach((tab) => {
+      tab.setAttribute("aria-pressed", String(tab.dataset.audience === audience));
+    });
+    if (updateUrl) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set("zielgruppe", audience);
+        window.history.replaceState({}, "", url);
+      } catch (e) {
+        /* URL-API evtl. eingeschränkt – kein kritischer Fehler */
+      }
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => setAudience(tab.dataset.audience, true));
+  });
+
+  let initial = "patient";
+  try {
+    const requested = new URLSearchParams(window.location.search).get("zielgruppe");
+    if (requested === "aerzte" || requested === "patient") initial = requested;
+  } catch (e) {
+    /* kein URLSearchParams – Standard "patient" bleibt */
+  }
+  setAudience(initial, false);
+}
+
+initAudienceTabs();
 
 // Mobile-Menü
 
