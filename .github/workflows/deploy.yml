@@ -1,0 +1,19 @@
+   name: Deploy to Pi
+
+   on:
+     push:
+       branches:
+         - claude/kind-heisenberg-m21onb
+     # allows starting a deploy manually from the Actions tab
+     workflow_dispatch:
+
+   jobs:
+     deploy:
+       runs-on: self-hosted
+       steps:
+         - name: Check out repository
+           uses: actions/checkout@v4
+
+         # copy site files to the nginx web root, skip git and workflow files
+         - name: Copy files to web root
+           run: rsync -a --delete --exclude .git --exclude .github ./ /var/www/site/
