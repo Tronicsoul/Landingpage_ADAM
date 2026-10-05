@@ -71,7 +71,7 @@
 
   <div class="audience-bar">
     <div class="container audience-bar__inner">
-      <span class="audience-bar__label" id="audienceLabel">Diese Seite richtet sich an:</span>
+      <span class="audience-bar__label visually-hidden" id="audienceLabel">Diese Seite richtet sich an</span>
       <div class="audience-tabs" role="group" aria-labelledby="audienceLabel">
         <button type="button" class="audience-tab" data-audience="patient" aria-pressed="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
@@ -145,6 +145,72 @@
           </div>
           <p class="preview-caption">Beispielhafte, vereinfachte Darstellung. Entwurf, Änderungen vorbehalten.</p>
         </div>
+      </div>
+    </section>
+
+    <!-- Problem (nur Ärzt:innen & Fachpersonal) -->
+    <section class="problem" id="problem" aria-labelledby="problem-heading" data-hide-for="patient">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">Der Alltag in der Praxis</span>
+          <h2 class="section-title" id="problem-heading">Jede Rückfrage kostet Zeit, die Sie nicht haben</h2>
+          <p class="section-intro">
+            Unvollständige Medikamentenlisten, vage Angaben zu Symptomen, Patient:innen, die
+            ihre eigene Vorgeschichte kaum kennen: Der Alltag in Praxis und Klinik ist eng
+            getaktet, und jede zusätzliche Rückfrage verschärft den Druck.
+          </p>
+        </div>
+
+        <div class="pain-grid">
+          <div class="pain-card">
+            <div class="pain-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </div>
+            <h3>Rückfragen kosten Zeit</h3>
+            <p>Jede fehlende Angabe bedeutet eine weitere Frage, die der eigentlichen Behandlung Zeit nimmt.</p>
+          </div>
+          <div class="pain-card">
+            <div class="pain-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6l1 4H8l1-4Z"/><path d="M5 6h14l-1.2 13.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8L5 6Z"/><path d="M9 11h6M9 15h6"/></svg>
+            </div>
+            <h3>Unvollständige Informationen</h3>
+            <p>Medikamentenlisten, Vorerkrankungen, Symptome: oft lückenhaft oder veraltet.</p>
+          </div>
+          <div class="pain-card">
+            <div class="pain-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>
+            </div>
+            <h3>Am Ende bleibt der Stress</h3>
+            <p>Weniger Zeit für das Gespräch, mehr Druck im Tagesablauf: ein Kreislauf, den viele kennen.</p>
+          </div>
+        </div>
+
+        <div class="compare-grid">
+          <div class="compare-card compare-card--before" aria-hidden="true">
+            <div class="compare-card__bar">Ohne ADAM, vor dem Termin</div>
+            <div class="compare-card__body">
+              <div class="chaos-notes">
+                <span class="chaos-note">Medikamente …?</span>
+                <span class="chaos-note">Allergien unbekannt</span>
+                <span class="chaos-note">Letzte Diagnose?</span>
+                <span class="chaos-note">Seit wann genau?</span>
+              </div>
+            </div>
+          </div>
+          <div class="compare-card compare-card--after" aria-hidden="true">
+            <div class="compare-card__bar">Mit ADAM, vor dem Termin</div>
+            <div class="compare-card__body">
+              <ul class="clear-list">
+                <li><span>Medikamente</span><span>3 erfasst</span></li>
+                <li><span>Allergien</span><span>keine bekannt</span></li>
+                <li><span>Diagnose</span><span>Bluthochdruck</span></li>
+                <li><span>Seit</span><span>2022</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <p class="problem-bridge">ADAM setzt genau hier an.</p>
       </div>
     </section>
 
@@ -509,11 +575,26 @@
           </p>
         </div>
         <div data-audience-content="aerzte">
-          <h2 class="section-title" id="warteliste-heading-aerzte">Sichern Sie sich den Frühzugang</h2>
-          <p class="section-intro" style="margin-bottom: var(--space-8);">
-            Testen Sie ADAM vor dem Launch und gestalten Sie mit Ihrem Feedback mit, wie
-            die App im Praxis- und Klinikalltag unterstützt.
+          <h2 class="section-title" id="warteliste-heading-aerzte">Werden Sie zur Pionierpraxis</h2>
+          <p class="section-intro" style="margin-bottom: var(--space-6);">
+            Seien Sie eine der ersten Praxen, die ADAM einsetzen: weniger Verwaltungsaufwand
+            für Sie, besser vorbereitete Patient:innen für das Gespräch, und ein sichtbares
+            Zeichen für eine moderne, digitale Praxis.
           </p>
+          <div class="benefit-chips">
+            <span class="benefit-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              Weniger Verwaltungsaufwand
+            </span>
+            <span class="benefit-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z"/></svg>
+              Mehr Zeit für Patient:innen
+            </span>
+            <span class="benefit-chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 11-14h-7l1-6Z"/></svg>
+              Modernes, digitales Praxisbild
+            </span>
+          </div>
         </div>
 
         <div class="waitlist-card">
@@ -583,14 +664,14 @@
                 <p class="form-error" data-error-for="einrichtung" aria-live="polite"></p>
               </div>
               <div class="form-field">
-                <label for="nutzen-aerzte">Wichtigster Nutzen für Sie</label>
-                <select id="nutzen-aerzte" name="nutzen" required data-error-message="Bitte wählen Sie eine Option aus.">
+                <label for="problem-aerzte">Was belastet Sie im Alltag am meisten?</label>
+                <select id="problem-aerzte" name="problem" required data-error-message="Bitte wählen Sie eine Option aus.">
                   <option value="" disabled selected>Bitte auswählen</option>
-                  <option value="ordnung">Ordnung &amp; Zeitersparnis</option>
-                  <option value="information">Besser informierte Patient:innen</option>
-                  <option value="beides">Beides gleich wichtig</option>
+                  <option value="rueckfragen-verwaltung">Zu viele Rückfragen &amp; Verwaltungsaufwand</option>
+                  <option value="unvorbereitete-patienten">Patient:innen kommen unvorbereitet zum Termin</option>
+                  <option value="beides">Beides gleich stark</option>
                 </select>
-                <p class="form-error" data-error-for="nutzen" aria-live="polite"></p>
+                <p class="form-error" data-error-for="problem" aria-live="polite"></p>
               </div>
               <div class="form-field form-field--checkbox">
                 <label class="checkbox-label">
@@ -599,7 +680,7 @@
                 </label>
                 <p class="form-error" data-error-for="consent" aria-live="polite"></p>
               </div>
-              <button class="btn btn-primary" type="submit">Frühzugang sichern</button>
+              <button class="btn btn-primary" type="submit">Jetzt Pionierpraxis werden</button>
               <p class="form-fineprint">Kostenlos &amp; unverbindlich. Sie erhalten eine Bestätigungsmail (Double-Opt-in).</p>
             </div>
             <p class="form-success" tabindex="-1">

@@ -139,7 +139,7 @@ a {
 }
 
 section[id] {
-  scroll-margin-top: calc(var(--nav-height) + 16px);
+  scroll-margin-top: calc(var(--nav-height) + 86px);
 }
 
 /* Sprungmarke */
@@ -385,6 +385,9 @@ summary:focus-visible {
 .audience-bar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 95;
 }
 
 .audience-bar__inner {
@@ -456,6 +459,209 @@ body[data-audience="aerzte"] [data-audience-content="aerzte"] {
 
 body[data-audience="aerzte"] [data-hide-for="aerzte"] {
   display: none;
+}
+
+body[data-audience="patient"] [data-hide-for="patient"] {
+  display: none;
+}
+
+/* Problem-Sektion (nur Ärzt:innen & Fachpersonal) */
+
+.problem {
+  background: var(--surface);
+}
+
+.problem .section-header {
+  text-align: left;
+  max-width: 680px;
+  margin: 0 0 var(--space-10);
+}
+
+.pain-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+  margin-bottom: var(--space-10);
+}
+
+@media (min-width: 760px) {
+  .pain-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.pain-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.pain-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--error-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--error);
+  margin-bottom: var(--space-4);
+}
+
+.pain-card__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pain-card h3 {
+  font-size: 18px;
+  margin: 0 0 var(--space-2);
+}
+
+.pain-card p {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Vorher/Nachher-Vergleich */
+
+.compare-grid {
+  display: grid;
+  gap: var(--space-6);
+  align-items: stretch;
+  margin-bottom: var(--space-8);
+}
+
+@media (min-width: 760px) {
+  .compare-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.compare-card {
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.compare-card__bar {
+  padding: var(--space-4) var(--space-6);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.compare-card--before {
+  background: var(--card-bg);
+}
+
+.compare-card--before .compare-card__bar {
+  background: var(--muted);
+  color: var(--background);
+}
+
+.compare-card--after .compare-card__bar {
+  background: var(--primary);
+  color: var(--text-on-primary);
+}
+
+.compare-card__body {
+  padding: var(--space-6);
+  flex: 1;
+}
+
+.compare-card--after {
+  background: var(--card-bg);
+}
+
+.chaos-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.chaos-note {
+  background: var(--background);
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: 14.5px;
+  color: var(--text-muted);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.chaos-note:nth-child(1) { transform: rotate(-3deg); }
+.chaos-note:nth-child(2) { transform: rotate(2deg); margin-top: var(--space-3); }
+.chaos-note:nth-child(3) { transform: rotate(-2deg); }
+.chaos-note:nth-child(4) { transform: rotate(3deg); margin-top: var(--space-2); }
+
+.clear-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.clear-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: 14.5px;
+}
+
+.clear-list li span:first-child {
+  color: var(--text-muted);
+}
+
+.clear-list li span:last-child {
+  font-weight: 600;
+}
+
+.problem-bridge {
+  text-align: center;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Benefit-Chips (Pioneer-/CTA-Sektion) */
+
+.benefit-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+.benefit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-5);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.benefit-chip svg {
+  width: 18px;
+  height: 18px;
+  color: var(--button-bg);
+  flex: none;
 }
 
 /* Abschnitte */
