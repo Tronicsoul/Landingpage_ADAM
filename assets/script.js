@@ -85,18 +85,15 @@ document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
 
 // Zielgruppen-Umschalter (Patient:innen / Ärzt:innen & Fachpersonal)
 //
-// Der tatsächliche Startzustand (data-audience, ggf. data-variant/data-campaign aus
-// ?zielgruppe=/?variante=/?campaign=) wird bereits von einem Inline-Script im <head>
-// gesetzt, bevor die Seite zeichnet (siehe index.html) – das verhindert ein kurzes
-// Aufblitzen der falschen Zielgruppe bei einem Anzeigenklick. Hier wird nur noch der
-// Klick auf die Umschalter-Buttons behandelt und ihr aria-pressed synchronisiert.
+// Steuert body[data-audience], damit CSS die passenden Inhalte je Abschnitt ein-/ausblendet.
+// Unterstützt Deep-Links für Kampagnen über ?zielgruppe=aerzte (bzw. ?zielgruppe=patient).
 
 function initAudienceTabs() {
   const tabs = document.querySelectorAll(".audience-tab");
   if (!tabs.length) return;
 
   function setAudience(audience, updateUrl) {
-    document.documentElement.setAttribute("data-audience", audience);
+    document.body.setAttribute("data-audience", audience);
     tabs.forEach((tab) => {
       tab.setAttribute("aria-pressed", String(tab.dataset.audience === audience));
     });
@@ -115,11 +112,14 @@ function initAudienceTabs() {
     tab.addEventListener("click", () => setAudience(tab.dataset.audience, true));
   });
 
-  // Tab-Buttons mit dem bereits gesetzten Startzustand synchronisieren.
-  const current = document.documentElement.getAttribute("data-audience") === "aerzte" ? "aerzte" : "patient";
-  tabs.forEach((tab) => {
-    tab.setAttribute("aria-pressed", String(tab.dataset.audience === current));
-  });
+  let initial = "patient";
+  try {
+    const requested = new URLSearchParams(window.location.search).get("zielgruppe");
+    if (requested === "aerzte" || requested === "patient") initial = requested;
+  } catch (e) {
+    /* kein URLSearchParams – Standard "patient" bleibt */
+  }
+  setAudience(initial, false);
 }
 
 initAudienceTabs();

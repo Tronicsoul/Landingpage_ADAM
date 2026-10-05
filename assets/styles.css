@@ -220,29 +220,6 @@ summary:focus-visible {
   width: 100%;
 }
 
-/* Sichtbares "Kostenlos"-Label direkt am Button statt nur im Kleingedruckten */
-
-.btn-with-badge {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.btn-badge {
-  position: absolute;
-  top: -12px;
-  right: 14px;
-  background: var(--accent);
-  color: #3b2400;
-  font-size: 12.5px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
 /* Kopfbereich / Navigation */
 
 .site-header {
@@ -466,55 +443,26 @@ summary:focus-visible {
   color: var(--text-on-primary);
 }
 
-html [data-audience-content] {
+body [data-audience-content] {
   display: none;
 }
 
-html[data-audience="patient"] [data-audience-content="patient"] {
+body[data-audience="patient"] [data-audience-content="patient"] {
   display: block;
 }
 
-html[data-audience="aerzte"] [data-audience-content="aerzte"] {
+body[data-audience="aerzte"] [data-audience-content="aerzte"] {
   display: block;
 }
 
 /* Inhalte/Abschnitte, die es nur für eine Zielgruppe gibt (z. B. Gesundheitstipps nur für Patient:innen) */
 
-html[data-audience="aerzte"] [data-hide-for="aerzte"] {
+body[data-audience="aerzte"] [data-hide-for="aerzte"] {
   display: none;
 }
 
-html[data-audience="patient"] [data-hide-for="patient"] {
+body[data-audience="patient"] [data-hide-for="patient"] {
   display: none;
-}
-
-/* Anzeigen-Varianten innerhalb der Ärzte-Ansicht (Message-Match je Kampagne, ?variante=a / ?variante=b) */
-
-html [data-variant-content] {
-  display: none;
-}
-
-html:not([data-variant]) [data-variant-content="default"] {
-  display: block;
-}
-
-html[data-variant="a"] [data-variant-content="a"] {
-  display: block;
-}
-
-html[data-variant="b"] [data-variant-content="b"] {
-  display: block;
-}
-
-/* Kampagnen-Modus: Landingpage für bezahlten Traffic ohne Navigationsablenkung,
-   aktiviert über ?campaign=1 oder automatisch über ?variante=a/b */
-
-html[data-campaign="1"] .nav-links,
-html[data-campaign="1"] .feature-nav,
-html[data-campaign="1"] .nav-toggle,
-html[data-campaign="1"] .mobile-menu,
-html[data-campaign="1"] .audience-bar {
-  display: none !important;
 }
 
 /* Problem-Sektion (nur Ärzt:innen & Fachpersonal) */
@@ -684,15 +632,6 @@ html[data-campaign="1"] .audience-bar {
   font-size: 19px;
   font-weight: 700;
   color: var(--text);
-}
-
-.elga-note {
-  max-width: 640px;
-  margin: var(--space-4) auto 0;
-  text-align: center;
-  font-size: 15.5px;
-  line-height: 1.6;
-  color: var(--text-muted);
 }
 
 /* Patientenstimme (illustrativ, Pioneer-/CTA-Sektion) */
@@ -1250,82 +1189,6 @@ section {
   font-size: 16.5px;
   line-height: 1.6;
   color: var(--text-muted);
-}
-
-/* Team-Streifen: echte Vornamen, Initialen statt gestellter Fotos */
-
-.team-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4);
-  margin-top: var(--space-8);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--border);
-  text-align: center;
-}
-
-.team-strip__people {
-  display: flex;
-  justify-content: center;
-}
-
-.team-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--card-bg);
-  border: 2px solid var(--background);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--button-bg);
-}
-
-.team-avatar:not(:first-child) {
-  margin-left: -12px;
-}
-
-.team-strip p {
-  margin: 0;
-  max-width: 480px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.team-strip a {
-  color: var(--button-bg);
-  font-weight: 600;
-}
-
-/* Platzhalter für ein echtes Ärztin-/Arzt-Zitat (noch keine reale Aussage verfügbar) */
-
-.doctor-quote {
-  margin: var(--space-6) auto 0;
-  max-width: 560px;
-  text-align: center;
-  background: var(--surface);
-  border: 1px dashed var(--muted);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-}
-
-.doctor-quote p {
-  margin: 0 0 var(--space-2);
-  font-size: 15.5px;
-  font-style: italic;
-  color: var(--text-muted);
-}
-
-.doctor-quote cite {
-  font-size: 13px;
-  color: var(--muted);
-  font-style: normal;
 }
 
 /* Warteliste (Formular-Section) */
