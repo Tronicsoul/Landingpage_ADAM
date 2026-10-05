@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-audience="patient">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,9 +7,26 @@
   <meta name="description" content="ADAM bündelt Medikamente, Symptome, Diagnosen und Arztbriefe übersichtlich an einem Ort, nutzbar für Patient:innen und medizinisches Fachpersonal. Jetzt unverbindlich eintragen." />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <script>
-    // Vor dem ersten Rendern ausgeführt, damit die Seite nicht kurz im falschen Farbschema aufblitzt.
+    // Vor dem ersten Rendern ausgeführt: Zielgruppe/Anzeigen-Variante aus der URL und
+    // Farbschema werden gesetzt, bevor überhaupt etwas gezeichnet wird. So landet ein
+    // Anzeigenklick auf ?zielgruppe=aerzte sofort auf der richtigen Ansicht, ohne dass
+    // vorher kurz die Patient:innen-Ansicht aufblitzt.
     (function () {
       try {
+        var params = new URLSearchParams(window.location.search);
+
+        var audience = params.get("zielgruppe") === "aerzte" ? "aerzte" : "patient";
+        document.documentElement.setAttribute("data-audience", audience);
+
+        var variant = params.get("variante");
+        if (variant === "a" || variant === "b") {
+          document.documentElement.setAttribute("data-variant", variant);
+        }
+
+        if (params.get("campaign") === "1" || variant === "a" || variant === "b") {
+          document.documentElement.setAttribute("data-campaign", "1");
+        }
+
         var stored = localStorage.getItem("adam-theme");
         var theme = stored === "light" || stored === "dark"
           ? stored
@@ -26,7 +43,7 @@
     <script defer src="https://ANALYTICS-DOMAIN/script.js" data-website-id="WEBSITE-ID"></script>
   -->
 </head>
-<body data-audience="patient">
+<body>
   <a class="skip-link" href="#hauptinhalt">Direkt zum Hauptinhalt springen</a>
 
   <header class="site-header">
@@ -113,14 +130,37 @@
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9.2 8.6 2 9.3l5.5 4.7L5.8 21 12 17.3 18.2 21l-1.7-7 5.5-4.7-7.2-.7L12 2Z"/></svg>
               Für Praxen, die vorausgehen
             </span>
-            <h1>Die App, die Ihre Praxis zur Vorreiterin macht</h1>
-            <p class="lead">
-              Empfehlen Sie ADAM Ihren Patient:innen und zeigen Sie, dass Ihre Praxis
-              Entwicklungen nicht abwartet, sondern vorangeht: weniger Rückfragen für Sie,
-              besser vorbereitete Patient:innen für das Gespräch.
-            </p>
+
+            <div data-variant-content="default">
+              <h1>Die App, die Ihre Praxis zur Vorreiterin macht</h1>
+              <p class="lead">
+                Empfehlen Sie ADAM Ihren Patient:innen und zeigen Sie, dass Ihre Praxis
+                Entwicklungen nicht abwartet, sondern vorangeht: weniger Rückfragen für Sie,
+                besser vorbereitete Patient:innen für das Gespräch.
+              </p>
+            </div>
+
+            <div data-variant-content="a">
+              <h1>Mehr Zeit für das Wesentliche in Ihrer Praxis</h1>
+              <p class="lead">
+                Zwischen Befunden, Medikamenten und Symptomen geht im Praxisalltag schnell
+                der Überblick verloren. ADAM bringt die wichtigsten Gesundheitsinformationen
+                Ihrer Patient:innen gebündelt zusammen, für weniger Rückfragen und mehr Zeit
+                im Gespräch.
+              </p>
+            </div>
+
+            <div data-variant-content="b">
+              <h1>Das Arztgespräch beginnt, bevor es beginnt</h1>
+              <p class="lead">
+                ADAM hilft Ihren Patient:innen, ihre Symptome, Medikamente und
+                Gesundheitsinformationen besser zu verstehen und sich gezielt auf das
+                Gespräch mit Ihnen vorzubereiten.
+              </p>
+            </div>
+
             <div class="hero__actions">
-              <a class="btn btn-primary" href="#warteliste">Jetzt Pionierpraxis werden</a>
+              <a class="btn btn-primary" href="#warteliste">Jetzt Starterpaket anfordern</a>
               <a class="btn btn-ghost" href="#funktionen">Für die Praxis entdecken</a>
             </div>
           </div>
@@ -215,6 +255,12 @@
         </div>
 
         <p class="problem-bridge">ADAM setzt genau hier an, und macht Ihre Praxis zum Vorbild für andere.</p>
+        <p class="elga-note">
+          ADAM ersetzt nicht ELGA oder Ihre Praxissoftware, sondern ergänzt sie: Während
+          ELGA Dokumente verwaltet und Ihre Praxissoftware die Organisation übernimmt,
+          hilft ADAM Ihren Patient:innen, ihre Gesundheitsdaten selbst zu verstehen und
+          strukturiert vorbereitet ins Gespräch zu kommen.
+        </p>
       </div>
     </section>
 
@@ -563,6 +609,25 @@
           </article>
 
         </div>
+
+        <div class="team-strip">
+          <div class="team-strip__people" aria-hidden="true">
+            <span class="team-avatar">An</span>
+            <span class="team-avatar">Am</span>
+            <span class="team-avatar">Ar</span>
+            <span class="team-avatar">Bi</span>
+            <span class="team-avatar">Je</span>
+          </div>
+          <p>
+            Entwickelt von Anika, Amir, Arun, Bianca und Jennifer im Studiengang Digital
+            Innovation der Fachhochschule Vorarlberg. Details im <a href="impressum.html">Impressum</a>.
+          </p>
+        </div>
+
+        <blockquote class="doctor-quote" data-hide-for="patient">
+          <p>[Platzhalter: Zitat einer Ärztin oder eines Arztes, die/der ADAM bereits getestet hat]</p>
+          <cite>Wird ergänzt, sobald eine Pilot-Praxis ADAM getestet hat</cite>
+        </blockquote>
       </div>
     </section>
 
@@ -684,8 +749,11 @@
                 </label>
                 <p class="form-error" data-error-for="consent" aria-live="polite"></p>
               </div>
-              <button class="btn btn-primary" type="submit">Jetzt Pionierpraxis werden</button>
-              <p class="form-fineprint">Kostenlos &amp; unverbindlich. Sie erhalten eine Bestätigungsmail (Double-Opt-in).</p>
+              <div class="btn-with-badge">
+                <button class="btn btn-primary" type="submit">Jetzt Starterpaket anfordern</button>
+                <span class="btn-badge">Kostenlos</span>
+              </div>
+              <p class="form-fineprint">Unverbindlich, Sie erhalten eine Bestätigungsmail (Double-Opt-in). Wir starten mit einer begrenzten Anzahl an Pilot-Praxen.</p>
             </div>
             <p class="form-success" tabindex="-1">
               Vielen Dank! Bitte bestätigen Sie Ihre Anmeldung über den Link in der Mail, die wir Ihnen in Kürze zusenden.
