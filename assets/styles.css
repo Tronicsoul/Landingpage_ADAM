@@ -452,6 +452,12 @@ body[data-audience="aerzte"] [data-audience-content="aerzte"] {
   display: block;
 }
 
+/* Inhalte/Abschnitte, die es nur für eine Zielgruppe gibt (z. B. Gesundheitstipps nur für Patient:innen) */
+
+body[data-audience="aerzte"] [data-hide-for="aerzte"] {
+  display: none;
+}
+
 /* Abschnitte */
 
 section {
@@ -1024,7 +1030,7 @@ section {
   font-size: 14px;
   color: var(--text-muted);
   margin: 0;
-  text-align: center;
+  text-align: left;
 }
 
 .form-success {
