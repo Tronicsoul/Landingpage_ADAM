@@ -634,6 +634,55 @@ body[data-audience="patient"] [data-hide-for="patient"] {
   color: var(--text);
 }
 
+/* Patientenstimme (illustrativ, Pioneer-/CTA-Sektion) */
+
+.patient-voice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  max-width: 560px;
+  margin: 0 auto var(--space-8);
+  text-align: left;
+}
+
+.patient-voice__avatar {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--button-bg);
+}
+
+.patient-voice__avatar svg {
+  width: 24px;
+  height: 24px;
+}
+
+.patient-voice__bubble {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  border-top-left-radius: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.patient-voice__bubble p {
+  margin: 0 0 var(--space-2);
+  font-size: 16px;
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.patient-voice__meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
 /* Benefit-Chips (Pioneer-/CTA-Sektion) */
 
 .benefit-chips {
@@ -687,6 +736,17 @@ section {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   margin-bottom: var(--space-4);
+}
+
+.eyebrow--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eyebrow--icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .section-title {

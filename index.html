@@ -109,11 +109,15 @@
           </div>
 
           <div data-audience-content="aerzte">
-            <span class="eyebrow">Für medizinisches Personal</span>
-            <h1>Mehr Überblick für Sie. Besser vorbereitete Patient:innen für das Gespräch.</h1>
+            <span class="eyebrow eyebrow--icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9.2 8.6 2 9.3l5.5 4.7L5.8 21 12 17.3 18.2 21l-1.7-7 5.5-4.7-7.2-.7L12 2Z"/></svg>
+              Für Praxen, die vorausgehen
+            </span>
+            <h1>Die App, die Ihre Praxis zur Vorreiterin macht</h1>
             <p class="lead">
-              ADAM bündelt Medikamente, Symptome und Befunde Ihrer Patient:innen übersichtlich
-              an einem Ort: weniger Rückfragen, mehr Zeit für das Wesentliche im Gespräch.
+              Empfehlen Sie ADAM Ihren Patient:innen und zeigen Sie, dass Ihre Praxis
+              Entwicklungen nicht abwartet, sondern vorangeht: weniger Rückfragen für Sie,
+              besser vorbereitete Patient:innen für das Gespräch.
             </p>
             <div class="hero__actions">
               <a class="btn btn-primary" href="#warteliste">Jetzt Frühzugang sichern</a>
@@ -210,7 +214,7 @@
           </div>
         </div>
 
-        <p class="problem-bridge">ADAM setzt genau hier an.</p>
+        <p class="problem-bridge">ADAM setzt genau hier an, und macht Ihre Praxis zum Vorbild für andere.</p>
       </div>
     </section>
 
@@ -576,11 +580,23 @@
         </div>
         <div data-audience-content="aerzte">
           <h2 class="section-title" id="warteliste-heading-aerzte">Werden Sie zur Pionierpraxis</h2>
-          <p class="section-intro" style="margin-bottom: var(--space-6);">
-            Seien Sie eine der ersten Praxen, die ADAM einsetzen: weniger Verwaltungsaufwand
-            für Sie, besser vorbereitete Patient:innen für das Gespräch, und ein sichtbares
-            Zeichen für eine moderne, digitale Praxis.
+          <p class="section-intro" style="margin-bottom: var(--space-8);">
+            Seien Sie eine der ersten Praxen, die zeigen, wie moderne Patient:innenbetreuung
+            aussehen kann: weniger Verwaltungsaufwand für Sie, besser vorbereitete
+            Patient:innen für das Gespräch, und ein sichtbares Zeichen für eine Praxis, die
+            vorangeht statt hinterherzulaufen.
           </p>
+
+          <div class="patient-voice" aria-hidden="true">
+            <div class="patient-voice__avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+            </div>
+            <div class="patient-voice__bubble">
+              <p>„Meine Ärztin hat mir ADAM empfohlen. Jetzt hab ich alles auf einen Blick und komme viel entspannter zum Termin."</p>
+              <span class="patient-voice__meta">Beispielhafte Patientenstimme</span>
+            </div>
+          </div>
+
           <div class="benefit-chips">
             <span class="benefit-chip">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -650,18 +666,6 @@
                   <option value="sonstiges-fachpersonal">Sonstiges Fachpersonal</option>
                 </select>
                 <p class="form-error" data-error-for="beruf" aria-live="polite"></p>
-              </div>
-              <div class="form-field">
-                <label for="einrichtung-aerzte">Ich arbeite in …</label>
-                <select id="einrichtung-aerzte" name="einrichtung" required data-error-message="Bitte wählen Sie Ihre Einrichtung aus.">
-                  <option value="" disabled selected>Bitte auswählen</option>
-                  <option value="praxis">Praxis</option>
-                  <option value="fachpraxis">Fachpraxis</option>
-                  <option value="krankenhaus">Krankenhaus</option>
-                  <option value="reha">Reha-Einrichtung</option>
-                  <option value="sonstiges">Sonstige Einrichtung</option>
-                </select>
-                <p class="form-error" data-error-for="einrichtung" aria-live="polite"></p>
               </div>
               <div class="form-field">
                 <label for="problem-aerzte">Was belastet Sie im Alltag am meisten?</label>
