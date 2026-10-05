@@ -248,8 +248,8 @@ summary:focus-visible {
 }
 
 .brand img {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   aspect-ratio: 1 / 1;
   object-fit: contain;
   flex-shrink: 0;
@@ -296,8 +296,8 @@ summary:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   border-radius: var(--radius-sm);
   border: 2px solid var(--border);
@@ -307,8 +307,8 @@ summary:focus-visible {
 
 .nav-toggle svg,
 .theme-toggle svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   color: var(--text);
 }
 
@@ -433,8 +433,8 @@ summary:focus-visible {
 }
 
 .audience-tab svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   flex: none;
 }
 
@@ -498,8 +498,8 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 }
 
 .pain-card__icon {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--error-bg);
   display: flex;
@@ -510,8 +510,8 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 }
 
 .pain-card__icon svg {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
 }
 
 .pain-card h3 {
@@ -647,8 +647,8 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 
 .patient-voice__avatar {
   flex: none;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--surface-strong);
   display: flex;
@@ -658,8 +658,8 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 }
 
 .patient-voice__avatar svg {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
 }
 
 .patient-voice__bubble {
@@ -707,8 +707,8 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 }
 
 .benefit-chip svg {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   color: var(--button-bg);
   flex: none;
 }
@@ -745,8 +745,8 @@ section {
 }
 
 .eyebrow--icon svg {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
 }
 
 .section-title {
@@ -842,8 +842,8 @@ section {
 }
 
 .hero__trust-note svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   flex: none;
 }
 
@@ -961,8 +961,8 @@ section {
 }
 
 .app-upload svg {
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   margin: 0 auto var(--space-2);
   color: var(--button-bg);
 }
@@ -1011,8 +1011,8 @@ section {
 }
 
 .app-tip svg {
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
   color: var(--accent);
   flex: none;
 }
@@ -1085,13 +1085,13 @@ section {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--surface);
   color: var(--button-bg);
   font-weight: 800;
-  font-size: 16px;
+  font-size: 14px;
   margin-bottom: var(--space-4);
 }
 
@@ -1127,11 +1127,11 @@ section {
 }
 
 .feature-section__points svg {
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
   color: var(--button-bg);
   flex: none;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 /* Vertrauens-Sektion */
@@ -1164,8 +1164,8 @@ section {
 
 .trust-card__icon {
   flex: none;
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--surface);
   display: flex;
@@ -1175,8 +1175,8 @@ section {
 }
 
 .trust-card__icon svg {
-  width: 26px;
-  height: 26px;
+  width: 18px;
+  height: 18px;
 }
 
 .trust-card h3 {
@@ -1344,8 +1344,8 @@ section {
 }
 
 .footer-brand img {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
 }
 
 .footer-brand span {
