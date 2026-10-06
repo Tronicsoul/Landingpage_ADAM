@@ -183,6 +183,10 @@ function initWaitlistForm(form) {
 
       const submitData = { zielgruppe: submittedAudience };
       if (payload.variante) submitData.variante = payload.variante;
+      // Die beiden Auswahlfelder des Ärzte-Formulars gehen als Kategorie mit in die Messung.
+      // Name und Mailadresse werden nie an die Webanalyse gegeben.
+      if (payload.beruf) submitData.beruf = payload.beruf;
+      if (payload.problem) submitData.wunsch = payload.problem;
       track("waitlist_submit", submitData);
 
       form.classList.add("is-submitted");
