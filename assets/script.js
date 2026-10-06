@@ -92,13 +92,39 @@ initHeaderCta();
 
 // Warteliste: Client-seitige Validierung und Versand.
 //
-// WICHTIG: Solange WAITLIST_ENDPOINT leer ist, wird NICHTS gespeichert und keine
-// Bestätigungsmail verschickt. Die Seite zeigt dann trotzdem die Erfolgsmeldung
-// (bisheriges Platzhalter-Verhalten). Vor dem Start der Kampagne hier die Adresse eines
-// Endpunkts eintragen, der die Felder als JSON per POST annimmt und das Double-Opt-in
-// auslöst (eigene API oder Newsletter-Anbieter). Felder: name, email, zielgruppe, consent
-// sowie im Ärzte-Formular beruf, problem und variante.
-const WAITLIST_ENDPOINT = "";
+// Die Anmeldungen gehen an das Anmeldeformular "Warteliste" im Brevo-Konto des Teams
+// (Brevo: Marketing > Formulare). WAITLIST_ENDPOINT ist die Adresse dieses Formulars; sie ist
+// öffentlich und kein Schlüssel. Brevo legt den Kontakt an und verschickt die Bestätigungsmail
+// (Double-Opt-in). In der Liste steht der Kontakt erst, wenn der Link darin angeklickt wurde.
+// Die Feldnamen sind die Kontakt-Attribute in Brevo (Einstellungen > Kontakte > Attribute).
+// Wer dort ein Attribut umbenennt oder das Formular neu anlegt, muss es hier nachziehen.
+// Solange WAITLIST_ENDPOINT leer ist, wird nichts gespeichert.
+const WAITLIST_ENDPOINT =
+  "https://0eee4b39.sibforms.com/serve/MUIFAMAV63XGUizP_lbC2z-7-SYASOjPZdoKuuKZN4fHZTaU1fJe3NR2cv3AD26OnwJ54QDOKg1OvNJ5D3XXCi05I930aNyGd1N_bD9YsLG6CMUMaU5rDIiqAzlYmR9K1HrcgTSpCJc2oRZCg2oLjhdhniFoWePJNU5AfeDDvQr_LM-mOfsBWMdnpEhoxohfiGQOP4Ws2Lw9mvHBDA==";
+
+// Formularfelder der Seite auf die Felder des Brevo-Formulars abbilden. Beruf, Problem und
+// Variante gehen mit denselben Kürzeln nach Brevo wie in die Webanalyse (z. B. "hausaerztin",
+// "effizienz", "a"), damit sich beides abgleichen lässt. Leere Felder werden weggelassen.
+function toBrevoFields(payload) {
+  const fields = {
+    EMAIL: (payload.email || "").trim(),
+    ADAM_NAME: (payload.name || "").trim(),
+    ADAM_BERUF: payload.beruf || "",
+    ADAM_PROBLEM: payload.problem || "",
+    ADAM_EINWILLIGUNG: payload.consent ? "ja, " + new Date().toISOString() : "",
+    ADAM_VARIANTE: payload.variante || "",
+    ADAM_ZIELGRUPPE: payload.zielgruppe || "",
+  };
+  const body = new URLSearchParams();
+  Object.keys(fields).forEach((key) => {
+    if (fields[key]) body.append(key, fields[key].slice(0, 200));
+  });
+  // Von Brevo vorgegeben: leeres Feld gegen automatische Einträge, Sprache, Art der Einbettung.
+  body.append("email_address_check", "");
+  body.append("locale", "de");
+  body.append("html_type", "simple");
+  return body;
+}
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -169,14 +195,24 @@ function initWaitlistForm(form) {
 
     try {
       if (WAITLIST_ENDPOINT) {
-        const response = await fetch(WAITLIST_ENDPOINT, {
+        // "isAjax=1": Brevo antwortet mit JSON statt mit einer eigenen Seite.
+        const response = await fetch(WAITLIST_ENDPOINT + "?isAjax=1", {
           method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(payload),
+          body: toBrevoFields(payload),
         });
-        if (!response.ok) throw new Error("Anmeldung fehlgeschlagen: " + response.status);
+        let result = null;
+        try {
+          result = await response.json();
+        } catch (e) {
+          result = null;
+        }
+        if (!response.ok || (result && result.success === false)) {
+          const failure = new Error("Anmeldung fehlgeschlagen: " + response.status);
+          failure.emailRejected = Boolean(result && result.errors && result.errors.EMAIL);
+          throw failure;
+        }
       } else {
-        // Platzhalter, siehe Hinweis bei WAITLIST_ENDPOINT: Es wird nichts gespeichert.
+        // Siehe Hinweis bei WAITLIST_ENDPOINT: Es wird nichts gespeichert.
         console.warn("ADAM-Warteliste: WAITLIST_ENDPOINT ist leer, die Anmeldung wurde nicht gespeichert.");
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
@@ -198,6 +234,17 @@ function initWaitlistForm(form) {
     } catch (error) {
       submitBtn.disabled = false;
       submitBtn.textContent = originalLabel;
+      // Brevo hat die Mailadresse abgelehnt: am Feld melden statt allgemein.
+      const emailField = form.querySelector('[name="email"]');
+      if (error && error.emailRejected && emailField) {
+        setFieldError(
+          emailField,
+          form.querySelector('[data-error-for="email"]'),
+          "Diese E-Mail-Adresse wurde nicht angenommen. Bitte prüfen Sie die Schreibweise."
+        );
+        emailField.focus();
+        return;
+      }
       if (submitErrorEl) {
         submitErrorEl.textContent =
           "Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie uns eine Mail.";
