@@ -1,8 +1,8 @@
 // A/B-Kampagne für Ärzt:innen
 //
 // Kampagnenlinks (je Anzeige ein Link, der Anzeigentext soll zur Überschrift der Variante passen):
-//   ?v=a   Effektivität: "Mehr Überblick für ärztliche Entscheidungen"
-//   ?v=b   Effizienz: "Mehr Zeit für das ärztliche Gespräch"
+//   ?v=a   Effizienz: "Mehr Zeit für das ärztliche Gespräch"
+//   ?v=b   Effektivität: "Klare Angaben für ärztliche Entscheidungen"
 // Ohne Angabe öffnet sich ebenfalls die Ärzte-Ansicht: Sie zeigt Variante a, zählt aber nicht
 // zum Test. Die Ärzte-Ansicht hat keinen Zielgruppen-Umschalter.
 // Die Patienten-Ansicht mit Umschalter gibt es nur über ?zielgruppe=patient.

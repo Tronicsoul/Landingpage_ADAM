@@ -153,8 +153,8 @@
           <h1 id="hero-heading">
             <span data-audience-content="patient">Ihre Gesundheit im Überblick: einfach, sicher, verständlich</span>
             <span data-audience-content="aerzte">
-              <span data-variant-content="a">Mehr Überblick für ärztliche Entscheidungen</span>
-              <span data-variant-content="b">Mehr Zeit für das ärztliche Gespräch</span>
+              <span data-variant-content="a">Mehr Zeit für das ärztliche Gespräch</span>
+              <span data-variant-content="b">Klare Angaben für ärztliche Entscheidungen</span>
             </span>
           </h1>
 
@@ -173,20 +173,20 @@
             <!--
               A/B-Test: Die zwei Varianten unterscheiden sich nur in der Überschrift und im zweiten
               Satz der Einleitung. Alles andere ist in beiden gleich.
-                a = Effektivität (bessere Entscheidungsgrundlage)
-                b = Effizienz (mehr Zeit für die Patient:innen)
+                a = Effizienz: alle Daten an einem Ort gebündelt, dadurch mehr Zeit im Termin
+                b = Effektivität: bessere Verständigung, dadurch klare Angaben für die Entscheidung
             -->
             <div data-variant-content="a">
               <p class="lead">
                 Digitale Terminvorbereitung, ohne dass Sie etwas installieren. Ihre
-                Patient:innen halten Medikation, Symptomverlauf und Vorgeschichte in der ADAM&#8209;App aktuell.
+                Patient:innen bündeln Medikation, Symptomverlauf und Befunde in der ADAM&#8209;App, Sie beginnen direkt mit dem Gespräch.
               </p>
             </div>
 
             <div data-variant-content="b">
               <p class="lead">
-                Digitale Terminvorbereitung, ohne dass Sie etwas installieren. Ihre
-                Patient:innen bereiten den Termin in der ADAM&#8209;App vor, Sie beginnen direkt mit dem Gespräch.
+                Digitale Terminvorbereitung, ohne dass Sie etwas installieren. ADAM erklärt Ihren
+                Patient:innen ihre Diagnosen in verständlicher Sprache, sie kommen mit klaren Angaben in den Termin.
               </p>
             </div>
 
@@ -945,8 +945,8 @@
                 <select id="problem-aerzte" name="problem">
                   <option value="" selected>Bitte auswählen</option>
                   <!-- Passend zum A/B-Test, als Problem gefragt statt als Wunsch: "effektivitaet"
-                       entspricht Variante A (Verständigung: unklare Angaben, Missverständnisse, fehlende
-                       Informationen), "effizienz" Variante B (verstreute Daten, zu wenig Zeit).
+                       entspricht Variante B (Verständigung: unklare Angaben, Missverständnisse, fehlende
+                       Informationen), "effizienz" Variante A (verstreute Daten, zu wenig Zeit).
                        Die Antwort wird zusammen mit dem Feld "variante" gesendet.
                        script.js tauscht die Reihenfolge der ersten beiden Antworten zufällig, damit nicht
                        immer die obere bevorzugt wird. -->
