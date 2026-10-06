@@ -429,8 +429,8 @@ function initElgaDemo() {
   const bars = Array.from(box.querySelectorAll(".elga__progress button"));
 
   // Dauer je Szene in Millisekunden. Szene 3 (die Erklärung) bleibt am längsten stehen,
-  // damit der Text gelesen werden kann.
-  const SCENE_MS = [3600, 3600, 6200, 3400];
+  // damit der Text gelesen werden kann. Ein Durchlauf dauert gut zwölf Sekunden.
+  const SCENE_MS = [2600, 2700, 4500, 2600];
   let timer = null;
   let current = 0;
   let inView = false;
@@ -440,7 +440,15 @@ function initElgaDemo() {
     current = step;
     box.setAttribute("data-step", String(step));
     box.style.setProperty("--scene-ms", (SCENE_MS[step - 1] || 4000) + "ms");
-    scenes.forEach((scene) => scene.classList.remove("is-live"));
+    // Die Szenen wechseln wie Bildschirme einer App: vorwärts schiebt die neue von rechts
+    // herein, bei einem Sprung zu einem früheren Schritt von links. Der Neustart nach dem
+    // letzten Schritt zählt als vorwärts.
+    const back = previous > 0 && step < previous && !(previous === scenes.length && step === 1);
+    box.setAttribute("data-dir", back ? "back" : "fwd");
+    scenes.forEach((scene, index) => {
+      scene.classList.remove("is-live");
+      scene.classList.toggle("is-leaving", index === previous - 1 && previous !== step);
+    });
     bars.forEach((bar, index) => {
       bar.classList.remove("is-active");
       bar.classList.toggle("is-done", index < step - 1);

@@ -1911,7 +1911,7 @@ body[data-audience="aerzte"] .hero__offer {
 
 .elga.is-playing .elga__step.is-leaving {
   transform: translateY(-22px);
-  transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
+  transition: opacity 0.22s ease, transform 0.22s ease, filter 0.22s ease;
 }
 
 .elga.is-playing .elga__step.is-current {
@@ -1919,24 +1919,25 @@ body[data-audience="aerzte"] .hero__offer {
   transform: none;
   filter: none;
   pointer-events: auto;
-  transition: opacity 0.45s ease 0.2s, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s,
-    filter 0.45s ease 0.2s;
+  transition: opacity 0.35s ease 0.12s, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s,
+    filter 0.35s ease 0.12s;
 }
 
-/* Statt der runden Nummer steht über dem Schritt "Schritt 1 von 4". */
+/* Statt der runden Nummer steht über dem Schritt seine Nummer als große Umrisszahl (01 bis 04). */
 .elga.is-playing .elga__step::before {
-  content: "Schritt " counter(elga-step) " von 4";
+  content: counter(elga-step, decimal-leading-zero);
   display: block;
   width: auto;
   height: auto;
   margin-bottom: var(--space-2);
   border-radius: 0;
   background: none;
-  color: var(--link, var(--button-bg));
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--link, var(--button-bg));
+  font-size: clamp(54px, 6vw, 86px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .elga.is-playing .elga__step strong {
@@ -2014,6 +2015,41 @@ body[data-audience="aerzte"] .hero__offer {
 .elga[data-step="4"] .demo-scene--4 {
   opacity: 1;
   transition: opacity 0.3s ease 0.25s;
+}
+
+/* Läuft das Skript, wechseln die Szenen wie Bildschirme einer App: die neue schiebt von rechts
+   herein, die alte weicht nach links. Bei einem Sprung zu einem früheren Schritt (data-dir="back")
+   läuft es umgekehrt. Wartende Szenen stehen unsichtbar auf der Seite, von der sie kommen. */
+.elga.is-playing .demo-scene {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: none;
+}
+
+.elga.is-playing[data-dir="back"] .demo-scene {
+  transform: translateX(-100%);
+}
+
+.elga.is-playing .demo-scene.is-leaving {
+  transform: translateX(-30%);
+  transition: transform 0.4s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.3s ease;
+}
+
+.elga.is-playing[data-dir="back"] .demo-scene.is-leaving {
+  transform: translateX(30%);
+}
+
+.elga.is-playing .demo-scene.is-live {
+  opacity: 1;
+  transform: none;
+  transition: transform 0.4s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.2s ease;
+}
+
+/* Breite Bildschirme: das Handy steht größer im Kasten. */
+@media (min-width: 1000px) {
+  .elga__demo .demo-phone {
+    zoom: 1.18;
+  }
 }
 
 /* Kopfleiste der App: grün, unten abgerundet, Pfeil zurück, Titel und Unterzeile */
@@ -2251,18 +2287,18 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 /* Zeitpunkte innerhalb einer Szene, gerechnet ab dem Szenenwechsel */
-.demo-at-1 { --at: 0.5s; }
-.demo-at-2 { --at: 0.7s; }
-.demo-at-3 { --at: 1s; }
-.demo-at-4 { --at: 1.3s; }
-.demo-at-5 { --at: 1.6s; }
-.demo-at-6 { --at: 2s; }
-.demo-at-7 { --at: 2.4s; }
-.demo-at-8 { --at: 2.8s; }
-.demo-at-9 { --at: 3.3s; }
+.demo-at-1 { --at: 0.4s; }
+.demo-at-2 { --at: 0.55s; }
+.demo-at-3 { --at: 0.75s; }
+.demo-at-4 { --at: 0.95s; }
+.demo-at-5 { --at: 1.2s; }
+.demo-at-6 { --at: 1.5s; }
+.demo-at-7 { --at: 1.8s; }
+.demo-at-8 { --at: 2.1s; }
+.demo-at-9 { --at: 2.45s; }
 
 .demo-scene.is-live .demo-tap {
-  animation: demo-tap 0.6s ease-out var(--at) both;
+  animation: demo-tap 0.5s ease-out var(--at) both;
 }
 
 .demo-scene.is-live .demo-pop {
@@ -2271,24 +2307,24 @@ body[data-audience="aerzte"] .hero__offer {
 
 .demo-scene.is-live .demo-in,
 .demo-scene.is-live .demo-say {
-  animation: demo-in 0.45s ease-out var(--at) backwards;
+  animation: demo-in 0.35s ease-out var(--at) backwards;
 }
 
 .demo-scene.is-live .demo-out {
   animation: demo-out 0.2s ease var(--at) both;
 }
 
-/* Die Erklärung wächst über gut zwei Sekunden auf, im Takt der Sätze, die darin erscheinen. */
+/* Die Erklärung wächst über anderthalb Sekunden auf, im Takt der Sätze, die darin erscheinen. */
 .demo-scene.is-live .demo-grow {
-  animation: demo-grow 2.1s linear var(--at) backwards;
+  animation: demo-grow 1.55s linear var(--at) backwards;
 }
 
 .demo-scene.is-live .demo-swap__idle {
-  animation: demo-swap-idle 0.85s linear var(--at) both;
+  animation: demo-swap-idle 0.65s linear var(--at) both;
 }
 
 .demo-scene.is-live .demo-swap__busy {
-  animation: demo-swap-busy 0.85s linear var(--at) both;
+  animation: demo-swap-busy 0.65s linear var(--at) both;
 }
 
 @keyframes demo-tap {
