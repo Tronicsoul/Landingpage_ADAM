@@ -249,33 +249,57 @@
           <span class="eyebrow">Vergleich</span>
           <h2 class="section-title" id="problem-heading">Derselbe Termin, zwei Ausgangslagen</h2>
           <p class="section-intro">
-            Was Ihre Patient:innen zum Termin mitbringen, ohne und mit ADAM.
+            Schieben Sie den Regler: was Ihre Patient:innen zum Termin mitbringen, ohne und mit ADAM.
           </p>
         </div>
 
-        <!-- Beide Karten haben dieselben vier Zeilen, damit man sie Zeile für Zeile vergleichen kann. -->
-        <div class="compare-grid">
-          <div class="compare-card compare-card--before">
-            <h3 class="compare-card__bar">Ohne ADAM</h3>
-            <div class="compare-card__body">
-              <ul class="clear-list clear-list--open">
-                <li><span>Medikamente</span><span>Blutdruckmittel, Name und Dosis unklar</span></li>
-                <li><span>Vorbefund</span><span>nicht dabei</span></li>
-                <li><span>Symptome</span><span>Beginn und Verlauf ungenau</span></li>
-                <li><span>Familiengeschichte</span><span>erst auf Nachfrage</span></li>
-              </ul>
-            </div>
+        <!-- Vergleich als Regler: eine Karte mit vier Zeilen. Links steht, was Patient:innen ohne ADAM
+             im Termin sagen, rechts, was mit ADAM vorliegt. Der Regler (oder ein Klick auf "Ohne ADAM" /
+             "Mit ADAM") blendet Zeile für Zeile vom einen zum anderen. script.js (initCompare) setzt
+             dafür --p von 0 bis 1 und führt den Wechsel einmal vor, wenn die Karte ins Bild kommt.
+             Ohne JavaScript stehen in jeder Zeile beide Angaben untereinander. Beispieldaten. -->
+        <div class="cmp">
+          <div class="cmp__card">
+            <h3 class="cmp__bar"><span class="cmp__bar-off">Ohne ADAM</span><span class="cmp__bar-on">Mit ADAM</span></h3>
+            <ul class="cmp__rows">
+              <li class="cmp__row cmp__row--1">
+                <span class="cmp__icon" aria-hidden="true"><span class="cmp__q">?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="cmp__label">Medikamente</span>
+                <span class="cmp__values">
+                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span>„Die kleine weiße für den Blutdruck“</span>
+                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span>Ramipril 5 mg, 1× täglich</span>
+                </span>
+              </li>
+              <li class="cmp__row cmp__row--2">
+                <span class="cmp__icon" aria-hidden="true"><span class="cmp__q">?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="cmp__label">Vorbefund</span>
+                <span class="cmp__values">
+                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span>„Der Brief liegt noch zu Hause“</span>
+                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span>Arztbrief hochgeladen</span>
+                </span>
+              </li>
+              <li class="cmp__row cmp__row--3">
+                <span class="cmp__icon" aria-hidden="true"><span class="cmp__q">?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="cmp__label">Symptome</span>
+                <span class="cmp__values">
+                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span>„Kopfweh, seit wann genau, weiß ich nicht“</span>
+                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span>Kopfschmerzen, leicht, seit gestern</span>
+                </span>
+              </li>
+              <li class="cmp__row cmp__row--4">
+                <span class="cmp__icon" aria-hidden="true"><span class="cmp__q">?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="cmp__label">Familiengeschichte</span>
+                <span class="cmp__values">
+                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span>„Da müsste ich meine Mutter fragen“</span>
+                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span>Diabetes (Mutter)</span>
+                </span>
+              </li>
+            </ul>
           </div>
-          <div class="compare-card compare-card--after">
-            <h3 class="compare-card__bar">Mit ADAM</h3>
-            <div class="compare-card__body">
-              <ul class="clear-list">
-                <li><span>Medikamente</span><span>Ramipril 5 mg, 1× täglich</span></li>
-                <li><span>Vorbefund</span><span>Arztbrief hochgeladen</span></li>
-                <li><span>Symptome</span><span>Kopfschmerzen, seit gestern</span></li>
-                <li><span>Familiengeschichte</span><span>Diabetes (Mutter)</span></li>
-              </ul>
-            </div>
+          <div class="cmp__control">
+            <button type="button" class="cmp__end" data-cmp-to="0">Ohne ADAM</button>
+            <input class="cmp__range" type="range" min="0" max="100" step="1" value="0" aria-label="Vergleich: von ohne ADAM bis mit ADAM" />
+            <button type="button" class="cmp__end" data-cmp-to="100">Mit ADAM</button>
           </div>
         </div>
       </div>

@@ -433,6 +433,83 @@ function initElgaDemo() {
 
 initElgaDemo();
 
+// Vergleich "Derselbe Termin, zwei Ausgangslagen": Der Regler stellt --p an der Karte von 0
+// (ohne ADAM) bis 1 (mit ADAM), die Darstellung dazu steht in styles.css. Ein Klick auf
+// "Ohne ADAM" oder "Mit ADAM" fährt dorthin. Kommt die Karte ins Bild, wird der Wechsel einmal
+// vorgeführt, solange niemand den Regler berührt hat (nicht bei "Bewegung reduzieren").
+
+function initCompare() {
+  const box = document.querySelector(".cmp");
+  const range = box ? box.querySelector(".cmp__range") : null;
+  if (!box || !range) return;
+
+  const reduce =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let frame = null;
+  let touched = false;
+
+  function setValue(value) {
+    const v = Math.max(0, Math.min(100, value));
+    box.style.setProperty("--p", (v / 100).toFixed(3));
+    range.value = String(Math.round(v));
+    range.setAttribute(
+      "aria-valuetext",
+      v < 34 ? "Ohne ADAM" : v > 66 ? "Mit ADAM" : "Zwischen ohne und mit ADAM"
+    );
+  }
+
+  function animateTo(target, duration) {
+    window.cancelAnimationFrame(frame);
+    if (reduce) {
+      setValue(target);
+      return;
+    }
+    const from = Number(range.value);
+    const startedAt = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - startedAt) / duration);
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      setValue(from + (target - from) * eased);
+      if (t < 1) frame = window.requestAnimationFrame(step);
+    };
+    frame = window.requestAnimationFrame(step);
+  }
+
+  box.classList.add("is-interactive");
+  setValue(0);
+
+  range.addEventListener("input", () => {
+    touched = true;
+    window.cancelAnimationFrame(frame);
+    setValue(Number(range.value));
+  });
+
+  box.querySelectorAll("[data-cmp-to]").forEach((button) => {
+    button.addEventListener("click", () => {
+      touched = true;
+      animateTo(Number(button.getAttribute("data-cmp-to")), 700);
+    });
+  });
+
+  if ("IntersectionObserver" in window && !reduce) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || touched) return;
+          observer.disconnect();
+          window.setTimeout(() => {
+            if (!touched) animateTo(100, 2400);
+          }, 600);
+        });
+      },
+      { threshold: 0.6 }
+    );
+    observer.observe(box);
+  }
+}
+
+initCompare();
+
 // Ansicht beim Wechsel zwischen Startseite, Impressum und Datenschutz beibehalten: Wer über einen
 // Kampagnenlink (?v=a, ?v=b) oder über ?zielgruppe=patient kam, behält diese Angabe in den Links
 // zwischen den drei Seiten. So führt "Zurück zur Startseite" wieder in dieselbe Ansicht und, bei

@@ -607,6 +607,297 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   margin: 0 0 var(--gap-block);
 }
 
+/* Vergleich als Regler (Abschnitt "Derselbe Termin, zwei Ausgangslagen").
+   --p läuft von 0 (ohne ADAM) bis 1 (mit ADAM) und kommt vom Regler (script.js, initCompare).
+   Jede Zeile rechnet daraus ihren eigenen Fortschritt --l, leicht versetzt, damit die Zeilen
+   nacheinander umschlagen: die Aussage der Patient:innen verschwimmt und verblasst, die Angabe
+   aus ADAM wird scharf, aus dem Fragezeichen wird ein Haken, der Rahmen wird grün.
+   Am Rechner stehen Überschrift und Karte nebeneinander. */
+@media (min-width: 960px) {
+  .problem .container {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: 72px;
+    align-items: center;
+  }
+
+  .problem .section-header {
+    margin-bottom: 0;
+  }
+}
+
+.cmp {
+  --p: 0;
+  --cmp-off: #9ca3af;
+}
+
+.cmp__card {
+  border: 1.5px solid var(--cmp-off);
+  border-color: color-mix(in srgb, var(--primary) calc(var(--p) * 100%), var(--cmp-off));
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Kopfzeile: grau, von links wischt Grün darüber; der Titel wechselt in der Mitte. */
+.cmp__bar {
+  position: relative;
+  display: grid;
+  margin: 0;
+  padding: var(--space-4) var(--space-6);
+  font-size: 17px;
+  font-weight: 700;
+  background: var(--cmp-off);
+}
+
+.cmp__bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  transform: scaleX(var(--p));
+  transform-origin: left;
+}
+
+.cmp__bar > span {
+  position: relative;
+  grid-area: 1 / 1;
+}
+
+.cmp__bar-off {
+  color: var(--text);
+  opacity: clamp(0, calc(1 - var(--p) * 2), 1);
+}
+
+.cmp__bar-on {
+  color: var(--text-on-primary);
+  opacity: clamp(0, calc(var(--p) * 2 - 1), 1);
+}
+
+.cmp__rows {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-6);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.cmp__row {
+  --l: clamp(0, calc(var(--p) * 1.75 - var(--i) * 0.25), 1);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-4);
+  row-gap: 2px;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--cmp-off);
+  border-color: color-mix(in srgb, var(--primary) calc(var(--l) * 100%), var(--cmp-off));
+  border-radius: var(--radius-md);
+}
+
+.cmp__row--1 { --i: 0; }
+.cmp__row--2 { --i: 1; }
+.cmp__row--3 { --i: 2; }
+.cmp__row--4 { --i: 3; }
+
+.cmp__icon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  color: var(--cmp-off);
+  color: color-mix(in srgb, var(--link, var(--primary)) calc(var(--l) * 100%), var(--cmp-off));
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cmp__icon > * {
+  grid-area: 1 / 1;
+}
+
+.cmp__q {
+  opacity: calc(1 - var(--l));
+}
+
+.cmp__icon svg {
+  width: 16px;
+  height: 16px;
+  opacity: var(--l);
+}
+
+.cmp__label {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cmp__values {
+  display: grid;
+}
+
+.cmp__values > span {
+  grid-area: 1 / 1;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.cmp__before {
+  font-style: italic;
+  color: var(--text-muted);
+  opacity: calc(1 - var(--l));
+  filter: blur(calc(var(--l) * 6px));
+}
+
+.cmp__after {
+  font-weight: 600;
+  color: var(--text);
+  opacity: var(--l);
+  filter: blur(calc((1 - var(--l)) * 6px));
+}
+
+/* "Ohne ADAM:" / "Mit ADAM:" vor den Angaben: mit Regler nur für Vorleseprogramme. */
+.cmp.is-interactive .cmp__tag {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.cmp__control {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+/* Am Handy steht der Regler in voller Breite, die beiden Enden darunter. */
+@media (max-width: 520px) {
+  .cmp__control {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0;
+  }
+
+  .cmp__range {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .cmp__end:last-child {
+    justify-self: end;
+  }
+
+  .cmp__end:first-child {
+    justify-self: start;
+  }
+}
+
+.cmp__end {
+  padding: var(--space-2) var(--space-1);
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.cmp__end:hover {
+  color: var(--text);
+}
+
+.cmp__range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+  cursor: grab;
+}
+
+.cmp__range:active {
+  cursor: grabbing;
+}
+
+.cmp__range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, var(--link, var(--primary)) calc(var(--p) * 100%), var(--cmp-off) 0);
+}
+
+.cmp__range::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--cmp-off);
+}
+
+.cmp__range::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--link, var(--primary));
+}
+
+.cmp__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -12px;
+  border: 3px solid var(--text-on-primary);
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.cmp__range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--text-on-primary);
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.cmp__range:focus-visible {
+  outline: 2px solid var(--link, var(--primary));
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Ohne JavaScript: kein Regler, in jeder Zeile stehen beide Angaben untereinander. */
+.cmp:not(.is-interactive) {
+  --p: 1;
+}
+
+.cmp:not(.is-interactive) .cmp__bar,
+.cmp:not(.is-interactive) .cmp__control {
+  display: none;
+}
+
+.cmp:not(.is-interactive) .cmp__values {
+  gap: 2px;
+}
+
+.cmp:not(.is-interactive) .cmp__values > span {
+  grid-area: auto;
+  opacity: 1;
+  filter: none;
+}
+
+.cmp:not(.is-interactive) .cmp__before {
+  font-size: 15px;
+}
+
 /* Vorher/Nachher-Vergleich */
 
 .compare-grid {
@@ -2694,6 +2985,10 @@ section {
    - die Zeilen unter "Ohne ADAM" grau,
    - der Formularkasten und die Kästchen etwas kräftiger umrandet.
    Die farbigen Scheine im Hero entfallen, damit keine Zwischentöne entstehen. */
+:root[data-theme="dark"] .cmp {
+  --cmp-off: #6b7280;
+}
+
 :root[data-theme="dark"] .eyebrow {
   border: 1.5px solid var(--primary);
 }
@@ -2734,6 +3029,10 @@ section {
 }
 
 @media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cmp {
+    --cmp-off: #6b7280;
+  }
+
   :root:not([data-theme="light"]) .eyebrow {
     border: 1.5px solid var(--primary);
   }
