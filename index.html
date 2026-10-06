@@ -26,14 +26,13 @@
   -->
   <script src="assets/consent.js"></script>
 </head>
-<body data-audience="patient" data-variant="a">
+<body data-audience="aerzte" data-variant="a" data-campaign="true">
   <script>
-    // Zielgruppe und Kampagnenvariante vor dem ersten Rendern setzen, damit Besucher:innen
-    // aus einer Ärzte-Anzeige nicht kurz die Patienten-Ansicht sehen.
-    //   ?v=a | ?v=b          Kampagnenlink: Ärzte-Ansicht, Variante a oder b
-    //   ?zielgruppe=aerzte   Ärzte-Link ohne Variante: zeigt Variante a, zählt aber nicht zum Test
-    // Beide Ärzte-Links zeigen die Seite ohne Zielgruppen-Umschalter.
-    // Den Umschalter gibt es nur beim Aufruf ohne Parameter (bzw. mit ?zielgruppe=patient).
+    // Die Seite öffnet sich immer in der Ärzte-Ansicht ohne Zielgruppen-Umschalter (so steht es
+    // schon am <body>, damit beim Laden nichts umspringt). Die Adresse ändert daran nur:
+    //   ?v=a | ?v=b            Kampagnenlink: Variante a oder b, zählt zum Test
+    //   (ohne Angabe)          zeigt Variante a, zählt aber nicht zum Test
+    //   ?zielgruppe=patient    Patienten-Ansicht mit Zielgruppen-Umschalter
     // data-variant-source="link" markiert Besuche über einen Varianten-Link. Nur sie werden im
     // Formular und in den Ereignissen als "a" oder "b" gezählt, alle anderen als "direkt".
     (function () {
@@ -45,13 +44,9 @@
         if (variant === "a" || variant === "b") {
           body.setAttribute("data-variant", variant);
           body.setAttribute("data-variant-source", "link");
-          body.setAttribute("data-audience", "aerzte");
-          body.setAttribute("data-campaign", "true");
-        } else if (audience === "aerzte") {
-          body.setAttribute("data-audience", "aerzte");
-          body.setAttribute("data-campaign", "true");
         } else if (audience === "patient") {
           body.setAttribute("data-audience", "patient");
+          body.removeAttribute("data-campaign");
         }
         // Der Button in der Kopfleiste ist in der Ärzte-Ansicht nur ein Umriss, solange der
         // Hero-Button im Bild ist (siehe initHeaderCta in script.js). Hier vorab gesetzt,

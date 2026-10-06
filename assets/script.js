@@ -3,9 +3,9 @@
 // Kampagnenlinks (je Anzeige ein Link, der Anzeigentext soll zur Überschrift der Variante passen):
 //   ?v=a   Effektivität: "Mehr Überblick für ärztliche Entscheidungen"
 //   ?v=b   Effizienz: "Mehr Zeit für das ärztliche Gespräch"
-//   ?zielgruppe=aerzte   Ärzte-Link ohne Variante: zeigt Variante a, zählt aber nicht zum Test
-// Jeder dieser Links zeigt die Ärzte-Ansicht ohne Zielgruppen-Umschalter.
-// Den Umschalter gibt es nur beim Aufruf ohne Parameter.
+// Ohne Angabe öffnet sich ebenfalls die Ärzte-Ansicht: Sie zeigt Variante a, zählt aber nicht
+// zum Test. Die Ärzte-Ansicht hat keinen Zielgruppen-Umschalter.
+// Die Patienten-Ansicht mit Umschalter gibt es nur über ?zielgruppe=patient.
 // Zielgruppe und Variante setzt das Inline-Skript am Anfang von <body> in index.html,
 // die Varianten-Texte stehen dort im Hero (data-variant-content).
 // Button, Angebot und alles unterhalb des Heros sind in beiden Varianten gleich.
@@ -218,9 +218,9 @@ function initAudienceTabs() {
   const tabs = document.querySelectorAll(".audience-tab");
   if (!tabs.length) return;
 
-  // Der Umschalter schreibt die Zielgruppe bewusst nicht mehr in die Adresse: Ein Link mit
-  // ?zielgruppe=aerzte blendet den Umschalter aus, und wer hier nur umgeschaltet hat, soll
-  // nach dem Neuladen nicht ohne Umschalter in der Ärzte-Ansicht festhängen.
+  // Der Umschalter ist nur in der Patienten-Ansicht (?zielgruppe=patient) zu sehen. Er schreibt
+  // die Zielgruppe bewusst nicht in die Adresse: Wer hier nur umgeschaltet hat, sieht nach dem
+  // Neuladen wieder die Patienten-Ansicht mit Umschalter.
   function setAudience(audience) {
     document.body.setAttribute("data-audience", audience);
     document.title = PAGE_TITLES[audience] || PAGE_TITLES.patient;
@@ -345,9 +345,9 @@ function initReveal() {
 initReveal();
 
 // Ansicht beim Wechsel zwischen Startseite, Impressum und Datenschutz beibehalten: Wer über einen
-// Kampagnenlink kam (?v=a, ?v=b oder ?zielgruppe=aerzte), behält diese Angabe in den Links zwischen
-// den drei Seiten. So führt "Zurück zur Startseite" wieder in die Ärzte-Ansicht derselben Variante
-// und nicht in die Patienten-Ansicht. Andere Angaben in der Adresse werden nicht weitergegeben.
+// Kampagnenlink (?v=a, ?v=b) oder über ?zielgruppe=patient kam, behält diese Angabe in den Links
+// zwischen den drei Seiten. So führt "Zurück zur Startseite" wieder in dieselbe Ansicht und, bei
+// Kampagnenlinks, in dieselbe Variante. Andere Angaben in der Adresse werden nicht weitergegeben.
 
 function initKeepView() {
   let query = "";
