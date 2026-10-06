@@ -349,7 +349,9 @@
 
           <!-- Kasten "Wie Patient:innen ADAM anwenden" (Klassen heißen aus der Vorgeschichte noch
                "elga"; ELGA wird hier nicht mehr genannt). Jeder Schritt nennt den Nutzen für das
-               Fachpersonal. Links kurzer Text mit vier Schritten, rechts ein bewegtes Bild in Form
+               Fachpersonal. Läuft das Bild, steht links nur der Schritt zur gezeigten Szene, groß,
+               und wechselt mit ihr; ohne JavaScript steht die Liste aller vier Schritte da.
+               Links der Text, rechts ein bewegtes Bild in Form
                eines Handys. Es spielt vier Ansichten durch, die der App nachgebaut sind (Farben,
                Kopfleiste, Karten, Knöpfe und Beschriftungen wie in der App, Texte gekürzt):
                1 Sprachniveau wählen, 2 Arztbrief hochladen, 3 Diagnose erklären lassen,
@@ -362,6 +364,8 @@
             <div class="elga__text">
               <h3 class="elga__title">Wie Patient:innen ADAM anwenden</h3>
               <p class="elga__intro">Vier Schritte in der App, jeder mit einem Nutzen für Sie.</p>
+              <!-- Vier Balken zeigen, welcher Schritt gerade läuft (nur mit laufendem Bild sichtbar). -->
+              <div class="elga__progress" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
               <ol class="elga__steps">
                 <li class="elga__step"><span><strong>Sprachniveau wählen</strong> Erklärungen werden verstanden, das Gespräch mit Ihnen wird leichter</span></li>
                 <li class="elga__step"><span><strong>Erfassen und Arztbrief hochladen</strong> Symptome, Medikamente und Befunde liegen Ihnen vor dem Termin vor</span></li>

@@ -350,6 +350,7 @@ initReveal();
 
 // ELGA-Kasten ("Was ADAM über ELGA hinaus leistet"): das bewegte Bild im Handy spielt nacheinander vier Szenen durch
 // (Sprachniveau wählen, Arztbrief hochladen, Diagnose erklären lassen, digitaler Checkup).
+// Links daneben steht jeweils nur der Schritt zur Szene, vier Balken zeigen den Fortschritt.
 // Je Szene setzt das Skript data-step am Kasten (welche Szene sichtbar ist, welche Nummer links
 // hervorgehoben ist) und die Klasse "is-live" an der Szene (erst dann laufen ihre Bewegungen,
 // siehe styles.css). Es läuft nur, solange der Kasten im Bild ist, und beginnt dann wieder bei
@@ -363,22 +364,38 @@ function initElgaDemo() {
 
   const scenes = Array.from(box.querySelectorAll(".demo-scene"));
   if (!scenes.length) return;
+  const steps = Array.from(box.querySelectorAll(".elga__step"));
+  const bars = Array.from(box.querySelectorAll(".elga__progress span"));
 
   // Dauer je Szene in Millisekunden. Szene 3 (die Erklärung) bleibt am längsten stehen,
   // damit der Text gelesen werden kann.
-  const SCENE_MS = [5600, 5400, 9500, 5400];
+  const SCENE_MS = [3600, 3600, 6200, 3400];
   let timer = null;
+  let current = 0;
 
   function show(step) {
+    const previous = current;
+    current = step;
     box.setAttribute("data-step", String(step));
+    box.style.setProperty("--scene-ms", (SCENE_MS[step - 1] || 4000) + "ms");
     scenes.forEach((scene) => scene.classList.remove("is-live"));
+    bars.forEach((bar, index) => {
+      bar.classList.remove("is-active");
+      bar.classList.toggle("is-done", index < step - 1);
+    });
+    // Links steht nur der Schritt zur Szene: der bisherige geht ("is-leaving"), der neue kommt.
+    steps.forEach((item, index) => {
+      item.classList.toggle("is-leaving", index === previous - 1 && previous !== step);
+      item.classList.toggle("is-current", index === step - 1);
+    });
     // Layout einmal abfragen, damit die Bewegungen auch dann neu starten, wenn dieselbe Szene
     // zweimal hintereinander gezeigt wird.
     void box.offsetWidth;
     scenes[step - 1].classList.add("is-live");
+    if (bars[step - 1]) bars[step - 1].classList.add("is-active");
     timer = window.setTimeout(
       () => show((step % scenes.length) + 1),
-      SCENE_MS[step - 1] || 5000
+      SCENE_MS[step - 1] || 4000
     );
   }
 

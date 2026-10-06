@@ -1330,13 +1330,109 @@ section {
   color: var(--text);
 }
 
-/* Während das Bild läuft, ist die Nummer des gerade gezeigten Schritts hervorgehoben. */
-.elga.is-playing[data-step="1"] .elga__step:nth-child(1)::before,
-.elga.is-playing[data-step="2"] .elga__step:nth-child(2)::before,
-.elga.is-playing[data-step="3"] .elga__step:nth-child(3)::before,
-.elga.is-playing[data-step="4"] .elga__step:nth-child(4)::before {
-  background: var(--button-bg);
-  color: var(--text-on-primary);
+/* Bühne: Sobald das Skript läuft ("is-playing"), steht links nur noch der Schritt zur gerade
+   gezeigten Szene, groß geschrieben. Beim Wechsel gleitet der alte Schritt nach oben weg, der
+   neue kommt von unten scharf ins Bild. Alle vier Schritte liegen dafür in derselben Zelle,
+   so bleibt die Höhe ruhig. Ohne JavaScript oder bei "Bewegung reduzieren" bleibt die Liste
+   mit allen vier Schritten stehen. Die Texte selbst sind in beiden Fällen dieselben. */
+.elga__progress {
+  display: none;
+}
+
+.elga.is-playing .elga__progress {
+  display: flex;
+  gap: 6px;
+  max-width: 300px;
+  margin: 0 0 var(--space-6);
+}
+
+/* Vier Balken wie bei Stories: fertige Schritte sind gefüllt, der laufende füllt sich über die
+   Dauer seiner Szene (--scene-ms setzt das Skript). */
+.elga__progress span {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.elga__progress span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--link, var(--button-bg));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.elga__progress span.is-done::after {
+  transform: scaleX(1);
+}
+
+.elga__progress span.is-active::after {
+  animation: elga-fill var(--scene-ms, 4s) linear both;
+}
+
+@keyframes elga-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.elga.is-playing .elga__steps {
+  gap: 0;
+}
+
+.elga.is-playing .elga__step {
+  grid-area: 1 / 1;
+  display: block;
+  max-width: 34em;
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.elga.is-playing .elga__step.is-leaving {
+  transform: translateY(-22px);
+  transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
+}
+
+.elga.is-playing .elga__step.is-current {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  pointer-events: auto;
+  transition: opacity 0.45s ease 0.2s, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s,
+    filter 0.45s ease 0.2s;
+}
+
+/* Statt der runden Nummer steht über dem Schritt "Schritt 1 von 4". */
+.elga.is-playing .elga__step::before {
+  content: "Schritt " counter(elga-step) " von 4";
+  display: block;
+  width: auto;
+  height: auto;
+  margin-bottom: var(--space-2);
+  border-radius: 0;
+  background: none;
+  color: var(--link, var(--button-bg));
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.elga.is-playing .elga__step strong {
+  margin-bottom: var(--space-3);
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 .elga__demo {
@@ -1642,15 +1738,15 @@ section {
 }
 
 /* Zeitpunkte innerhalb einer Szene, gerechnet ab dem Szenenwechsel */
-.demo-at-1 { --at: 0.9s; }
-.demo-at-2 { --at: 1.15s; }
-.demo-at-3 { --at: 1.6s; }
-.demo-at-4 { --at: 2.1s; }
-.demo-at-5 { --at: 2.6s; }
-.demo-at-6 { --at: 3.3s; }
-.demo-at-7 { --at: 4s; }
-.demo-at-8 { --at: 4.7s; }
-.demo-at-9 { --at: 5.5s; }
+.demo-at-1 { --at: 0.5s; }
+.demo-at-2 { --at: 0.7s; }
+.demo-at-3 { --at: 1s; }
+.demo-at-4 { --at: 1.3s; }
+.demo-at-5 { --at: 1.6s; }
+.demo-at-6 { --at: 2s; }
+.demo-at-7 { --at: 2.4s; }
+.demo-at-8 { --at: 2.8s; }
+.demo-at-9 { --at: 3.3s; }
 
 .demo-scene.is-live .demo-tap {
   animation: demo-tap 0.6s ease-out var(--at) both;
@@ -1669,17 +1765,17 @@ section {
   animation: demo-out 0.2s ease var(--at) both;
 }
 
-/* Die Erklärung wächst über gut drei Sekunden auf, im Takt der Sätze, die darin erscheinen. */
+/* Die Erklärung wächst über gut zwei Sekunden auf, im Takt der Sätze, die darin erscheinen. */
 .demo-scene.is-live .demo-grow {
-  animation: demo-grow 3.4s linear var(--at) backwards;
+  animation: demo-grow 2.1s linear var(--at) backwards;
 }
 
 .demo-scene.is-live .demo-swap__idle {
-  animation: demo-swap-idle 1.4s linear var(--at) both;
+  animation: demo-swap-idle 0.85s linear var(--at) both;
 }
 
 .demo-scene.is-live .demo-swap__busy {
-  animation: demo-swap-busy 1.4s linear var(--at) both;
+  animation: demo-swap-busy 0.85s linear var(--at) both;
 }
 
 @keyframes demo-tap {
