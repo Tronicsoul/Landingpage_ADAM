@@ -1226,14 +1226,26 @@ section {
   margin-bottom: 0;
 }
 
-/* Gegenüberstellung mit ELGA unter den drei Kästchen: ein breites Kästchen im selben Stil,
-   links ELGA (zurückgenommen), rechts ADAM. Die Listen nutzen den Stil der Leistungs-Kästchen. */
+/* ADAM und ELGA unter den drei Kästchen: links kurzer Text mit drei Schritten, rechts ein
+   kleines bewegtes Bild in Form eines Handys. */
 .elga {
   margin-top: var(--space-8);
   padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--card-bg);
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (min-width: 760px) {
+  .elga {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-10);
+    padding: var(--space-8);
+  }
 }
 
 .elga__title {
@@ -1250,26 +1262,238 @@ section {
   color: var(--text-muted);
 }
 
-.elga__cols {
+.elga__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  gap: var(--space-6);
-  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  counter-reset: elga-step;
 }
 
-@media (min-width: 700px) {
-  .elga__cols {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-10);
-  }
+.elga__step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
-.elga .kicker {
-  margin-bottom: 0;
+.elga__step::before {
+  counter-increment: elga-step;
+  content: counter(elga-step);
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--surface);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.elga .service__list {
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
+.elga__step strong {
+  display: block;
+  font-size: 16px;
+  color: var(--text);
+}
+
+/* Während das Bild läuft, ist die Nummer des gerade gezeigten Schritts hervorgehoben. */
+.elga.is-playing[data-step="1"] .elga__step:nth-child(1)::before,
+.elga.is-playing[data-step="2"] .elga__step:nth-child(2)::before,
+.elga.is-playing[data-step="3"] .elga__step:nth-child(3)::before {
+  background: var(--button-bg);
+  color: var(--text-on-primary);
+}
+
+.elga__demo {
+  justify-self: center;
+}
+
+.elga__note {
+  margin: var(--space-2) 0 0;
+  font-size: 12.5px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* Das bewegte Bild: drei Szenen liegen übereinander, sichtbar ist die zum Schritt passende.
+   Die Teile einer Szene erscheinen nacheinander. Texte sind bewusst knapp, Inhalte nur angedeutet. */
+.demo-phone {
+  position: relative;
+  width: 216px;
+  height: 244px;
+  border: 2px solid var(--border);
+  border-radius: 26px;
+  background: var(--background);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.demo-scene {
+  position: absolute;
+  inset: 14px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  opacity: 0;
+  /* Die alte Szene verschwindet schnell, die neue erscheint erst danach: so liegen nie zwei
+     Szenen lesbar übereinander. */
+  transition: opacity 0.2s ease;
+}
+
+.elga[data-step="1"] .demo-scene--1,
+.elga[data-step="2"] .demo-scene--2,
+.elga[data-step="3"] .demo-scene--3 {
+  opacity: 1;
+  transition: opacity 0.3s ease 0.25s;
+}
+
+.demo-item {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.elga[data-step="1"] .demo-scene--1 .demo-item,
+.elga[data-step="2"] .demo-scene--2 .demo-item,
+.elga[data-step="3"] .demo-scene--3 .demo-item {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+}
+
+/* Nur beim Erscheinen gestaffelt, damit die Teile nacheinander kommen. */
+.elga[data-step="1"] .demo-scene--1 > :nth-child(3),
+.elga[data-step="2"] .demo-scene--2 > :nth-child(3),
+.elga[data-step="3"] .demo-scene--3 > :nth-child(2) {
+  transition-delay: 0.8s;
+}
+
+.elga[data-step="1"] .demo-scene--1 > :nth-child(4),
+.elga[data-step="3"] .demo-scene--3 > :nth-child(3) {
+  transition-delay: 1.3s;
+}
+
+.elga[data-step="3"] .demo-scene--3 > :nth-child(4) {
+  transition-delay: 1.8s;
+}
+
+.demo-title {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.demo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-bg);
+}
+
+.demo-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.demo-check {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--button-bg);
+}
+
+.demo-check::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 8px;
+  height: 4px;
+  border-left: 2px solid var(--text-on-primary);
+  border-bottom: 2px solid var(--text-on-primary);
+  transform: rotate(-45deg);
+}
+
+.demo-line {
+  display: block;
+  flex: none;
+  width: 60px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-strong);
+}
+
+.demo-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--muted);
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.demo-file svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--button-bg);
+}
+
+.demo-explain {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.demo-explain .demo-line {
+  width: 100%;
+}
+
+.demo-explain .demo-line--short {
+  width: 60%;
+}
+
+.demo-head {
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--button-bg);
+  color: var(--text-on-primary);
+}
+
+.demo-head span {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.demo-head small {
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.85;
 }
 
 /* Etikett mit Punkt (über der Hero-Überschrift und über jedem Leistungs-Eintrag) */

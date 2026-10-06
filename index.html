@@ -347,30 +347,50 @@
             </li>
           </ul>
 
-          <!-- Abgrenzung zu ELGA als Gegenüberstellung: links, was ELGA bereits enthält, rechts nur
-               die Angaben, die ELGA fehlen und die Patient:innen in ADAM selbst eintragen. Die
-               Funktionen der App stehen in den drei Kästchen darüber und werden hier nicht wiederholt.
-               ADAM ergänzt ELGA und ersetzt es nicht. -->
-          <div class="elga">
-            <h3 class="elga__title">ADAM ergänzt ELGA</h3>
-            <p class="elga__intro">ELGA speichert Befunde. ADAM ergänzt, was nur Ihre Patient:innen wissen.</p>
-            <div class="elga__cols">
-              <div>
-                <p class="kicker kicker--muted">Steht in ELGA</p>
-                <ul class="service__list">
-                  <li>Entlassungsbriefe, Labor- und Radiologiebefunde</li>
-                  <li>Verordnete Medikamente</li>
-                  <li>Impfungen</li>
-                </ul>
+          <!-- ADAM und ELGA: links kurzer Text mit drei Schritten, rechts ein kleines bewegtes Bild,
+               das zeigt, was Patient:innen in ADAM tun: erfassen, hochladen, zusammenfassen.
+               script.js (initElgaDemo) schaltet die drei Szenen weiter, solange der Kasten im Bild ist.
+               Ohne JavaScript oder bei "Bewegung reduzieren" steht die letzte Szene still (data-step="3").
+               Was in ELGA steht, wird hier bewusst nicht mehr aufgezählt. -->
+          <div class="elga" data-step="3">
+            <div class="elga__text">
+              <h3 class="elga__title">ADAM ergänzt ELGA</h3>
+              <p class="elga__intro">ELGA speichert Befunde. In ADAM ergänzen Ihre Patient:innen den Rest.</p>
+              <ol class="elga__steps">
+                <li class="elga__step"><span><strong>Erfassen</strong> Medikamente, Vorerkrankungen und Diagnosen</span></li>
+                <li class="elga__step"><span><strong>Hochladen</strong> Arztbriefe, automatisch erklärt</span></li>
+                <li class="elga__step"><span><strong>Zusammenfassen</strong> Der digitale Checkup, verständlich auf einer Seite</span></li>
+              </ol>
+            </div>
+            <div class="elga__demo" aria-hidden="true">
+              <div class="demo-phone">
+                <div class="demo-scene demo-scene--1">
+                  <p class="demo-title">Meine Angaben</p>
+                  <div class="demo-row demo-item"><span class="demo-label">Medikamente</span><span class="demo-check"></span></div>
+                  <div class="demo-row demo-item"><span class="demo-label">Vorerkrankungen</span><span class="demo-check"></span></div>
+                  <div class="demo-row demo-item"><span class="demo-label">Diagnosen</span><span class="demo-check"></span></div>
+                </div>
+                <div class="demo-scene demo-scene--2">
+                  <p class="demo-title">Arztbrief</p>
+                  <div class="demo-file demo-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>
+                    <span>Arztbrief.pdf</span>
+                  </div>
+                  <div class="demo-explain demo-item">
+                    <span class="demo-label">Einfach erklärt</span>
+                    <span class="demo-line"></span>
+                    <span class="demo-line"></span>
+                    <span class="demo-line demo-line--short"></span>
+                  </div>
+                </div>
+                <div class="demo-scene demo-scene--3">
+                  <div class="demo-head demo-item"><span>Digitaler Checkup</span><small>Alles auf einer Seite</small></div>
+                  <div class="demo-row demo-item"><span class="demo-label">Diagnosen</span><span class="demo-line"></span></div>
+                  <div class="demo-row demo-item"><span class="demo-label">Medikamente</span><span class="demo-line"></span></div>
+                  <div class="demo-row demo-item"><span class="demo-label">Symptome</span><span class="demo-line"></span></div>
+                </div>
               </div>
-              <div>
-                <p class="kicker">Kommt mit ADAM dazu</p>
-                <ul class="service__list">
-                  <li>Symptomverlauf seit dem letzten Termin</li>
-                  <li>Rezeptfreie Medikamente</li>
-                  <li>Familiengeschichte</li>
-                </ul>
-              </div>
+              <p class="elga__note">Beispielhafte Darstellung</p>
             </div>
           </div>
         </div>

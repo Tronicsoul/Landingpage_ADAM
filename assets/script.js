@@ -348,6 +348,48 @@ function initReveal() {
 
 initReveal();
 
+// Kasten "ADAM ergänzt ELGA": das kleine bewegte Bild zeigt nacheinander drei Szenen (erfassen,
+// hochladen, zusammenfassen). Es läuft nur, solange der Kasten im Bild ist, und beginnt dann
+// wieder bei Schritt 1. Ohne JavaScript, ohne IntersectionObserver oder bei "Bewegung reduzieren"
+// bleibt die letzte Szene stehen, so wie sie im HTML vorgegeben ist.
+
+function initElgaDemo() {
+  const box = document.querySelector(".elga[data-step]");
+  if (!box || !("IntersectionObserver" in window)) return;
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const SCENE_MS = 3500;
+  let step = 3;
+  let timer = null;
+
+  function show(next) {
+    step = next;
+    box.setAttribute("data-step", String(next));
+  }
+
+  function start() {
+    if (timer) return;
+    box.classList.add("is-playing");
+    show(1);
+    timer = window.setInterval(() => show((step % 3) + 1), SCENE_MS);
+  }
+
+  function stop() {
+    window.clearInterval(timer);
+    timer = null;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => (entry.isIntersecting ? start() : stop()));
+    },
+    { threshold: 0.4 }
+  );
+  observer.observe(box);
+}
+
+initElgaDemo();
+
 // Ansicht beim Wechsel zwischen Startseite, Impressum und Datenschutz beibehalten: Wer über einen
 // Kampagnenlink (?v=a, ?v=b) oder über ?zielgruppe=patient kam, behält diese Angabe in den Links
 // zwischen den drei Seiten. So führt "Zurück zur Startseite" wieder in dieselbe Ansicht und, bei
