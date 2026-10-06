@@ -1543,6 +1543,8 @@ section {
   background-position: right var(--space-4) center;
   background-size: 20px;
   padding-right: var(--space-10);
+  /* Lange Antworten enden auf schmalen Bildschirmen mit Auslassungspunkten statt hart abgeschnitten. */
+  text-overflow: ellipsis;
 }
 
 .form-field input::placeholder {
