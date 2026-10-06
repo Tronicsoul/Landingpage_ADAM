@@ -347,51 +347,127 @@
             </li>
           </ul>
 
-          <!-- ADAM und ELGA: links kurzer Text mit drei Schritten, rechts ein kleines bewegtes Bild,
-               das zeigt, was Patient:innen in ADAM tun: erfassen, hochladen, zusammenfassen.
-               script.js (initElgaDemo) schaltet die drei Szenen weiter, solange der Kasten im Bild ist.
-               Ohne JavaScript oder bei "Bewegung reduzieren" steht die letzte Szene still (data-step="3").
-               Was in ELGA steht, wird hier bewusst nicht mehr aufgezählt. -->
+          <!-- ADAM und ELGA: links kurzer Text mit vier Schritten, rechts ein bewegtes Bild in Form
+               eines Handys. Es spielt vier Ansichten durch, die der App nachgebaut sind (Farben,
+               Kopfleiste, Karten, Knöpfe und Beschriftungen wie in der App, Texte gekürzt):
+               1 Sprachniveau wählen, 2 Arztbrief hochladen, 3 Diagnose erklären lassen,
+               4 digitaler Checkup. Die Inhalte sind Beispieldaten.
+               script.js (initElgaDemo) schaltet die Szenen weiter, solange der Kasten im Bild ist,
+               und setzt dabei "is-live" auf die laufende Szene; erst dann spielen die Bewegungen.
+               Ohne JavaScript oder bei "Bewegung reduzieren" steht Szene 3 (die fertige Erklärung)
+               still (data-step="3"). Das Wort "KI" kommt auf dieser Seite bewusst nicht vor. -->
           <div class="elga" data-step="3">
             <div class="elga__text">
               <h3 class="elga__title">ADAM ergänzt ELGA</h3>
               <p class="elga__intro">ELGA speichert Befunde. In ADAM ergänzen Ihre Patient:innen den Rest.</p>
               <ol class="elga__steps">
-                <li class="elga__step"><span><strong>Erfassen</strong> Medikamente, Vorerkrankungen und Diagnosen</span></li>
-                <li class="elga__step"><span><strong>Hochladen</strong> Arztbriefe, automatisch erklärt</span></li>
+                <li class="elga__step"><span><strong>Sprachniveau wählen</strong> Drei kurze Fragen legen fest, wie einfach ADAM erklärt</span></li>
+                <li class="elga__step"><span><strong>Erfassen</strong> Medikamente, Vorerkrankungen, Diagnosen und Arztbriefe</span></li>
+                <li class="elga__step"><span><strong>Erklären lassen</strong> Jede Diagnose im gewählten Sprachniveau</span></li>
                 <li class="elga__step"><span><strong>Zusammenfassen</strong> Der digitale Checkup, verständlich auf einer Seite</span></li>
               </ol>
             </div>
             <div class="elga__demo" aria-hidden="true">
               <div class="demo-phone">
-                <div class="demo-scene demo-scene--1">
-                  <p class="demo-title">Meine Angaben</p>
-                  <div class="demo-row demo-item"><span class="demo-label">Medikamente</span><span class="demo-check"></span></div>
-                  <div class="demo-row demo-item"><span class="demo-label">Vorerkrankungen</span><span class="demo-check"></span></div>
-                  <div class="demo-row demo-item"><span class="demo-label">Diagnosen</span><span class="demo-check"></span></div>
-                </div>
-                <div class="demo-scene demo-scene--2">
-                  <p class="demo-title">Arztbrief</p>
-                  <div class="demo-file demo-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>
-                    <span>Arztbrief.pdf</span>
+                <div class="demo-screen">
+
+                  <!-- Szene 1: Sprachniveau wählen (in der App: "Kommunikationstool") -->
+                  <div class="demo-scene demo-scene--1">
+                    <div class="demo-head">
+                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Kommunikationstool</span>
+                      <span class="demo-head__sub">Stellen Sie Ihr persönliches Level ein</span>
+                    </div>
+                    <div class="demo-body">
+                      <div class="demo-card">
+                        <p class="demo-question">Wie sicher fühlen Sie sich mit medizinischen Fachbegriffen?</p>
+                        <p class="demo-radio"><i><b class="demo-pop demo-at-2"></b></i><span>Bitte erklären Sie es mir wie einem Laien.</span><em class="demo-tap demo-at-1"></em></p>
+                        <p class="demo-radio"><i></i><span>Ich kenne die Grundlagen ganz gut.</span></p>
+                        <p class="demo-radio"><i></i><span>Ich habe beruflich mit Medizin zu tun.</span></p>
+                      </div>
+                      <div class="demo-btn">Antworten speichern<em class="demo-tap demo-at-4"></em></div>
+                      <div class="demo-status demo-in demo-at-5">
+                        <span class="demo-status__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.5"/></svg>Aktuelles Level: L1</span>
+                        <span class="demo-status__desc">Einfache Alltagssprache</span>
+                      </div>
+                    </div>
                   </div>
-                  <div class="demo-explain demo-item">
-                    <span class="demo-label">Einfach erklärt</span>
-                    <span class="demo-line"></span>
-                    <span class="demo-line"></span>
-                    <span class="demo-line demo-line--short"></span>
+
+                  <!-- Szene 2: Arztbrief hochladen, die Diagnose wird als Karte angelegt -->
+                  <div class="demo-scene demo-scene--2">
+                    <div class="demo-head">
+                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
+                      <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
+                    </div>
+                    <div class="demo-body">
+                      <div class="demo-btn">+ Manuell hinzufügen</div>
+                      <div class="demo-btn demo-btn--grey demo-swap demo-at-2">
+                        <span class="demo-swap__idle">Arztbrief hochladen (Bild / PDF)</span>
+                        <span class="demo-swap__busy">Analysiere Arztbrief...</span>
+                        <em class="demo-tap demo-at-1"></em>
+                      </div>
+                      <p class="demo-section">Diagnosen</p>
+                      <div class="demo-slot">
+                        <p class="demo-empty demo-out demo-at-5">Keine Diagnosen vorhanden.</p>
+                        <div class="demo-card demo-in demo-at-5">
+                          <p class="demo-card__title">Essentielle Hypertonie</p>
+                          <p class="demo-field"><small>ICD-Code:</small>I10</p>
+                          <p class="demo-field"><small>Datum:</small>02.10.2026</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div class="demo-scene demo-scene--3">
-                  <div class="demo-head demo-item"><span>Digitaler Checkup</span><small>Alles auf einer Seite</small></div>
-                  <div class="demo-row demo-item"><span class="demo-label">Diagnosen</span><span class="demo-line"></span></div>
-                  <div class="demo-row demo-item"><span class="demo-label">Medikamente</span><span class="demo-line"></span></div>
-                  <div class="demo-row demo-item"><span class="demo-label">Symptome</span><span class="demo-line"></span></div>
+
+                  <!-- Szene 3: Diagnose erklären lassen; die Erklärung erscheint Satz für Satz -->
+                  <div class="demo-scene demo-scene--3">
+                    <div class="demo-head">
+                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
+                      <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
+                    </div>
+                    <div class="demo-body">
+                      <div class="demo-card">
+                        <p class="demo-card__title">Essentielle Hypertonie</p>
+                        <p class="demo-field"><small>ICD-Code:</small>I10</p>
+                        <div class="demo-answer demo-grow demo-at-5">
+                          <p class="demo-field"><small>Erklärung:</small><span class="demo-say demo-at-5">Im Arztbrief steht: essentielle Hypertonie.</span> <span class="demo-say demo-at-6">Das bedeutet Bluthochdruck. Der Blutdruck ist dauerhaft zu hoch.</span> <span class="demo-say demo-at-7">Oft spürt man lange nichts davon.</span> <span class="demo-say demo-at-8">Fragen dazu am besten beim nächsten Termin besprechen.</span></p>
+                          <p class="demo-field demo-say demo-at-9"><small>Hinweis:</small>Kein Ersatz für ein persönliches Arztgespräch.</p>
+                        </div>
+                        <div class="demo-btn demo-swap demo-at-2">
+                          <span class="demo-swap__idle">Erklären lassen</span>
+                          <span class="demo-swap__busy">Wird generiert...</span>
+                          <em class="demo-tap demo-at-1"></em>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Szene 4: der digitale Checkup fasst alles auf einer Seite zusammen -->
+                  <div class="demo-scene demo-scene--4">
+                    <div class="demo-head">
+                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Digitaler Checkup</span>
+                      <span class="demo-head__sub">Zusammenfassung Ihrer Gesundheitsdaten</span>
+                    </div>
+                    <div class="demo-body">
+                      <div class="demo-btn">Checkup erstellen<em class="demo-tap demo-at-1"></em></div>
+                      <div class="demo-group demo-in demo-at-3">
+                        <p class="demo-section">Diagnosen (1)</p>
+                        <p class="demo-mini"><strong>Essentielle Hypertonie</strong><small>I10 · 2026</small></p>
+                      </div>
+                      <div class="demo-group demo-in demo-at-4">
+                        <p class="demo-section">Medikamente (1)</p>
+                        <p class="demo-mini"><strong>Ramipril</strong><small>5 mg · 1× täglich</small></p>
+                      </div>
+                      <div class="demo-group demo-in demo-at-5">
+                        <p class="demo-section">Symptome (1)</p>
+                        <p class="demo-mini"><strong>Kopfschmerzen</strong><small>Intensität 4/10 · 2 Tage</small></p>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-              <p class="elga__note">Beispielhafte Darstellung</p>
+              <p class="elga__note">Beispielhafte Darstellung mit Beispieldaten</p>
             </div>
+          </div>
           </div>
         </div>
       </div>

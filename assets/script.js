@@ -348,34 +348,48 @@ function initReveal() {
 
 initReveal();
 
-// Kasten "ADAM ergänzt ELGA": das kleine bewegte Bild zeigt nacheinander drei Szenen (erfassen,
-// hochladen, zusammenfassen). Es läuft nur, solange der Kasten im Bild ist, und beginnt dann
-// wieder bei Schritt 1. Ohne JavaScript, ohne IntersectionObserver oder bei "Bewegung reduzieren"
-// bleibt die letzte Szene stehen, so wie sie im HTML vorgegeben ist.
+// Kasten "ADAM ergänzt ELGA": das bewegte Bild im Handy spielt nacheinander vier Szenen durch
+// (Sprachniveau wählen, Arztbrief hochladen, Diagnose erklären lassen, digitaler Checkup).
+// Je Szene setzt das Skript data-step am Kasten (welche Szene sichtbar ist, welche Nummer links
+// hervorgehoben ist) und die Klasse "is-live" an der Szene (erst dann laufen ihre Bewegungen,
+// siehe styles.css). Es läuft nur, solange der Kasten im Bild ist, und beginnt dann wieder bei
+// Schritt 1. Ohne JavaScript, ohne IntersectionObserver oder bei "Bewegung reduzieren" bleibt
+// die Szene stehen, die im HTML vorgegeben ist.
 
 function initElgaDemo() {
   const box = document.querySelector(".elga[data-step]");
   if (!box || !("IntersectionObserver" in window)) return;
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const SCENE_MS = 3500;
-  let step = 3;
+  const scenes = Array.from(box.querySelectorAll(".demo-scene"));
+  if (!scenes.length) return;
+
+  // Dauer je Szene in Millisekunden. Szene 3 (die Erklärung) bleibt am längsten stehen,
+  // damit der Text gelesen werden kann.
+  const SCENE_MS = [5600, 5400, 9500, 5400];
   let timer = null;
 
-  function show(next) {
-    step = next;
-    box.setAttribute("data-step", String(next));
+  function show(step) {
+    box.setAttribute("data-step", String(step));
+    scenes.forEach((scene) => scene.classList.remove("is-live"));
+    // Layout einmal abfragen, damit die Bewegungen auch dann neu starten, wenn dieselbe Szene
+    // zweimal hintereinander gezeigt wird.
+    void box.offsetWidth;
+    scenes[step - 1].classList.add("is-live");
+    timer = window.setTimeout(
+      () => show((step % scenes.length) + 1),
+      SCENE_MS[step - 1] || 5000
+    );
   }
 
   function start() {
     if (timer) return;
     box.classList.add("is-playing");
     show(1);
-    timer = window.setInterval(() => show((step % 3) + 1), SCENE_MS);
   }
 
   function stop() {
-    window.clearInterval(timer);
+    window.clearTimeout(timer);
     timer = null;
   }
 
