@@ -343,3 +343,32 @@ function initReveal() {
 }
 
 initReveal();
+
+// Ansicht beim Wechsel zwischen Startseite, Impressum und Datenschutz beibehalten: Wer über einen
+// Kampagnenlink kam (?v=a, ?v=b oder ?zielgruppe=aerzte), behält diese Angabe in den Links zwischen
+// den drei Seiten. So führt "Zurück zur Startseite" wieder in die Ärzte-Ansicht derselben Variante
+// und nicht in die Patienten-Ansicht. Andere Angaben in der Adresse werden nicht weitergegeben.
+
+function initKeepView() {
+  let query = "";
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const keep = new URLSearchParams();
+    ["v", "zielgruppe"].forEach((key) => {
+      const value = params.get(key);
+      if (value) keep.set(key, value);
+    });
+    query = keep.toString();
+  } catch (e) {
+    return;
+  }
+  if (!query) return;
+
+  document
+    .querySelectorAll('a[href="index.html"], a[href="impressum.html"], a[href="datenschutz.html"]')
+    .forEach((link) => {
+      link.setAttribute("href", link.getAttribute("href") + "?" + query);
+    });
+}
+
+initKeepView();

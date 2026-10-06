@@ -1804,6 +1804,22 @@ section {
   color: var(--text-muted);
 }
 
+/* Schaltfläche am Seitenende von Impressum und Datenschutz: zurück zur Startseite.
+   Die Link-Farbe der Rechtstexte gilt für sie nicht. */
+.legal-page .legal-home {
+  margin: var(--space-8) 0 0;
+}
+
+.legal-page a.btn {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.legal-page a.btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .footer-placeholder {
   font-size: 14px;
   font-style: italic;
