@@ -1321,6 +1321,11 @@ body[data-audience="aerzte"] .hero h1 {
   color: var(--link, var(--primary));
 }
 
+/* Umbricht ein Haken, dann in zwei etwa gleich lange Zeilen statt mit einem Wort allein. */
+.hero__checks span {
+  text-wrap: balance;
+}
+
 .btn-lg {
   min-height: 60px;
   padding: var(--space-4) var(--space-8);
