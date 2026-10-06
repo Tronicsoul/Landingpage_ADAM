@@ -445,8 +445,23 @@ function initCompare() {
 
   const reduce =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Vorführung in Schleife: kurz "Ohne ADAM" zeigen, zu "Mit ADAM" laufen, dort stehen bleiben,
+  // zurückspringen und von vorn. Sie läuft nur, solange der Vergleich zu sehen ist, und hält an,
+  // sobald jemand den Regler selbst bedient. Danach setzt sie nach einer Pause wieder ein.
+  const HOLD_OFF_MS = 2200;
+  const FORWARD_MS = 2400;
+  const HOLD_ON_MS = 3800;
+  const BACK_MS = 900;
+  const IDLE_MS = 6000;
+
   let frame = null;
-  let touched = false;
+  let timer = null;
+  let inView = false;
+  let dragging = false;
+  let hovering = false;
+  let keyboard = false;
+  let pointerAt = 0;
 
   function setValue(value) {
     const v = Math.max(0, Math.min(100, value));
@@ -458,7 +473,7 @@ function initCompare() {
     );
   }
 
-  function animateTo(target, duration) {
+  function animateTo(target, duration, done) {
     window.cancelAnimationFrame(frame);
     if (reduce) {
       setValue(target);
@@ -471,38 +486,117 @@ function initCompare() {
       const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
       setValue(from + (target - from) * eased);
       if (t < 1) frame = window.requestAnimationFrame(step);
+      else if (done) done();
     };
     frame = window.requestAnimationFrame(step);
+  }
+
+  function halt() {
+    window.cancelAnimationFrame(frame);
+    window.clearTimeout(timer);
+    timer = null;
+  }
+
+  function later(ms) {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(loop, ms);
+  }
+
+  // Mit der Tastatur auf dem Regler oder mit der Maus über der Bedienleiste bleibt alles stehen.
+  function mayPlay() {
+    if (reduce || !inView || dragging || hovering) return false;
+    return !(keyboard && document.activeElement === range);
+  }
+
+  function loop() {
+    timer = null;
+    if (!mayPlay()) return;
+    if (Number(range.value) >= 50) animateTo(0, BACK_MS, () => later(HOLD_OFF_MS));
+    else animateTo(100, FORWARD_MS, () => later(HOLD_ON_MS));
+  }
+
+  function userTookOver() {
+    halt();
+    if (!reduce) later(IDLE_MS);
   }
 
   box.classList.add("is-interactive");
   setValue(0);
 
   range.addEventListener("input", () => {
-    touched = true;
-    window.cancelAnimationFrame(frame);
+    userTookOver();
     setValue(Number(range.value));
+  });
+
+  range.addEventListener("keydown", () => {
+    keyboard = true;
+  });
+
+  range.addEventListener("pointerdown", () => {
+    keyboard = false;
+    pointerAt = Date.now();
+    dragging = true;
+    userTookOver();
+  });
+
+  // Fokus ohne vorherigen Klick oder Fingertipp kommt von der Tastatur.
+  range.addEventListener("focus", () => {
+    keyboard = Date.now() - pointerAt > 500;
+    if (keyboard) halt();
+  });
+
+  ["pointerup", "pointercancel"].forEach((type) => {
+    window.addEventListener(type, () => {
+      if (!dragging) return;
+      dragging = false;
+      userTookOver();
+    });
+  });
+
+  range.addEventListener("blur", () => {
+    keyboard = false;
+    if (!reduce && !timer) later(IDLE_MS);
   });
 
   box.querySelectorAll("[data-cmp-to]").forEach((button) => {
     button.addEventListener("click", () => {
-      touched = true;
+      userTookOver();
       animateTo(Number(button.getAttribute("data-cmp-to")), 700);
     });
   });
+
+  const control = box.querySelector(".cmp__control");
+  if (control) {
+    control.addEventListener("pointerenter", (event) => {
+      if (event.pointerType !== "mouse") return;
+      hovering = true;
+      halt();
+    });
+    control.addEventListener("pointerleave", (event) => {
+      if (event.pointerType !== "mouse") return;
+      hovering = false;
+      if (!reduce) later(IDLE_MS);
+    });
+  }
 
   if ("IntersectionObserver" in window && !reduce) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting || touched) return;
-          observer.disconnect();
-          window.setTimeout(() => {
-            if (!touched) animateTo(100, 2400);
-          }, 600);
+          if (entry.intersectionRatio >= 0.6) {
+            if (inView) return;
+            inView = true;
+            later(600);
+          } else if (!entry.isIntersecting) {
+            // Ganz aus dem Bild: anhalten und auf "Ohne ADAM" zurückstellen, damit die
+            // Vorführung beim nächsten Vorbeiscrollen wieder von vorn beginnt.
+            inView = false;
+            halt();
+            setValue(0);
+          }
         });
       },
-      { threshold: 0.6 }
+      { threshold: [0, 0.6] }
     );
     observer.observe(box);
   }
