@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,14 +7,14 @@
   <meta name="description" content="ADAM bündelt Medikamente, Symptome, Diagnosen und Arztbriefe übersichtlich an einem Ort, nutzbar für Patient:innen und medizinisches Fachpersonal. Jetzt unverbindlich eintragen." />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <script>
-    // Vor dem ersten Rendern ausgeführt, damit die Seite nicht kurz im falschen Farbschema aufblitzt.
+    // Die Seite ist immer dunkel (data-theme="dark" am <html>), passend zu den Kampagnenvideos und
+    // unabhängig von der Systemeinstellung. Hell wird sie nur, wenn jemand das über den Umschalter
+    // in der Kopfleiste selbst gewählt hat. Vor dem ersten Rendern ausgeführt, damit nichts aufblitzt.
     (function () {
       try {
-        var stored = localStorage.getItem("adam-theme");
-        var theme = stored === "light" || stored === "dark"
-          ? stored
-          : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-        document.documentElement.setAttribute("data-theme", theme);
+        if (localStorage.getItem("adam-theme-v2") === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
       } catch (e) {}
     })();
   </script>

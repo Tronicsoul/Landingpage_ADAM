@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,11 +10,9 @@
   <script>
     (function () {
       try {
-        var stored = localStorage.getItem("adam-theme");
-        var theme = stored === "light" || stored === "dark"
-          ? stored
-          : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-        document.documentElement.setAttribute("data-theme", theme);
+        if (localStorage.getItem("adam-theme-v2") === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
       } catch (e) {}
     })();
   </script>

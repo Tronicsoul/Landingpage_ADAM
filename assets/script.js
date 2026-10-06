@@ -280,7 +280,8 @@ function initMobileMenu() {
 
 initMobileMenu();
 
-// Manueller Hell-/Dunkel-Modus-Umschalter (überschreibt die Systemeinstellung, per localStorage gemerkt)
+// Manueller Hell-/Dunkel-Modus-Umschalter. Die Seite startet immer dunkel; wer auf hell umstellt,
+// bekommt das per localStorage gemerkt (Schlüssel "adam-theme-v2", ältere Einträge zählen nicht mehr).
 
 function initThemeToggle() {
   const toggle = document.getElementById("themeToggle");
@@ -297,7 +298,7 @@ function initThemeToggle() {
     document.documentElement.setAttribute("data-theme", next);
     toggle.setAttribute("aria-pressed", String(next === "dark"));
     try {
-      localStorage.setItem("adam-theme", next);
+      localStorage.setItem("adam-theme-v2", next);
     } catch (e) {
       /* localStorage evtl. nicht verfügbar (z. B. privates Fenster) – Umschalten funktioniert trotzdem für die Sitzung */
     }
