@@ -1309,6 +1309,33 @@ section {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--card-bg);
+  transition: translate 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.service .kicker::before {
+  transition: box-shadow 0.2s ease;
+}
+
+/* Kleine Rückmeldung beim Überfahren mit der Maus: das Kästchen hebt sich leicht, der Rand
+   wird kräftiger und der Punkt am Etikett bekommt einen Ring. Nur auf Geräten mit Maus, damit
+   der Zustand auf dem Handy nicht nach dem Antippen hängen bleibt. Die Bewegung läuft über
+   "translate" und nicht über "transform", damit sie das Einblenden weiter unten nicht stört. */
+@media (hover: hover) {
+  .service:hover {
+    translate: 0 -4px;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-card);
+  }
+
+  .service:hover .kicker::before {
+    box-shadow: 0 0 0 4px var(--surface-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service:hover {
+    translate: none;
+  }
 }
 
 .service .kicker {
@@ -1339,6 +1366,7 @@ section {
   font-weight: 600;
   line-height: 1.4;
   color: var(--text);
+  text-wrap: balance;
 }
 
 .service__list {
@@ -1356,6 +1384,7 @@ section {
   font-size: 15px;
   line-height: 1.5;
   color: var(--text-muted);
+  text-wrap: balance;
 }
 
 .service__list li::before {
@@ -1377,19 +1406,21 @@ section {
   transform: translateY(14px);
 }
 
+/* Die Verzögerung gilt nur für das Einblenden (opacity, transform), nicht für den Maus-Effekt. */
 .js-reveal .service.is-visible {
   opacity: 1;
   transform: none;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease, translate 0.2s ease, box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 @media (min-width: 860px) {
   .js-reveal .service.is-visible:nth-child(2) {
-    transition-delay: 0.1s;
+    transition-delay: 0.1s, 0.1s, 0s, 0s, 0s;
   }
 
   .js-reveal .service.is-visible:nth-child(3) {
-    transition-delay: 0.2s;
+    transition-delay: 0.2s, 0.2s, 0s, 0s, 0s;
   }
 }
 
