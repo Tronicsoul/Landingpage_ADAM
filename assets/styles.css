@@ -66,20 +66,25 @@
   }
 }
 
-/* Dunkles Farbschema wie im dunklen Schema der App (frontend/src/constants/theme.ts, "dark"),
-   mit denselben Rollen wie dort:
-     Seite              #151718  background
-     Flächen, Kästchen  #1f2937  surface (jeder zweite Abschnitt, Kästchen, Formularkasten)
-     Knöpfe, Kopfleisten#059669  primary, mit heller Schrift (textwithbackground)
-     Links, Hover       #10b981  tint
-     Schrift            #f9fafb  text, gedämpft mit 80 % Deckkraft wie in der App
-   Liegt ein Kästchen auf einer Fläche, bekommt es die Seitenfarbe, und umgekehrt (siehe Ende
-   der Datei). Trennlinien sind die Schriftfarbe mit geringer Deckkraft. */
+/* Dunkles Farbschema: nur Farben aus der Dunkel-Spalte des ADAM-Design-Systems, ohne das
+   bläuliche "surface" (#1f2937), das auf dieser Seite nicht verwendet wird:
+     Seite, Kästchen   #151718  background
+     Schrift           #f9fafb  text (gedämpft mit 80 % bzw. 60 % Deckkraft, wie Labels und
+                                deaktivierte Elemente im Design-System)
+     Knöpfe, Kopfzeilen#059669  primary, mit heller Schrift (textwithbackground)
+     Links, Hover      #10b981  tint
+     Linien, Rahmen    #059669  primary (wie der Rahmen der ModalCard "primary")
+     Zurückgenommenes  #6b7280  tabIconDefault (die Zeilen unter "Ohne ADAM", die noch nicht
+                                erreichten Fortschrittsbalken und der Rahmen des Handys)
+     Fehler            #f87171  closeIconColor, Fläche rgba(239, 68, 68, 0.15) closeBgColor
+   Es gibt damit nur eine dunkle Fläche; Kästchen heben sich durch ihren grünen Rahmen ab.
+   Dazu erfunden wird nichts; "accent" (#f59e0b) bleibt wie im Design-System der
+   Symptom-Stärke vorbehalten. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --background: #151718;
-    --surface: #1f2937;
-    --surface-strong: rgba(5, 150, 105, 0.35);
+    --surface: #151718;
+    --surface-strong: #059669;
     --text: #f9fafb;
     --text-muted: rgba(249, 250, 251, 0.8);
     --primary: #059669;
@@ -88,11 +93,11 @@
     --text-on-primary: #f9fafb;
     --accent: #f59e0b;
     --error: #f87171;
-    --error-bg: rgba(239, 68, 68, 0.18);
-    --muted: #9ca3af;
-    --border: rgba(249, 250, 251, 0.14);
+    --error-bg: rgba(239, 68, 68, 0.15);
+    --muted: rgba(249, 250, 251, 0.6);
+    --border: #059669;
     --link: #10b981;
-    --card-bg: #1f2937;
+    --card-bg: #151718;
     --shadow-card: 0px 8px 24px rgba(0, 0, 0, 0.35);
     --shadow-lg: 0px 20px 45px rgba(0, 0, 0, 0.45);
   }
@@ -100,8 +105,8 @@
 
 :root[data-theme="dark"] {
   --background: #151718;
-  --surface: #1f2937;
-  --surface-strong: rgba(5, 150, 105, 0.35);
+  --surface: #151718;
+  --surface-strong: #059669;
   --text: #f9fafb;
   --text-muted: rgba(249, 250, 251, 0.8);
   --primary: #059669;
@@ -110,11 +115,11 @@
   --text-on-primary: #f9fafb;
   --accent: #f59e0b;
   --error: #f87171;
-  --error-bg: rgba(239, 68, 68, 0.18);
-  --muted: #9ca3af;
-  --border: rgba(249, 250, 251, 0.14);
+  --error-bg: rgba(239, 68, 68, 0.15);
+  --muted: rgba(249, 250, 251, 0.6);
+  --border: #059669;
   --link: #10b981;
-  --card-bg: #1f2937;
+  --card-bg: #151718;
 }
 
 /* Grundlagen */
@@ -1492,8 +1497,8 @@ section {
   max-width: 100%;
   padding: 6px;
   border-radius: 36px;
-  background: #07130f;
-  border: 1px solid #2c4a3f;
+  background: #151718;
+  border: 1.5px solid #6b7280;
   box-shadow: var(--shadow-lg);
 }
 
@@ -2683,41 +2688,88 @@ section {
   border: 0;
 }
 
-/* Nur dunkles Farbschema: Wie in der App wechseln sich Seitenfarbe und Fläche ab.
-   - Abschnitte "Vergleich" und "Sicherheit" liegen auf der Fläche, ihre Kästchen in der
-     Seitenfarbe.
-   - Kästchen auf der Seitenfarbe sind Flächen; was in ihnen liegt (Symbolkreise, Nummern),
-     nimmt die Seitenfarbe.
-   - Der Formularkasten ist eine Fläche mit grünem Rand wie die hervorgehobenen Karten der App,
-     seine Eingabefelder liegen in der Seitenfarbe. */
-:root[data-theme="dark"] .problem,
-:root[data-theme="dark"] .trust {
-  --card-bg: #151718;
-}
-
-:root[data-theme="dark"] .service,
-:root[data-theme="dark"] .elga {
-  --surface: #151718;
-}
-
-:root[data-theme="dark"] .waitlist-card {
-  --card-bg: #151718;
+/* Nur dunkles Farbschema: Weil es nur eine dunkle Fläche gibt, bekommen Elemente, die sich im
+   hellen Schema durch eine Füllung abheben, hier einen Rahmen:
+   - Etiketten über den Überschriften, Symbolkreise und die Zeilen unter "Mit ADAM" grün,
+   - die Zeilen unter "Ohne ADAM" grau,
+   - der Formularkasten und die Kästchen etwas kräftiger umrandet.
+   Die farbigen Scheine im Hero entfallen, damit keine Zwischentöne entstehen. */
+:root[data-theme="dark"] .eyebrow {
   border: 1.5px solid var(--primary);
 }
 
+:root[data-theme="dark"] .service__icon,
+:root[data-theme="dark"] .trust-card__icon {
+  border: 1.5px solid var(--primary);
+}
+
+:root[data-theme="dark"] .clear-list:not(.clear-list--open) li {
+  border-color: var(--primary);
+}
+
+:root[data-theme="dark"] .clear-list--open li {
+  border-color: #6b7280;
+}
+
+:root[data-theme="dark"] .waitlist-card,
+:root[data-theme="dark"] .trust-card {
+  border: 1.5px solid var(--primary);
+}
+
+:root[data-theme="dark"] .elga__progress button::before {
+  background: #6b7280;
+}
+
+:root[data-theme="dark"] .service,
+:root[data-theme="dark"] .elga,
+:root[data-theme="dark"] .step,
+:root[data-theme="dark"] .trust-card,
+:root[data-theme="dark"] .compare-card,
+:root[data-theme="dark"] .hero .summary-card {
+  border-width: 1.5px;
+}
+
+:root[data-theme="dark"] .hero__blob {
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .problem,
-  :root:not([data-theme="light"]) .trust {
-    --card-bg: #151718;
+  :root:not([data-theme="light"]) .eyebrow {
+    border: 1.5px solid var(--primary);
+  }
+
+  :root:not([data-theme="light"]) .service__icon,
+  :root:not([data-theme="light"]) .trust-card__icon {
+    border: 1.5px solid var(--primary);
+  }
+
+  :root:not([data-theme="light"]) .clear-list:not(.clear-list--open) li {
+    border-color: var(--primary);
+  }
+
+  :root:not([data-theme="light"]) .clear-list--open li {
+    border-color: #6b7280;
+  }
+
+  :root:not([data-theme="light"]) .waitlist-card,
+  :root:not([data-theme="light"]) .trust-card {
+    border: 1.5px solid var(--primary);
+  }
+
+  :root:not([data-theme="light"]) .elga__progress button::before {
+    background: #6b7280;
   }
 
   :root:not([data-theme="light"]) .service,
-  :root:not([data-theme="light"]) .elga {
-    --surface: #151718;
+  :root:not([data-theme="light"]) .elga,
+  :root:not([data-theme="light"]) .step,
+  :root:not([data-theme="light"]) .trust-card,
+  :root:not([data-theme="light"]) .compare-card,
+  :root:not([data-theme="light"]) .hero .summary-card {
+    border-width: 1.5px;
   }
 
-  :root:not([data-theme="light"]) .waitlist-card {
-    --card-bg: #151718;
-    border: 1.5px solid var(--primary);
+  :root:not([data-theme="light"]) .hero__blob {
+    display: none;
   }
 }
