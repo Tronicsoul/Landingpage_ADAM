@@ -1729,9 +1729,9 @@ body[data-audience="aerzte"] .hero__offer {
   margin-bottom: 0;
 }
 
-/* Abschnitt "Wie Patient:innen ADAM anwenden": links Überschrift, vier anwählbare Schritte und
-   der Text zum gewählten Schritt, rechts ein Handy mit der passenden App-Ansicht. Schrift,
-   Gewichte, Grüntöne und Rundungen folgen dem Hero. Nichts bewegt sich von selbst. */
+/* Abschnitt "Wie Patient:innen ADAM anwenden": links Überschrift, der aktuelle Schritt (Anzeige,
+   Titel, Text) und zwei Pfeile zum Blättern, rechts ein Handy mit der passenden App-Ansicht.
+   Schrift, Gewichte, Grüntöne und Rundungen folgen dem Hero. Nichts bewegt sich von selbst. */
 .howto {
   margin-top: var(--gap-block);
   padding: var(--space-6);
@@ -1767,75 +1767,6 @@ body[data-audience="aerzte"] .hero__offer {
   font-size: 19px;
   line-height: 1.5;
   color: var(--text-muted);
-}
-
-/* Die vier Schritte als Raster mit zwei Spalten, auf jedem Gerät. Ohne JavaScript entfällt die
-   Auswahl, dann stehen alle vier Texte untereinander. */
-.howto__nav {
-  display: none;
-}
-
-.howto.is-interactive .howto__nav {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
-
-.howto__tab {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-height: 60px;
-  padding: var(--space-3) var(--space-4);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--card-bg);
-  color: var(--text);
-  font: inherit;
-  font-size: 15.5px;
-  font-weight: 600;
-  line-height: 1.3;
-  text-align: left;
-  cursor: pointer;
-}
-
-.howto__num {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid var(--primary);
-  border-radius: 50%;
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-.howto__label {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.howto__tab:hover {
-  border-color: var(--primary);
-}
-
-.howto__tab:focus-visible {
-  outline: 2px solid var(--link, var(--button-bg));
-  outline-offset: 2px;
-}
-
-/* Gewählter Schritt: grüner Rand, gefüllte Nummer, im hellen Schema dazu die helle Fläche. */
-.howto__tab.is-active {
-  border-color: var(--primary);
-  background: var(--surface);
-  box-shadow: 0 0 0 1px var(--primary);
-}
-
-.howto__tab.is-active .howto__num {
-  background: var(--primary);
-  color: var(--text-on-primary);
 }
 
 /* "Schritt 1 von 4": klein und ruhig, immer an derselben Stelle über dem Titel. */
@@ -1889,6 +1820,55 @@ body[data-audience="aerzte"] .hero__offer {
   color: var(--text-muted);
 }
 
+/* Zurück und Weiter: zwei runde Knöpfe mit Umriss unter dem Text. Weil der Text immer den Platz
+   des längsten Schritts hat, stehen sie bei jedem Schritt an derselben Stelle. Ohne JavaScript
+   entfallen sie. */
+.howto__pager {
+  display: none;
+}
+
+.howto.is-interactive .howto__pager {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.howto__arrow {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1.5px solid var(--primary);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.howto__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.howto__arrow:hover {
+  background: var(--surface);
+}
+
+.howto__arrow:focus-visible {
+  outline: 2px solid var(--link, var(--button-bg));
+  outline-offset: 3px;
+}
+
+/* Am ersten Schritt ist "zurück", am letzten "weiter" außer Funktion: grau und ohne Zeigerhand.
+   Der Knopf bleibt im Tastaturlauf, damit der Fokus beim Erreichen des Endes nicht verloren geht. */
+.howto__arrow[aria-disabled="true"] {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: default;
+}
+
 .howto__demo {
   justify-self: center;
   max-width: 100%;
@@ -1911,25 +1891,6 @@ body[data-audience="aerzte"] .hero__offer {
   .howto__sub {
     margin-bottom: var(--space-5);
     font-size: 17px;
-  }
-
-  .howto.is-interactive .howto__nav {
-    gap: var(--space-2);
-    margin-bottom: var(--space-5);
-  }
-
-  .howto__tab {
-    align-items: flex-start;
-    gap: var(--space-2);
-    min-height: 0;
-    padding: 10px;
-    font-size: 13.5px;
-  }
-
-  .howto__num {
-    width: 22px;
-    height: 22px;
-    font-size: 12px;
   }
 
   .howto__title {
@@ -2127,35 +2088,52 @@ body[data-audience="aerzte"] .hero__offer {
   margin-top: 4px;
 }
 
-.demo-status {
+/* Die drei Sprachniveaus der App untereinander; das aktuelle ist grün hervorgehoben. */
+.demo-levels {
   display: grid;
-  gap: 3px;
-  padding: 11px 13px;
-  border: 1.5px solid var(--app-primary);
-  border-radius: 18px;
-  background: var(--app-surface);
+  gap: 5px;
 }
 
-.demo-status__title {
+.demo-level {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 6px 11px;
+  border: 1.5px solid var(--app-surface);
+  border-radius: 12px;
+  font-size: 10.5px;
+  line-height: 1.3;
 }
 
-.demo-status__title svg {
+.demo-level > span {
+  flex: 1;
+}
+
+.demo-level strong {
+  margin-right: 3px;
+  font-weight: 700;
+}
+
+.demo-level svg,
+.demo-level i {
   flex: none;
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
+}
+
+.demo-level svg {
   color: var(--app-primary);
 }
 
-.demo-status__desc {
-  padding-left: 22px;
-  font-size: 10.5px;
-  font-style: italic;
-  opacity: 0.8;
+.demo-level i {
+  border: 1.5px solid var(--app-surface);
+  border-radius: 50%;
+}
+
+.demo-level--current {
+  border-color: var(--app-primary);
+  background: var(--app-surface);
+  font-weight: 600;
 }
 
 .demo-section {
@@ -2230,10 +2208,178 @@ body[data-audience="aerzte"] .hero__offer {
   overflow: hidden;
 }
 
-/* Arztbrief hochladen (Ansicht 2). Das Ruhebild zeigt das Ergebnis: die Datei mit Haken und die
-   Diagnose als Karte. Wählt jemand Schritt 2, setzt script.js "is-run" und der Ablauf spielt
-   einmal über 2,6 Sekunden: leere Liste, Dateiauswahl mit dem PDF, "Analysiere Arztbrief...",
-   dann die Karte. Danach steht wieder das Ruhebild. Alles blendet weich, nichts blinkt. */
+/* Abläufe im Handy. Jede Ansicht ist im Ruhezustand ein fertiges, stilles Bild. Blättert jemand
+   zu Schritt 2 oder 3, setzt script.js "is-run" an die Ansicht und ein kurzer Ablauf spielt
+   genau einmal; danach steht wieder das Ruhebild. Von selbst läuft nichts.
+   Schritt 2 (5,5 s): erst der Bildschirm "Aktuelle Medikamente" (Eintrag hinzufügen, das
+   Formular füllt sich, Speichern, Karte), dann "Diagnosen" (leere Liste, Dateiauswahl mit dem
+   PDF, "Analysiere Arztbrief...", Karte).
+   Schritt 3 (3 s): Tipp auf "Erklären lassen", "Wird generiert...", dann die Erklärung Satz für
+   Satz. */
+
+/* Der Fingertipp: ein heller Kreis, der einmal kurz erscheint. Im Ruhebild unsichtbar. */
+.demo-tap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(6, 78, 59, 0.3);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.demo-scene.is-run .demo-tap {
+  animation: demo-tap 0.5s ease-out var(--tap, 0.4s) both;
+}
+
+.demo-scene--2.is-run .demo-sub--doc .demo-tap {
+  animation-delay: calc(var(--doc-delay) + var(--tap, 0.4s));
+}
+
+@keyframes demo-tap {
+  0% { opacity: 0; transform: scale(0.4); }
+  40% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+/* Ansicht 2 besteht aus zwei Bildschirmen übereinander. */
+.demo-scene--2 {
+  --med-time: 2.9s;
+  --doc-delay: 2.9s;
+}
+
+.demo-sub {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-sub--med {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Eingabefelder des Formulars "Neues Medikament" */
+.demo-input {
+  display: grid;
+  gap: 2px;
+}
+
+.demo-input small {
+  font-size: 9.5px;
+  opacity: 0.75;
+}
+
+.demo-input > span {
+  display: block;
+  min-height: 26px;
+  padding: 5px 9px;
+  border: 1.5px solid var(--app-primary);
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.demo-input b {
+  font-weight: 400;
+}
+
+.demo-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.demo-slot > * {
+  align-self: start;
+}
+
+.demo-med__form {
+  gap: 6px;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.demo-scene--2.is-run .demo-sub--med {
+  animation: demo-med-screen var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-sub--doc {
+  animation: demo-doc-screen var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-med__empty {
+  animation: demo-med-empty var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-med__form {
+  animation: demo-med-form var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-med__v1 {
+  animation: demo-med-v1 var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-med__v2 {
+  animation: demo-med-v2 var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-med__v3 {
+  animation: demo-med-v3 var(--med-time) linear both;
+}
+
+.demo-scene--2.is-run .demo-med__card {
+  animation: demo-med-card var(--med-time) linear both;
+}
+
+/* Zeitpunkte (von 2,9 s): Formular ab 10 %, Name 26 %, Dosierung 36 %, Häufigkeit 46 %,
+   Speichern bei 52 %, Karte ab 66 %, Wechsel zu "Diagnosen" ab 93 %. */
+@keyframes demo-med-screen {
+  0%, 93% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes demo-doc-screen {
+  0%, 93% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes demo-med-empty {
+  0%, 9% { opacity: 0.8; }
+  13%, 100% { opacity: 0; }
+}
+
+@keyframes demo-med-form {
+  0%, 9% { opacity: 0; visibility: hidden; }
+  15%, 60% { opacity: 1; visibility: visible; }
+  66%, 100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes demo-med-v1 {
+  0%, 24% { opacity: 0; }
+  28%, 100% { opacity: 1; }
+}
+
+@keyframes demo-med-v2 {
+  0%, 34% { opacity: 0; }
+  38%, 100% { opacity: 1; }
+}
+
+@keyframes demo-med-v3 {
+  0%, 44% { opacity: 0; }
+  48%, 100% { opacity: 1; }
+}
+
+@keyframes demo-med-card {
+  0%, 64% { opacity: 0; }
+  71%, 100% { opacity: 1; }
+}
+
+/* Arztbrief hochladen: Dateizeile, Fortschritt und Dateiauswahl */
 .demo-upload > span {
   grid-area: 1 / 1;
 }
@@ -2340,40 +2486,40 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 .demo-scene--2.is-run .demo-sheet {
-  animation: demo-upload-sheet 2.6s ease both;
+  animation: demo-upload-sheet 2.6s ease var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-sheet__row--picked {
-  animation: demo-upload-pick 2.6s linear both;
+  animation: demo-upload-pick 2.6s linear var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-sheet__check {
-  animation: demo-upload-after-pick 2.6s linear both;
+  animation: demo-upload-after-pick 2.6s linear var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-upload__idle {
-  animation: demo-upload-idle 2.6s linear both;
+  animation: demo-upload-idle 2.6s linear var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-upload__busy {
-  animation: demo-upload-busy 2.6s linear both;
+  animation: demo-upload-busy 2.6s linear var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-file {
-  animation: demo-upload-file 2.6s linear both;
+  animation: demo-upload-file 2.6s linear var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-file__bar {
-  animation: demo-upload-bar 2.6s linear both;
+  animation: demo-upload-bar 2.6s linear var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-file__done,
 .demo-scene--2.is-run .demo-upload__card {
-  animation: demo-upload-result 2.6s linear both;
+  animation: demo-upload-result 2.6s linear var(--doc-delay) both;
 }
 
-.demo-scene--2.is-run .demo-empty {
-  animation: demo-upload-empty 2.6s linear both;
+.demo-scene--2.is-run .demo-sub--doc .demo-empty {
+  animation: demo-upload-empty 2.6s linear var(--doc-delay) both;
 }
 
 /* Zeitpunkte (von 2,6 s): Blatt erscheint bei 17 %, Datei gewählt bei 38 %, Blatt geht bei 54 %,
@@ -2427,14 +2573,60 @@ body[data-audience="aerzte"] .hero__offer {
   90%, 100% { opacity: 0; }
 }
 
-/* Bei "Bewegung reduzieren" entfallen Überblendung und Ablauf, es steht sofort das Ruhebild. */
+/* Ansicht 3: Knopf mit zwei Beschriftungen, die Erklärung klappt auf und erscheint Satz für Satz. */
+.demo-explain > span {
+  grid-area: 1 / 1;
+}
+
+.demo-explain__busy {
+  opacity: 0;
+}
+
+.demo-scene--3.is-run .demo-explain__idle {
+  animation: demo-explain-idle 0.9s linear 0.55s both;
+}
+
+.demo-scene--3.is-run .demo-explain__busy {
+  animation: demo-explain-busy 0.9s linear 0.55s both;
+}
+
+.demo-scene--3.is-run .demo-answer {
+  animation: demo-answer-grow 1.3s linear 1.3s backwards;
+}
+
+.demo-scene--3.is-run .demo-say {
+  animation: demo-say-in 0.3s ease-out calc(1.35s + var(--n, 0) * 0.28s) backwards;
+}
+
+@keyframes demo-explain-idle {
+  0%, 100% { opacity: 1; }
+  12%, 88% { opacity: 0; }
+}
+
+@keyframes demo-explain-busy {
+  0%, 100% { opacity: 0; }
+  12%, 88% { opacity: 1; }
+}
+
+@keyframes demo-answer-grow {
+  from { max-height: 0; }
+  to { max-height: 220px; }
+}
+
+@keyframes demo-say-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Bei "Bewegung reduzieren" entfallen Überblendung und Abläufe, es steht sofort das Ruhebild. */
 @media (prefers-reduced-motion: reduce) {
   .demo-scene,
   .howto[data-step] .demo-scene {
     transition: none;
   }
 
-  .demo-scene--2.is-run * {
+  .demo-scene.is-run,
+  .demo-scene.is-run * {
     animation: none !important;
   }
 }
@@ -3387,8 +3579,8 @@ body[data-audience="aerzte"] .hero__offer {
   border: 1.5px solid var(--primary);
 }
 
-/* Nicht gewählte Schritte treten im dunklen Schema mit grauem Rand zurück. */
-:root[data-theme="dark"] .howto__tab:not(.is-active):not(:hover) {
+/* Ein Pfeil außer Funktion tritt im dunklen Schema mit grauem Rand zurück. */
+:root[data-theme="dark"] .howto__arrow[aria-disabled="true"] {
   border-color: #6b7280;
 }
 
@@ -3432,7 +3624,7 @@ body[data-audience="aerzte"] .hero__offer {
     border: 1.5px solid var(--primary);
   }
 
-  :root:not([data-theme="light"]) .howto__tab:not(.is-active):not(:hover) {
+  :root:not([data-theme="light"]) .howto__arrow[aria-disabled="true"] {
     border-color: #6b7280;
   }
 

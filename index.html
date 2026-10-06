@@ -363,13 +363,16 @@
             </li>
           </ul>
 
-          <!-- Abschnitt "Wie Patient:innen ADAM anwenden": vier direkt anwählbare Schritte, darunter an
-               fester Stelle "Schritt N von 4", der Titel des Schritts und ein kurzer Text; daneben
+          <!-- Abschnitt "Wie Patient:innen ADAM anwenden": an fester Stelle "Schritt N von 4", der
+               Titel des Schritts und ein kurzer Text, darunter zwei Pfeile (zurück, weiter); daneben
                ein Handy mit der passenden App-Ansicht. Nichts wechselt von selbst. script.js
-               (initHowto) schaltet auf Klick oder mit den Pfeiltasten um: Text und Markierung
-               wechseln ohne Bewegung, die App-Ansicht blendet kurz über. Nur bei Schritt 2 läuft
-               nach der Auswahl einmal ab, wie ein Arztbrief als PDF hochgeladen wird; danach steht
-               das Bild. Ohne JavaScript stehen alle vier Texte untereinander.
+               (initHowto) schaltet mit den Pfeilen um: Anzeige, Titel, Text und App-Ansicht wechseln
+               gemeinsam, der Text ohne Bewegung, die App-Ansicht blendet kurz über. Beim ersten
+               Schritt ist "zurück", beim letzten "weiter" außer Funktion. Blättert jemand zu Schritt 2
+               oder 3, läuft dort einmal ein kurzer Ablauf (Schritt 2: ein Medikament erfassen, dann
+               einen Arztbrief als PDF hochladen; Schritt 3: Tipp auf "Erklären lassen", dann
+               erscheint der Text); danach steht das Bild. Ohne JavaScript stehen alle vier Texte
+               untereinander.
                Die App-Ansichten sind der App nachgebaut (Farben, Kopfleiste, Karten, Knöpfe und
                Beschriftungen wie in der App, Texte gekürzt), die Inhalte sind Beispieldaten.
                Das Wort "KI" kommt auf dieser Seite bewusst nicht vor. -->
@@ -378,31 +381,32 @@
               <h3 class="howto__heading">Wie Patient:innen ADAM anwenden</h3>
               <p class="howto__sub">Vier Schritte zu besser vorbereiteten Terminen</p>
 
-              <div class="howto__nav" role="tablist" aria-label="Die vier Schritte">
-                <button type="button" class="howto__tab is-active" role="tab" id="howto-tab-1" aria-controls="howto-panel-1" aria-selected="true"><span class="howto__num" aria-hidden="true">1</span><span class="howto__label">Sprach&shy;niveau wählen</span></button>
-                <button type="button" class="howto__tab" role="tab" id="howto-tab-2" aria-controls="howto-panel-2" aria-selected="false"><span class="howto__num" aria-hidden="true">2</span><span class="howto__label">Angaben erfassen und Arzt&shy;brief hoch&shy;laden</span></button>
-                <button type="button" class="howto__tab" role="tab" id="howto-tab-3" aria-controls="howto-panel-3" aria-selected="false"><span class="howto__num" aria-hidden="true">3</span><span class="howto__label">Diagnosen erklären lassen</span></button>
-                <button type="button" class="howto__tab" role="tab" id="howto-tab-4" aria-controls="howto-panel-4" aria-selected="false"><span class="howto__num" aria-hidden="true">4</span><span class="howto__label">Checkup zusammen&shy;fassen</span></button>
-              </div>
-
-              <p class="howto__count" aria-hidden="true">Schritt <span data-howto-current>1</span> von 4</p>
+              <!-- Wechselt der Schritt, lesen Bildschirmleser Anzeige, Titel und Text neu vor. -->
+              <div class="howto__step" aria-live="polite" aria-atomic="true">
+              <p class="howto__count">Schritt <span data-howto-current>1</span> von 4</p>
               <div class="howto__panels">
-                <div class="howto__panel is-active" role="tabpanel" id="howto-panel-1" aria-labelledby="howto-tab-1">
+                <div class="howto__panel is-active">
                   <h4 class="howto__title">Sprachniveau wählen</h4>
                   <p class="howto__desc">Ihre Patient:innen wählen, wie einfach oder fachlich ADAM erklärt. Verstandene Erklärungen können Ihnen im Termin das Erklären von Grundlagen ersparen.</p>
                 </div>
-                <div class="howto__panel" role="tabpanel" id="howto-panel-2" aria-labelledby="howto-tab-2">
+                <div class="howto__panel">
                   <h4 class="howto__title">Angaben erfassen und Arztbrief hochladen</h4>
                   <p class="howto__desc">Ihre Patient:innen erfassen Symptome und Medikamente und laden Arztbriefe als Bild oder PDF hoch. So können Ihnen die Angaben zum Termin gebündelt vorliegen, statt dass Sie sie einzeln erfragen.</p>
                 </div>
-                <div class="howto__panel" role="tabpanel" id="howto-panel-3" aria-labelledby="howto-tab-3">
+                <div class="howto__panel">
                   <h4 class="howto__title">Diagnosen erklären lassen</h4>
                   <p class="howto__desc">ADAM erklärt Diagnosen aus dem Arztbrief im gewählten Sprachniveau. Das kann zu klareren Angaben und gezielteren Fragen in Ihrem Gespräch führen.</p>
                 </div>
-                <div class="howto__panel" role="tabpanel" id="howto-panel-4" aria-labelledby="howto-tab-4">
+                <div class="howto__panel">
                   <h4 class="howto__title">Checkup zusammenfassen</h4>
                   <p class="howto__desc">Der digitale Checkup führt Diagnosen, Medikamente und Symptome auf einer Seite zusammen. Die Übersicht gibt Ihnen schnell Orientierung und kann Nachfragen im Termin ersparen.</p>
                 </div>
+              </div>
+              </div>
+
+              <div class="howto__pager">
+                <button type="button" class="howto__arrow" data-howto-prev aria-label="Zurück: vorheriger Schritt" title="Zurück"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+                <button type="button" class="howto__arrow" data-howto-next aria-label="Weiter: nächster Schritt" title="Weiter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
               </div>
             </div>
 
@@ -424,17 +428,50 @@
                         <p class="demo-radio"><i></i><span>Ich habe beruflich mit Medizin zu tun.</span></p>
                       </div>
                       <div class="demo-btn">Antworten speichern</div>
-                      <div class="demo-status">
-                        <span class="demo-status__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.5"/></svg>Aktuelles Level: L1</span>
-                        <span class="demo-status__desc">Einfache Alltagssprache</span>
+                      <div class="demo-levels">
+                        <p class="demo-level demo-level--current"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.5"/></svg><span><strong>L1</strong> Einfache Alltagssprache</span></p>
+                        <p class="demo-level"><i></i><span><strong>L2</strong> Mit medizinischen Grundbegriffen</span></p>
+                        <p class="demo-level"><i></i><span><strong>L3</strong> Medizinische Fachsprache</span></p>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Ansicht 2: Arztbrief hochladen. Ruhebild: die Datei ist hochgeladen, die Diagnose
-                       steht als Karte da. Mit "is-run" (setzt script.js bei der Auswahl) läuft einmal
-                       ab: leere Liste, Dateiauswahl mit dem PDF, "Analysiere Arztbrief...", Karte. -->
+                  <!-- Ansicht 2: zwei Bildschirme der App übereinander. Ruhebild ist der zweite
+                       ("Diagnosen"): der Arztbrief ist hochgeladen, die Diagnose steht als Karte da.
+                       Mit "is-run" (setzt script.js beim Blättern auf Schritt 2) läuft einmal ab:
+                       erst "Aktuelle Medikamente" (Eintrag hinzufügen, Formular füllt sich,
+                       Speichern, Karte), dann "Diagnosen" (leere Liste, Dateiauswahl mit dem PDF,
+                       "Analysiere Arztbrief...", Karte). -->
                   <div class="demo-scene demo-scene--2">
+                    <div class="demo-sub demo-sub--med">
+                    <div class="demo-head">
+                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Aktuelle Medikamente</span>
+                      <span class="demo-head__sub">Verwalten Sie Ihre medizinischen Daten</span>
+                    </div>
+                    <div class="demo-body">
+                      <div class="demo-btn">+ Eintrag hinzufügen<em class="demo-tap" style="--tap: 0.15s"></em></div>
+                      <p class="demo-section">Einträge</p>
+                      <div class="demo-slot">
+                        <p class="demo-empty demo-med__empty">Keine Medikamente vorhanden.</p>
+                        <div class="demo-card demo-med__form">
+                          <p class="demo-card__title">Neues Medikament</p>
+                          <p class="demo-input"><small>Medikamentenname</small><span><b class="demo-med__v1">Ramipril</b></span></p>
+                          <div class="demo-input-row">
+                            <p class="demo-input"><small>Dosierung</small><span><b class="demo-med__v2">5</b></span></p>
+                            <p class="demo-input"><small>Einheit</small><span><b class="demo-med__v2">mg</b></span></p>
+                          </div>
+                          <p class="demo-input"><small>Einnahmehäufigkeit</small><span><b class="demo-med__v3">1x täglich</b></span></p>
+                          <div class="demo-btn">Speichern<em class="demo-tap" style="--tap: 1.5s"></em></div>
+                        </div>
+                        <div class="demo-card demo-med__card">
+                          <p class="demo-card__title">Ramipril</p>
+                          <p class="demo-field"><small>Wirkung/Dosierung:</small>5 mg</p>
+                          <p class="demo-field"><small>Einnahmehäufigkeit:</small>1x täglich</p>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                    <div class="demo-sub demo-sub--doc">
                     <div class="demo-head">
                       <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
                       <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
@@ -467,9 +504,12 @@
                       <p class="demo-sheet__row demo-sheet__row--picked"><span class="demo-file__type">PDF</span><span class="demo-file__name">Arztbrief_02-10-2026.pdf</span><span class="demo-sheet__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></p>
                       <p class="demo-sheet__row"><span class="demo-file__type">JPG</span><span class="demo-file__name">Impfpass.jpg</span></p>
                     </div>
+                    </div>
                   </div>
 
-                  <!-- Ansicht 3: Diagnose mit der Erklärung im gewählten Sprachniveau -->
+                  <!-- Ansicht 3: Diagnose mit der Erklärung im gewählten Sprachniveau. Mit "is-run" läuft
+                       einmal ab: Tipp auf "Erklären lassen", "Wird generiert...", dann erscheint die
+                       Erklärung Satz für Satz. -->
                   <div class="demo-scene demo-scene--3">
                     <div class="demo-head">
                       <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
@@ -479,9 +519,15 @@
                       <div class="demo-card">
                         <p class="demo-card__title">Essentielle Hypertonie</p>
                         <p class="demo-field"><small>ICD-Code:</small>I10</p>
-                        <p class="demo-field"><small>Erklärung:</small>Im Arztbrief steht: essentielle Hypertonie. Das bedeutet Bluthochdruck. Der Blutdruck ist dauerhaft zu hoch. Oft spürt man lange nichts davon. Fragen dazu am besten beim nächsten Termin besprechen.</p>
-                        <p class="demo-field"><small>Hinweis:</small>Kein Ersatz für ein persönliches Arztgespräch.</p>
-                        <div class="demo-btn">Erklären lassen</div>
+                        <div class="demo-answer">
+                          <p class="demo-field"><small>Erklärung:</small><span class="demo-say" style="--n: 0">Im Arztbrief steht: essentielle Hypertonie.</span> <span class="demo-say" style="--n: 1">Das bedeutet Bluthochdruck. Der Blutdruck ist dauerhaft zu hoch.</span> <span class="demo-say" style="--n: 2">Oft spürt man lange nichts davon.</span> <span class="demo-say" style="--n: 3">Fragen dazu am besten beim nächsten Termin besprechen.</span></p>
+                          <p class="demo-field demo-say" style="--n: 4"><small>Hinweis:</small>Kein Ersatz für ein persönliches Arztgespräch.</p>
+                        </div>
+                        <div class="demo-btn demo-explain">
+                          <span class="demo-explain__idle">Erklären lassen</span>
+                          <span class="demo-explain__busy">Wird generiert...</span>
+                          <em class="demo-tap" style="--tap: 0.35s"></em>
+                        </div>
                       </div>
                     </div>
                   </div>

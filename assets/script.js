@@ -408,56 +408,61 @@ function initReveal() {
 
 initReveal();
 
-// Abschnitt "Wie Patient:innen ADAM anwenden": vier Schritte zum Anwählen, daneben das Handy mit
-// der passenden App-Ansicht. Es wechselt nichts von selbst. Ein Klick (oder die Pfeiltasten,
-// Pos1, Ende) wählt einen Schritt: Markierung, "Schritt N von 4", Text und App-Ansicht wechseln
-// gemeinsam, Text und Markierung ohne Bewegung. Nur bei Schritt 2 läuft danach einmal ab, wie ein
-// Arztbrief als PDF hochgeladen wird (Klasse "is-run", siehe styles.css); bei "Bewegung
-// reduzieren" steht sofort das Ergebnis. Ohne JavaScript bleiben alle vier Texte sichtbar.
+// Abschnitt "Wie Patient:innen ADAM anwenden": links der aktuelle Schritt (Anzeige "Schritt N von
+// 4", Titel, Text), daneben das Handy mit der passenden App-Ansicht. Es wechselt nichts von
+// selbst. Zwei Pfeile blättern zurück und weiter (auch mit den Pfeiltasten, solange einer der
+// beiden den Fokus hat): Anzeige, Titel, Text und App-Ansicht wechseln gemeinsam. Am ersten
+// Schritt ist "zurück", am letzten "weiter" außer Funktion (aria-disabled, der Knopf behält den
+// Fokus). Blättert jemand zu Schritt 2 oder 3, läuft dort einmal ein kurzer Ablauf im Handy
+// (Klasse "is-run" an der Ansicht, siehe styles.css): bei Schritt 2 ein Medikament erfassen und
+// einen Arztbrief als PDF hochladen, bei Schritt 3 der Tipp auf "Erklären lassen" und die
+// Erklärung. Bei "Bewegung reduzieren" steht sofort das Ergebnis. Ohne JavaScript bleiben alle
+// vier Texte sichtbar.
 
 function initHowto() {
   const box = document.querySelector(".howto");
   if (!box) return;
-  const tabs = Array.from(box.querySelectorAll(".howto__tab"));
   const panels = Array.from(box.querySelectorAll(".howto__panel"));
   const current = box.querySelector("[data-howto-current]");
-  const upload = box.querySelector(".demo-scene--2");
-  if (!tabs.length || tabs.length !== panels.length) return;
+  const prev = box.querySelector("[data-howto-prev]");
+  const next = box.querySelector("[data-howto-next]");
+  const scenes = Array.from(box.querySelectorAll(".demo-scene"));
+  if (!panels.length || !prev || !next) return;
 
   const reduce =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let step = 1;
 
-  function show(step, byUser) {
+  function show(target, byUser) {
+    step = Math.max(1, Math.min(panels.length, target));
     box.setAttribute("data-step", String(step));
-    tabs.forEach((tab, index) => {
-      const active = index === step - 1;
-      tab.classList.toggle("is-active", active);
-      tab.setAttribute("aria-selected", active ? "true" : "false");
-      tab.tabIndex = active ? 0 : -1;
-      panels[index].classList.toggle("is-active", active);
-    });
+    panels.forEach((panel, index) => panel.classList.toggle("is-active", index === step - 1));
     if (current) current.textContent = String(step);
-    if (upload) {
-      upload.classList.remove("is-run");
-      if (byUser && step === 2 && !reduce) {
-        void upload.offsetWidth; // Ablauf auch bei erneuter Auswahl von vorn
-        upload.classList.add("is-run");
-      }
+    prev.setAttribute("aria-disabled", step === 1 ? "true" : "false");
+    next.setAttribute("aria-disabled", step === panels.length ? "true" : "false");
+    // Abläufe im Handy: nur nach einem Blättern, nie beim Laden der Seite.
+    scenes.forEach((scene) => scene.classList.remove("is-run"));
+    const scene = scenes[step - 1];
+    if (byUser && scene && !reduce) {
+      void scene.offsetWidth; // Ablauf bei jedem Erreichen des Schritts von vorn
+      scene.classList.add("is-run");
     }
   }
 
-  tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => show(index + 1, true));
-    tab.addEventListener("keydown", (event) => {
-      let next = null;
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % tabs.length;
-      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index + tabs.length - 1) % tabs.length;
-      else if (event.key === "Home") next = 0;
-      else if (event.key === "End") next = tabs.length - 1;
-      if (next === null) return;
+  function go(delta) {
+    const target = step + delta;
+    if (target < 1 || target > panels.length) return;
+    show(target, true);
+  }
+
+  prev.addEventListener("click", () => go(-1));
+  next.addEventListener("click", () => go(1));
+  [prev, next].forEach((button) => {
+    button.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") go(-1);
+      else if (event.key === "ArrowRight") go(1);
+      else return;
       event.preventDefault();
-      show(next + 1, true);
-      tabs[next].focus();
     });
   });
 
