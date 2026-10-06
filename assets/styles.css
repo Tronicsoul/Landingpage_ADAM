@@ -1272,21 +1272,15 @@ body[data-audience="aerzte"] .hero__inner > div:first-child {
 }
 
 body[data-audience="aerzte"] .hero h1 {
-  font-size: clamp(33px, 3.9vw, 50px);
+  font-size: clamp(31px, 3.5vw, 46px);
   line-height: 1.15;
   margin-bottom: var(--space-5);
-}
-
-/* Die drei Teile der Überschrift stehen ab 600 px Breite untereinander. */
-@media (min-width: 600px) {
-  .hero__beat {
-    display: block;
-  }
+  text-wrap: balance; /* die Frage bricht in etwa gleich lange Zeilen um */
 }
 
 .hero__answer {
   max-width: 25em;
-  margin: 0 0 var(--space-6);
+  margin: 0 0 var(--space-5);
   font-size: clamp(20px, 2vw, 27px);
   font-weight: 700;
   line-height: 1.35;
@@ -1300,7 +1294,7 @@ body[data-audience="aerzte"] .hero h1 {
 
 .hero__checks {
   list-style: none;
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--space-6);
   padding: 0;
 }
 
@@ -1321,9 +1315,9 @@ body[data-audience="aerzte"] .hero h1 {
   color: var(--link, var(--primary));
 }
 
-/* Umbricht ein Haken, dann in zwei etwa gleich lange Zeilen statt mit einem Wort allein. */
+/* Umbricht ein Haken, dann nicht mit einem einzelnen Wort in der letzten Zeile. */
 .hero__checks span {
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 .btn-lg {
