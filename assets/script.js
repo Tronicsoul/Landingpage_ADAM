@@ -350,7 +350,8 @@ initReveal();
 
 // ELGA-Kasten ("Was ADAM über ELGA hinaus leistet"): das bewegte Bild im Handy spielt nacheinander vier Szenen durch
 // (Sprachniveau wählen, Arztbrief hochladen, Diagnose erklären lassen, digitaler Checkup).
-// Links daneben steht jeweils nur der Schritt zur Szene, vier Balken zeigen den Fortschritt.
+// Links daneben steht jeweils nur der Schritt zur Szene, vier Balken zeigen den Fortschritt;
+// ein Klick auf einen Balken springt zu diesem Schritt.
 // Je Szene setzt das Skript data-step am Kasten (welche Szene sichtbar ist, welche Nummer links
 // hervorgehoben ist) und die Klasse "is-live" an der Szene (erst dann laufen ihre Bewegungen,
 // siehe styles.css). Es läuft nur, solange der Kasten im Bild ist, und beginnt dann wieder bei
@@ -365,13 +366,14 @@ function initElgaDemo() {
   const scenes = Array.from(box.querySelectorAll(".demo-scene"));
   if (!scenes.length) return;
   const steps = Array.from(box.querySelectorAll(".elga__step"));
-  const bars = Array.from(box.querySelectorAll(".elga__progress span"));
+  const bars = Array.from(box.querySelectorAll(".elga__progress button"));
 
   // Dauer je Szene in Millisekunden. Szene 3 (die Erklärung) bleibt am längsten stehen,
   // damit der Text gelesen werden kann.
   const SCENE_MS = [3600, 3600, 6200, 3400];
   let timer = null;
   let current = 0;
+  let inView = false;
 
   function show(step) {
     const previous = current;
@@ -382,6 +384,8 @@ function initElgaDemo() {
     bars.forEach((bar, index) => {
       bar.classList.remove("is-active");
       bar.classList.toggle("is-done", index < step - 1);
+      if (index === step - 1) bar.setAttribute("aria-current", "step");
+      else bar.removeAttribute("aria-current");
     });
     // Links steht nur der Schritt zur Szene: der bisherige geht ("is-leaving"), der neue kommt.
     steps.forEach((item, index) => {
@@ -393,22 +397,30 @@ function initElgaDemo() {
     void box.offsetWidth;
     scenes[step - 1].classList.add("is-live");
     if (bars[step - 1]) bars[step - 1].classList.add("is-active");
-    timer = window.setTimeout(
-      () => show((step % scenes.length) + 1),
-      SCENE_MS[step - 1] || 4000
-    );
+    // Weiter geht es von selbst nur, solange der Kasten im Bild ist.
+    window.clearTimeout(timer);
+    timer = inView
+      ? window.setTimeout(() => show((step % scenes.length) + 1), SCENE_MS[step - 1] || 4000)
+      : null;
   }
 
   function start() {
+    inView = true;
     if (timer) return;
     box.classList.add("is-playing");
     show(1);
   }
 
   function stop() {
+    inView = false;
     window.clearTimeout(timer);
     timer = null;
   }
+
+  // Klick auf einen Balken: zu diesem Schritt springen, danach läuft es von dort weiter.
+  bars.forEach((bar, index) => {
+    bar.addEventListener("click", () => show(index + 1));
+  });
 
   const observer = new IntersectionObserver(
     (entries) => {

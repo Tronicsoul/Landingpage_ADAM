@@ -1342,36 +1342,65 @@ section {
 .elga.is-playing .elga__progress {
   display: flex;
   gap: 6px;
-  max-width: 300px;
-  margin: 0 0 var(--space-6);
+  max-width: 320px;
+  margin: 0 0 var(--space-4);
 }
 
 /* Vier Balken wie bei Stories: fertige Schritte sind gefüllt, der laufende füllt sich über die
-   Dauer seiner Szene (--scene-ms setzt das Skript). */
-.elga__progress span {
+   Dauer seiner Szene (--scene-ms setzt das Skript). Jeder Balken ist ein Knopf: ein Klick
+   springt zu diesem Schritt. Die Klickfläche ist höher als der sichtbare Balken. */
+.elga__progress button {
   position: relative;
   flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--border);
-  overflow: hidden;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
 }
 
-.elga__progress span::after {
+.elga__progress button::before,
+.elga__progress button::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 4px;
+  border-radius: 2px;
+  transition: top 0.15s ease, height 0.15s ease;
+}
+
+.elga__progress button::before {
+  background: var(--border);
+}
+
+.elga__progress button::after {
   background: var(--link, var(--button-bg));
   transform: scaleX(0);
   transform-origin: left;
 }
 
-.elga__progress span.is-done::after {
+.elga__progress button:hover::before,
+.elga__progress button:hover::after,
+.elga__progress button:focus-visible::before,
+.elga__progress button:focus-visible::after {
+  top: 10px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.elga__progress button:focus-visible {
+  outline: 2px solid var(--link, var(--button-bg));
+  outline-offset: 2px;
+}
+
+.elga__progress button.is-done::after {
   transform: scaleX(1);
 }
 
-.elga__progress span.is-active::after {
+.elga__progress button.is-active::after {
   animation: elga-fill var(--scene-ms, 4s) linear both;
 }
 
