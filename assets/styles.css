@@ -264,21 +264,31 @@ summary:focus-visible {
 .nav-links {
   display: none;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-2);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+/* Sprungmarken als Pillen: Sie führen nur innerhalb der Seite zu einem Abschnitt. */
 .nav-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--card-bg);
   color: var(--text);
   text-decoration: none;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 16px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .nav-links a:hover {
-  color: var(--button-bg);
+  background: var(--surface);
+  border-color: var(--button-bg);
 }
 
 .nav-actions {
@@ -465,10 +475,99 @@ body[data-audience="patient"] [data-hide-for="patient"] {
   display: none;
 }
 
-/* Problem-Sektion (nur Ärzt:innen & Fachpersonal) */
+/* Kampagnenvarianten (A/B-Test in der Ärzte-Ansicht): body[data-variant] zeigt genau eine Variante. */
+
+body [data-variant-content] {
+  display: none;
+}
+
+body[data-variant="a"] [data-variant-content="a"],
+body[data-variant="b"] [data-variant-content="b"] {
+  display: block;
+}
+
+/* Kampagnenmodus (Aufruf über einen Ärzte-Link): Zielgruppen-Umschalter, Handy-Menü und
+   Funktions-Sprungmarken entfallen. Die Kopfleiste mit Sprungmarken und Button bleibt. */
+
+body[data-campaign] .audience-bar,
+body[data-campaign] .nav-toggle,
+body[data-campaign] .mobile-menu,
+body[data-campaign] .feature-nav {
+  display: none;
+}
+
+body[data-campaign] section[id] {
+  scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+}
+
+/* Ärzte-Ansicht: Der Button in der Kopfleiste ist immer sichtbar und wiederholt den Hero-Button
+   mit gleichem Text. Solange der Hero-Button im Bild ist (body.hero-cta-in-view, gesetzt in
+   script.js), ist er nur ein Umriss, damit nie zwei gefüllte Haupt-Buttons gleichzeitig zu
+   sehen sind. Scrollt der Hero-Button aus dem Bild, wird der Kopfleisten-Button gefüllt. */
+
+.nav-cta {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+body[data-audience="aerzte"] .nav-cta {
+  border: 2px solid var(--button-bg);
+}
+
+body[data-audience="aerzte"].hero-cta-in-view .nav-cta {
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+}
+
+body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
+  background: var(--surface);
+}
+
+/* Der Button-Text der Ärzte-Ansicht ist lang: Zwischen 860 und 1099 px passen Sprungmarken
+   und Button nicht nebeneinander, dann hat der Button Vorrang. */
+
+@media (min-width: 860px) and (max-width: 1099px) {
+  body[data-audience="aerzte"] .nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 859px) {
+  body[data-campaign] .nav-cta {
+    display: inline-flex;
+    font-size: 15px;
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+  }
+  body[data-campaign] .theme-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  body[data-campaign] .nav-cta {
+    font-size: 14px;
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (max-width: 350px) {
+  body[data-campaign] .brand__name {
+    display: none;
+  }
+}
+
+/* Vorher/Nachher-Sektion (nur Ärzt:innen & Fachpersonal) */
 
 .problem {
   background: var(--surface);
+}
+
+/* Auf dem getönten Hintergrund dieser Sektion wäre das Etikett sonst unsichtbar
+   (gleiche Farbe wie die Fläche). So sieht es aus wie das Etikett bei "Leistungen". */
+.problem .eyebrow,
+.trust .eyebrow {
+  background: var(--background);
 }
 
 .problem .section-header {
@@ -477,62 +576,12 @@ body[data-audience="patient"] [data-hide-for="patient"] {
   margin: 0 0 var(--space-10);
 }
 
-.pain-grid {
-  display: grid;
-  gap: var(--space-5);
-  grid-template-columns: 1fr;
-  margin-bottom: var(--space-10);
-}
-
-@media (min-width: 760px) {
-  .pain-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.pain-card {
-  background: var(--card-bg);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-card);
-}
-
-.pain-card__icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--error-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--error);
-  margin-bottom: var(--space-4);
-}
-
-.pain-card__icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-.pain-card h3 {
-  font-size: 18px;
-  margin: 0 0 var(--space-2);
-}
-
-.pain-card p {
-  font-size: 15.5px;
-  line-height: 1.6;
-  color: var(--text-muted);
-  margin: 0;
-}
-
 /* Vorher/Nachher-Vergleich */
 
 .compare-grid {
   display: grid;
   gap: var(--space-6);
   align-items: stretch;
-  margin-bottom: var(--space-8);
 }
 
 @media (min-width: 760px) {
@@ -550,9 +599,10 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 }
 
 .compare-card__bar {
+  margin: 0;
   padding: var(--space-4) var(--space-6);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .compare-card--before {
@@ -578,28 +628,6 @@ body[data-audience="patient"] [data-hide-for="patient"] {
   background: var(--card-bg);
 }
 
-.chaos-notes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  align-items: flex-start;
-}
-
-.chaos-note {
-  background: var(--background);
-  border: 1px dashed var(--muted);
-  border-radius: var(--radius-sm);
-  padding: var(--space-3) var(--space-4);
-  font-size: 14.5px;
-  color: var(--text-muted);
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06);
-}
-
-.chaos-note:nth-child(1) { transform: rotate(-3deg); }
-.chaos-note:nth-child(2) { transform: rotate(2deg); margin-top: var(--space-3); }
-.chaos-note:nth-child(3) { transform: rotate(-2deg); }
-.chaos-note:nth-child(4) { transform: rotate(3deg); margin-top: var(--space-2); }
-
 .clear-list {
   list-style: none;
   margin: 0;
@@ -612,11 +640,13 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 .clear-list li {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-3);
+  align-items: baseline;
+  gap: var(--space-4);
   background: var(--surface);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
-  font-size: 14.5px;
+  font-size: 15.5px;
 }
 
 .clear-list li span:first-child {
@@ -625,62 +655,71 @@ body[data-audience="patient"] [data-hide-for="patient"] {
 
 .clear-list li span:last-child {
   font-weight: 600;
+  text-align: right;
 }
 
-.problem-bridge {
-  text-align: center;
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--text);
+/* "Ohne ADAM": dieselben Zeilen, aber offen und zurückgenommen statt gefüllt */
+.clear-list--open li {
+  background: transparent;
+  border-color: var(--border);
 }
 
-/* Patientenstimme (illustrativ, Pioneer-/CTA-Sektion) */
+.clear-list--open li span:last-child {
+  font-weight: 400;
+  color: var(--text-muted);
+}
 
-.patient-voice {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-4);
-  max-width: 560px;
+/* Drei Schritte (Angebots-Sektion der Ärzte-Ansicht) */
+
+.steps {
+  list-style: none;
   margin: 0 auto var(--space-8);
+  padding: 0;
+  max-width: 980px;
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
   text-align: left;
 }
 
-.patient-voice__avatar {
-  flex: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--surface-strong);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--button-bg);
+@media (min-width: 760px) {
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.patient-voice__avatar svg {
-  width: 18px;
-  height: 18px;
-}
-
-.patient-voice__bubble {
+.step {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  border-top-left-radius: var(--space-1);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-6);
   box-shadow: var(--shadow-card);
 }
 
-.patient-voice__bubble p {
-  margin: 0 0 var(--space-2);
+.step__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--button-bg);
+  color: var(--text-on-primary);
+  font-weight: 800;
   font-size: 16px;
-  line-height: 1.55;
-  font-style: italic;
+  margin-bottom: var(--space-4);
 }
 
-.patient-voice__meta {
-  font-size: 13px;
-  color: var(--muted);
+.step h3 {
+  font-size: 18px;
+  margin: 0 0 var(--space-2);
+}
+
+.step p {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 /* Benefit-Chips (Pioneer-/CTA-Sektion) */
@@ -847,6 +886,27 @@ section {
   flex: none;
 }
 
+/* Hero der Ärzte-Ansicht: Überschrift, ein Satz, Button und eine Zeile zum Angebot */
+
+.hero [data-variant-content] p.lead {
+  margin-bottom: var(--space-8);
+  text-wrap: pretty; /* kein einzelnes Wort in der letzten Zeile */
+}
+
+.hero__actions--tight {
+  margin-bottom: var(--space-3);
+}
+
+.hero__offer {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.hero__offer strong {
+  color: var(--text);
+}
+
 /* App-Vorschau / Mockups (eigenständige, vom System inspirierte Darstellung) */
 
 .app-preview {
@@ -987,8 +1047,13 @@ section {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: var(--space-4);
   border-bottom: 1px solid var(--border);
   padding-bottom: var(--space-2);
+}
+
+.app-detail span:last-child {
+  text-align: right;
 }
 
 .app-detail span:first-child {
@@ -1134,6 +1199,200 @@ section {
   margin-top: 4px;
 }
 
+/* Leistungen (Ärzte-Ansicht): Überschrift, drei Kästchen, darunter der Hinweis zu ELGA */
+
+.overview__header {
+  max-width: 720px;
+  margin: 0 0 var(--space-8);
+}
+
+.overview__header .section-intro {
+  margin-bottom: 0;
+}
+
+/* Gegenüberstellung mit ELGA unter den drei Kästchen: ein breites Kästchen im selben Stil,
+   links ELGA (zurückgenommen), rechts ADAM. Die Listen nutzen den Stil der Leistungs-Kästchen. */
+.elga {
+  margin-top: var(--space-5);
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+}
+
+.elga__title {
+  margin: 0 0 var(--space-1);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.elga__intro {
+  margin: 0 0 var(--space-5);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.elga__cols {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 700px) {
+  .elga__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-10);
+  }
+}
+
+.elga .kicker {
+  margin-bottom: 0;
+}
+
+.elga .service__list {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+}
+
+/* Etikett mit Punkt (über der Hero-Überschrift und über jedem Leistungs-Eintrag) */
+.kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 var(--space-4);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.kicker::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.kicker--muted {
+  color: var(--text-muted);
+}
+
+.kicker--muted::before {
+  background: var(--muted);
+}
+
+/* Leistungen der Ärzte-Ansicht: drei zurückhaltende Kästchen nebeneinander.
+   Je Kästchen: Etikett, Kernsatz und darunter drei Punkte in kleiner Schrift. */
+.services {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 860px) {
+  .services {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.service {
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+}
+
+.service .kicker {
+  margin-bottom: var(--space-3);
+}
+
+/* Nebeneinander: Etikett, Kernsatz und Punkte stehen in allen drei Kästchen auf gleicher Höhe,
+   auch wenn ein Kernsatz länger umbricht. */
+@media (min-width: 860px) {
+  @supports (grid-template-rows: subgrid) {
+    .service {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+      align-content: start;
+    }
+
+    .service__list {
+      align-self: start;
+    }
+  }
+}
+
+.service__claim {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.service__list {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-4) 0 0;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.service__list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.service__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+/* Einblenden beim Scrollen: script.js setzt js-reveal am <html> und is-visible am Kästchen,
+   sobald es im Bild ist. Der Übergang steht nur am sichtbaren Zustand, damit beim Laden
+   nichts ausgeblendet wird. */
+.js-reveal .service {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.js-reveal .service.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+@media (min-width: 860px) {
+  .js-reveal .service.is-visible:nth-child(2) {
+    transition-delay: 0.1s;
+  }
+
+  .js-reveal .service.is-visible:nth-child(3) {
+    transition-delay: 0.2s;
+  }
+}
+
 /* Vertrauens-Sektion */
 
 .trust {
@@ -1227,6 +1486,11 @@ section {
   font-weight: 600;
 }
 
+.form-label-optional {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 .form-field input,
 .form-field select {
   font-family: inherit;
@@ -1290,6 +1554,11 @@ section {
   font-weight: 600;
   min-height: 1.2em;
   margin: 0;
+}
+
+/* Fehlermeldung zum Versand: nimmt keinen Platz ein, solange sie leer ist */
+.form-error[data-submit-error]:empty {
+  display: none;
 }
 
 .form-fineprint {
@@ -1506,6 +1775,234 @@ section {
   font-size: 14px;
   font-style: italic;
   color: var(--text-muted);
+}
+
+/* Cookie-Banner (assets/consent.js). "Alle akzeptieren" und "Nur notwendige" sehen bewusst
+   gleich aus und sind nicht gefüllt: Ablehnen darf nicht schwerer sein als Zustimmen, und der
+   gefüllte Haupt-Button der Seite soll der einzige bleiben. */
+
+.consent {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 300;
+  padding: var(--space-4);
+  pointer-events: none;
+}
+
+.consent__inner {
+  pointer-events: auto;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-8);
+  max-height: calc(100vh - var(--space-8));
+  overflow-y: auto;
+}
+
+.consent__copy {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.consent__copy h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.consent__copy p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.consent__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.consent__options[hidden] {
+  display: none;
+}
+
+.consent__option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 15.5px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.consent__option input {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  margin: 1px 0 0;
+  accent-color: var(--button-bg);
+}
+
+.consent__option strong {
+  display: block;
+}
+
+.consent__option span span {
+  color: var(--text-muted);
+}
+
+.consent__actions {
+  flex: 0 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.consent__btn {
+  background: transparent;
+  color: var(--text);
+  border: 2px solid var(--button-bg);
+  min-height: 48px;
+}
+
+.consent__btn:hover {
+  background: var(--surface);
+}
+
+.consent__btn[hidden] {
+  display: none;
+}
+
+.consent__link,
+.footer-link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.consent__link {
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .consent {
+    padding: var(--space-2);
+  }
+  .consent__inner {
+    padding: var(--space-4);
+    gap: var(--space-3);
+    border-radius: var(--radius-lg);
+  }
+  .consent__copy {
+    flex-basis: 100%;
+  }
+  .consent__copy p,
+  .consent__option {
+    font-size: 14.5px;
+  }
+  .consent__actions {
+    flex: 1 1 100%;
+    gap: var(--space-2);
+  }
+  /* Zustimmen und Ablehnen nebeneinander, gleich breit */
+  .consent__btn {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 46px;
+    padding: var(--space-2) var(--space-3);
+    font-size: 15px;
+  }
+  .consent__link {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+}
+
+/* Schmale Handys (bis 400 px): Die Seite scrollte vorher seitlich, weil die Dashboard-Vorschau,
+   lange Buttons und der Zielgruppen-Umschalter breiter als der Bildschirm waren.
+   Steht bewusst am Ende der Datei, damit es die Regeln weiter oben überschreibt. */
+
+.hero__inner > *,
+.feature-section__inner > * {
+  min-width: 0;
+}
+
+.app-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.audience-tabs {
+  max-width: 100%;
+}
+
+.footer-grid > * {
+  min-width: 0;
+}
+
+.site-footer a {
+  overflow-wrap: anywhere;
+}
+
+/* Lange Button-Texte dürfen auf Handys umbrechen, statt über den Rand zu laufen. */
+@media (max-width: 560px) {
+  .btn {
+    white-space: normal;
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.25;
+  }
+}
+
+@media (max-width: 400px) {
+  .app-preview__body {
+    padding-inline: var(--space-4);
+  }
+  .app-stat {
+    padding: var(--space-3) 2px;
+  }
+  .app-stat span {
+    font-size: 11.5px;
+  }
+  .audience-tab {
+    padding-inline: var(--space-3);
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 350px) {
+  .audience-tab svg {
+    display: none;
+  }
+}
+
+/* Lange Wörter in Überschriften (z. B. "Zusammenfassungen") passen auf sehr schmalen
+   Handys sonst nicht in die Zeile. */
+@media (max-width: 380px) {
+  .section-title {
+    font-size: 26px;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
 }
 
 .visually-hidden {

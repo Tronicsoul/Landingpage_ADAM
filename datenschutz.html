@@ -19,6 +19,7 @@
     })();
   </script>
   <link rel="stylesheet" href="assets/styles.css" />
+  <script src="assets/consent.js"></script>
 </head>
 <body>
   <header class="site-header legal-header">
@@ -63,7 +64,22 @@
       Log-Daten werden nach 7 Tagen gelöscht.
     </p>
 
-    <h2>Webanalyse</h2>
+    <h2>Cookies und Einwilligung</h2>
+    <p>
+      Beim ersten Besuch fragen wir Sie über einen Banner, ob wir Dienste für Statistik und
+      Marketing einsetzen dürfen. Ohne Ihre Zustimmung laden wir diese Dienste nicht. Ihre
+      Auswahl speichern wir für 180 Tage im lokalen Speicher Ihres Browsers; daneben
+      speichern wir dort nur das von Ihnen gewählte Farbschema. Beides ist technisch
+      notwendig und wird nicht an uns übertragen.
+    </p>
+    <p>
+      Sie können Ihre Auswahl jederzeit über den Link „Cookie-Einstellungen“ am Ende jeder
+      Seite ändern oder widerrufen. Rechtsgrundlage für das Speichern und Auslesen von
+      Informationen auf Ihrem Endgerät ist Ihre Einwilligung (§ 165 Abs. 3 TKG 2021), für die
+      anschließende Verarbeitung Art. 6 Abs. 1 lit. a DSGVO.
+    </p>
+
+    <h2>Webanalyse ohne Cookies</h2>
     <p>
       Wir nutzen zur statistischen Auswertung der Website sowie zur Analyse des
       Nutzungsverhaltens (sog. Heatmaps) das cookiefreie Tool Umami. Dabei werden
@@ -77,17 +93,46 @@
       und fortlaufenden Verbesserung unserer Website (Art. 6 Abs. 1 lit. f DSGVO).
     </p>
 
-    <h2>Online-Werbung</h2>
+    <!--
+      TEAM: Die drei folgenden Abschnitte beschreiben Dienste, die erst laufen, wenn in
+      assets/consent.js eine Tag-Manager-ID eingetragen und der Dienst im Tag Manager aktiviert
+      ist. Vor dem Veröffentlichen nur die Dienste stehen lassen, die wirklich aktiv sind, und
+      die Platzhalter in eckigen Klammern ersetzen.
+    -->
+    <h2>Google Tag Manager</h2>
+    <p>
+      Wenn Sie Statistik oder Marketing zustimmen, laden wir den Google Tag Manager der
+      Google Ireland Limited (Gordon House, Barrow Street, Dublin 4, Irland). Er steuert,
+      welche der folgenden Dienste geladen werden, und erstellt selbst keine Nutzungsprofile.
+      Beim Laden wird Ihre IP-Adresse an Google übertragen.
+    </p>
+
+    <h2>Statistik</h2>
+    <p>
+      Mit Ihrer Zustimmung zu „Statistik“ nutzen wir Google Analytics 4 (Google Ireland
+      Limited). Der Dienst erfasst, wie die Seite genutzt wird, zum Beispiel aufgerufene
+      Abschnitte, Klicks auf Schaltflächen, die ungefähre Herkunft und die Art des Geräts,
+      und setzt dafür Cookies. Die Daten werden nach [AUFBEWAHRUNGSDAUER LAUT EINSTELLUNG IN
+      GOOGLE ANALYTICS] gelöscht.
+    </p>
+
+    <h2>Marketing</h2>
     <p>
       Wir bewerben ADAM über Google Ads und gegebenenfalls Meta Ads. Die Anzeigen verlinken
-      auf diese Website. Aktuell bindet diese Seite selbst keine Werbe- oder Tracking-Cookies
-      von Google oder Meta ein; die Wirksamkeit der Anzeigen wird von den jeweiligen
-      Plattformen anhand der Klicks auf den Anzeigenlink ausgewertet.
+      auf diese Website. Mit Ihrer Zustimmung zu „Marketing“ messen wir, ob ein Klick auf
+      eine Anzeige zu einer Anmeldung führt (Conversion-Tracking). Dafür nutzen wir Google
+      Ads (Google Ireland Limited) und den Meta Pixel (Meta Platforms Ireland Limited,
+      Merrion Road, Dublin 4, Irland). Die Dienste setzen Cookies und können den Besuch
+      dieser Seite Ihrem Konto bei Google oder Meta zuordnen.
+    </p>
+    <p>
+      Ohne Ihre Zustimmung werten die Plattformen nur die Klicks auf den Anzeigenlink aus;
+      auf dieser Seite wird dann nichts gemessen.
     </p>
     <div class="legal-callout">
-      Sollten wir künftig Conversion-Tracking oder Remarketing-Cookies einsetzen, holen wir
-      vorab Ihre Einwilligung über ein Cookie-Banner ein und aktualisieren diese Erklärung
-      entsprechend.
+      Google und Meta können Daten auch in den USA verarbeiten. Beide Unternehmen sind nach
+      dem EU-U.S. Data Privacy Framework zertifiziert, für das die Europäische Kommission am
+      10. Juli 2023 ein angemessenes Datenschutzniveau festgestellt hat.
     </div>
 
     <h2>Warteliste</h2>
@@ -99,9 +144,9 @@
     </p>
     <p>
       Melden Sie sich über den Bereich „Ärzt:innen &amp; Fachpersonal“ an, verarbeiten wir
-      zusätzlich Ihre freiwilligen Angaben zu Einrichtungstyp (z. B. Praxis, Fachpraxis,
-      Krankenhaus, Reha) und wichtigstem Nutzen, um unser Angebot gezielter
-      weiterzuentwickeln.
+      zusätzlich Ihre Angabe zum Beruf, Ihre freiwillige Angabe dazu, was Ihnen wichtiger
+      wäre (mehr Überblick oder mehr Zeit), sowie die Variante der Seite, über die Sie sich
+      angemeldet haben, um unser Angebot gezielter weiterzuentwickeln.
     </p>
     <p>
       Sie können diese Einwilligung jederzeit über den Abmeldelink in unseren E-Mails oder
@@ -118,8 +163,9 @@
     <h2>Empfänger &amp; Weitergabe</h2>
     <p>
       Zur Bereitstellung der Website und für den E-Mail-Versand setzen wir weisungsgebundene
-      Dienstleister ein (Auftragsverarbeiter gem. Art. 28 DSGVO). Alle Daten werden
-      ausschließlich innerhalb der EU/EWR verarbeitet.
+      Dienstleister ein (Auftragsverarbeiter gem. Art. 28 DSGVO), die Ihre Daten innerhalb der
+      EU/EWR verarbeiten. Für die Dienste von Google und Meta gelten die Abschnitte
+      „Statistik“ und „Marketing“.
     </p>
 
     <h2>Ihre Rechte</h2>
@@ -160,6 +206,7 @@
           <ul>
             <li><a href="impressum.html">Impressum</a></li>
             <li><a href="datenschutz.html">Datenschutzerklärung</a></li>
+            <li><button type="button" class="footer-link-button" data-consent-open>Cookie-Einstellungen</button></li>
           </ul>
         </div>
       </div>

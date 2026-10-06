@@ -1,9 +1,104 @@
-// Warteliste: Client-seitige Validierung und optimistische Erfolgsanzeige.
+// A/B-Kampagne für Ärzt:innen
 //
-// Hinweis für die Weiterentwicklung: Es ist noch kein Backend/E-Mail-Dienst angebunden.
-// Sobald ein Endpunkt existiert (eigene API, Newsletter-Anbieter mit Double-Opt-in),
-// den Platzhalter unten in initWaitlistForm() durch einen echten Request ersetzen.
-// Jedes Formular sendet ein verstecktes "zielgruppe"-Feld (patient/aerzte) mit.
+// Kampagnenlinks (je Anzeige ein Link, der Anzeigentext soll zur Überschrift der Variante passen):
+//   ?v=a   Effektivität: "Mehr Überblick für ärztliche Entscheidungen"
+//   ?v=b   Effizienz: "Mehr Zeit für das ärztliche Gespräch"
+//   ?zielgruppe=aerzte   Ärzte-Link ohne Variante: zeigt Variante a, zählt aber nicht zum Test
+// Jeder dieser Links zeigt die Ärzte-Ansicht ohne Zielgruppen-Umschalter.
+// Den Umschalter gibt es nur beim Aufruf ohne Parameter.
+// Zielgruppe und Variante setzt das Inline-Skript am Anfang von <body> in index.html,
+// die Varianten-Texte stehen dort im Hero (data-variant-content).
+// Button, Angebot und alles unterhalb des Heros sind in beiden Varianten gleich.
+//
+// Gemessen wird je Variante:
+//   - Anmeldungen: das Ärzte-Formular sendet das versteckte Feld "variante" mit
+//     ("a", "b" oder "direkt").
+//   - Klicks und Anmeldungen als Ereignisse "cta_click" und "waitlist_submit" an Umami und
+//     an den Tag Manager, sobald diese in assets/consent.js aktiviert sind.
+
+// Liefert "a" oder "b" nur, wenn die Seite über einen Varianten-Link geöffnet wurde. Alle
+// anderen Besuche der Ärzte-Ansicht sehen zwar Variante a, werden aber als "direkt" gezählt,
+// damit sie das Ergebnis von A nicht verfälschen.
+function getVariant() {
+  const body = document.body;
+  return body.getAttribute("data-variant-source") === "link" ? body.getAttribute("data-variant") : "direkt";
+}
+
+function getAudience() {
+  return document.body.getAttribute("data-audience") || "patient";
+}
+
+function track(eventName, data) {
+  try {
+    // Umami (cookiefrei), falls eingebunden
+    if (window.umami && typeof window.umami.track === "function") {
+      window.umami.track(eventName, data);
+    }
+    // Google Tag Manager: Die Ereignisse landen nur in der Liste dataLayer auf dieser Seite.
+    // Verschickt wird erst etwas, wenn der Tag Manager nach Zustimmung geladen wurde (consent.js).
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push(Object.assign({ event: eventName }, data));
+    }
+  } catch (e) {
+    /* Analyse darf die Seite nie stören */
+  }
+}
+
+function eventData(extra) {
+  const data = { zielgruppe: getAudience() };
+  if (data.zielgruppe === "aerzte") data.variante = getVariant();
+  return Object.assign(data, extra || {});
+}
+
+document.querySelectorAll("[data-track]").forEach((link) => {
+  link.addEventListener("click", () => {
+    track("cta_click", eventData({ position: link.dataset.track }));
+  });
+});
+
+document.querySelectorAll("[data-variant-field]").forEach((field) => {
+  field.value = getVariant();
+});
+
+// Button in der Kopfleiste (Ärzte-Ansicht): Er ist immer sichtbar und wiederholt den Hero-Button.
+// Solange der Hero-Button im Bild ist, trägt <body> die Klasse "hero-cta-in-view" und das CSS
+// zeigt den Kopfleisten-Button nur als Umriss. Danach wird er gefüllt, sodass immer genau ein
+// gefüllter Haupt-Button zu sehen ist.
+
+function initHeaderCta() {
+  const heroButtons = document.querySelectorAll('.hero [data-track="hero"]');
+  if (!heroButtons.length || !("IntersectionObserver" in window)) {
+    document.body.classList.remove("hero-cta-in-view");
+    return;
+  }
+
+  const inView = new Set();
+  const headerHeight = document.querySelector(".site-header")?.offsetHeight || 76;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) inView.add(entry.target);
+        else inView.delete(entry.target);
+      });
+      document.body.classList.toggle("hero-cta-in-view", inView.size > 0);
+    },
+    // Unter der fixierten Kopfleiste gilt der Hero-Button als nicht mehr sichtbar.
+    { rootMargin: `-${headerHeight}px 0px 0px 0px` }
+  );
+  heroButtons.forEach((button) => observer.observe(button));
+}
+
+initHeaderCta();
+
+// Warteliste: Client-seitige Validierung und Versand.
+//
+// WICHTIG: Solange WAITLIST_ENDPOINT leer ist, wird NICHTS gespeichert und keine
+// Bestätigungsmail verschickt. Die Seite zeigt dann trotzdem die Erfolgsmeldung
+// (bisheriges Platzhalter-Verhalten). Vor dem Start der Kampagne hier die Adresse eines
+// Endpunkts eintragen, der die Felder als JSON per POST annimmt und das Double-Opt-in
+// auslöst (eigene API oder Newsletter-Anbieter). Felder: name, email, zielgruppe, consent
+// sowie im Ärzte-Formular beruf, problem und variante.
+const WAITLIST_ENDPOINT = "";
 
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -22,6 +117,7 @@ function setFieldError(field, errorEl, message) {
 function initWaitlistForm(form) {
   const successEl = form.querySelector(".form-success");
   const submitBtn = form.querySelector('button[type="submit"]');
+  const submitErrorEl = form.querySelector("[data-submit-error]");
   const originalLabel = submitBtn.textContent;
 
   form.addEventListener("submit", async function (event) {
@@ -64,19 +160,44 @@ function initWaitlistForm(form) {
 
     submitBtn.disabled = true;
     submitBtn.textContent = "Wird gesendet …";
+    if (submitErrorEl) submitErrorEl.textContent = "";
+
+    const variantField = form.querySelector("[data-variant-field]");
+    if (variantField) variantField.value = getVariant();
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const submittedAudience = payload.zielgruppe || getAudience();
 
     try {
-      // Platzhalter für die echte Anbindung, siehe Hinweis oben.
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (WAITLIST_ENDPOINT) {
+        const response = await fetch(WAITLIST_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error("Anmeldung fehlgeschlagen: " + response.status);
+      } else {
+        // Platzhalter, siehe Hinweis bei WAITLIST_ENDPOINT: Es wird nichts gespeichert.
+        console.warn("ADAM-Warteliste: WAITLIST_ENDPOINT ist leer, die Anmeldung wurde nicht gespeichert.");
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      const submitData = { zielgruppe: submittedAudience };
+      if (payload.variante) submitData.variante = payload.variante;
+      track("waitlist_submit", submitData);
 
       form.classList.add("is-submitted");
       successEl.classList.add("is-visible");
       successEl.setAttribute("role", "status");
       successEl.focus();
       form.reset();
+      if (variantField) variantField.value = getVariant();
     } catch (error) {
       submitBtn.disabled = false;
       submitBtn.textContent = originalLabel;
+      if (submitErrorEl) {
+        submitErrorEl.textContent =
+          "Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie uns eine Mail.";
+      }
     }
   });
 }
@@ -86,40 +207,33 @@ document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
 // Zielgruppen-Umschalter (Patient:innen / Ärzt:innen & Fachpersonal)
 //
 // Steuert body[data-audience], damit CSS die passenden Inhalte je Abschnitt ein-/ausblendet.
-// Unterstützt Deep-Links für Kampagnen über ?zielgruppe=aerzte (bzw. ?zielgruppe=patient).
+// Die Start-Zielgruppe setzt das Inline-Skript am Anfang von <body> aus ?zielgruppe= bzw. ?v=.
+
+const PAGE_TITLES = {
+  patient: "ADAM – Ihre Gesundheit einfach im Überblick",
+  aerzte: "ADAM für Praxen – Patient:innen kommen vorbereitet zum Termin",
+};
 
 function initAudienceTabs() {
   const tabs = document.querySelectorAll(".audience-tab");
   if (!tabs.length) return;
 
-  function setAudience(audience, updateUrl) {
+  // Der Umschalter schreibt die Zielgruppe bewusst nicht mehr in die Adresse: Ein Link mit
+  // ?zielgruppe=aerzte blendet den Umschalter aus, und wer hier nur umgeschaltet hat, soll
+  // nach dem Neuladen nicht ohne Umschalter in der Ärzte-Ansicht festhängen.
+  function setAudience(audience) {
     document.body.setAttribute("data-audience", audience);
+    document.title = PAGE_TITLES[audience] || PAGE_TITLES.patient;
     tabs.forEach((tab) => {
       tab.setAttribute("aria-pressed", String(tab.dataset.audience === audience));
     });
-    if (updateUrl) {
-      try {
-        const url = new URL(window.location.href);
-        url.searchParams.set("zielgruppe", audience);
-        window.history.replaceState({}, "", url);
-      } catch (e) {
-        /* URL-API evtl. eingeschränkt – kein kritischer Fehler */
-      }
-    }
   }
 
   tabs.forEach((tab) => {
-    tab.addEventListener("click", () => setAudience(tab.dataset.audience, true));
+    tab.addEventListener("click", () => setAudience(tab.dataset.audience));
   });
 
-  let initial = "patient";
-  try {
-    const requested = new URLSearchParams(window.location.search).get("zielgruppe");
-    if (requested === "aerzte" || requested === "patient") initial = requested;
-  } catch (e) {
-    /* kein URLSearchParams – Standard "patient" bleibt */
-  }
-  setAudience(initial, false);
+  setAudience(getAudience() === "aerzte" ? "aerzte" : "patient");
 }
 
 initAudienceTabs();
@@ -191,3 +305,40 @@ function initThemeToggle() {
 }
 
 initThemeToggle();
+
+// Formularfrage zum A/B-Test ("Was wäre Ihnen wichtiger?"): Die Reihenfolge der beiden
+// Antworten wird je Seitenaufruf zufällig getauscht, damit nicht immer die obere bevorzugt wird.
+
+function initAnswerOrder() {
+  const select = document.getElementById("problem-aerzte");
+  if (!select) return;
+  const first = select.querySelector('option[value="effektivitaet"]');
+  const second = select.querySelector('option[value="effizienz"]');
+  if (first && second && Math.random() < 0.5) select.insertBefore(second, first);
+}
+
+initAnswerOrder();
+
+// Leistungen der Ärzte-Ansicht: die drei Kästchen beim Scrollen einmalig sanft einblenden.
+// Ohne JavaScript, ohne IntersectionObserver oder bei "Bewegung reduzieren" ist alles sofort sichtbar.
+
+function initReveal() {
+  const items = document.querySelectorAll(".service");
+  if (!items.length || !("IntersectionObserver" in window)) return;
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  document.documentElement.classList.add("js-reveal");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.2 }
+  );
+  items.forEach((item) => observer.observe(item));
+}
+
+initReveal();
