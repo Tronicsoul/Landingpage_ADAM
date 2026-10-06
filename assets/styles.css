@@ -1366,6 +1366,8 @@ section {
   font-weight: 600;
   line-height: 1.4;
   color: var(--text);
+  /* Begrenzte Breite, damit alle drei Kernsätze gleichmäßig auf zwei Zeilen umbrechen. */
+  max-width: 15em;
   text-wrap: balance;
 }
 
