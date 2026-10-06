@@ -1729,244 +1729,222 @@ body[data-audience="aerzte"] .hero__offer {
   margin-bottom: 0;
 }
 
-/* ADAM und ELGA unter den drei Kästchen: links kurzer Text mit vier Schritten, rechts ein
-   bewegtes Bild in Form eines Handys, das vier Ansichten der App durchspielt. */
-.elga {
+/* Abschnitt "Wie Patient:innen ADAM anwenden": links Überschrift, vier anwählbare Schritte und
+   der Text zum gewählten Schritt, rechts ein Handy mit der passenden App-Ansicht. Schrift,
+   Gewichte, Grüntöne und Rundungen folgen dem Hero. Nichts bewegt sich von selbst. */
+.howto {
   margin-top: var(--gap-block);
   padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--card-bg);
   display: grid;
-  gap: var(--space-6);
   grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
   align-items: center;
 }
 
-@media (min-width: 760px) {
-  .elga {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-10);
-    padding: var(--space-8);
+/* Breit: Text und Handy stehen als ein Block mittig im Kasten, mit festem Abstand zueinander. */
+@media (min-width: 900px) {
+  .howto {
+    grid-template-columns: minmax(0, 580px) auto;
+    justify-content: center;
+    gap: clamp(40px, 6vw, 88px);
+    padding: var(--space-10) var(--space-8);
   }
 }
 
-/* Breite Bildschirme: das Handy steht mittig in der rechten Hälfte statt ganz am Rand. */
-@media (min-width: 1000px) {
-  .elga {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    padding-inline: var(--space-10);
-  }
+.howto__heading {
+  margin: 0 0 var(--space-2);
+  font-size: clamp(24px, 2.3vw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
-.elga__title {
-  margin: 0 0 var(--space-1);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.elga__intro {
-  margin: 0 0 var(--space-5);
-  font-size: 16px;
+.howto__sub {
+  margin: 0 0 var(--space-6);
+  font-size: 19px;
   line-height: 1.5;
   color: var(--text-muted);
 }
 
-.elga__steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--space-4);
-  counter-reset: elga-step;
-}
-
-.elga__step {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-.elga__step::before {
-  counter-increment: elga-step;
-  content: counter(elga-step);
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  background: var(--surface);
-  color: var(--text);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.elga__step strong {
-  display: block;
-  font-size: 16px;
-  color: var(--text);
-}
-
-/* Bühne: Sobald das Skript läuft ("is-playing"), steht links nur noch der Schritt zur gerade
-   gezeigten Szene, groß geschrieben. Beim Wechsel gleitet der alte Schritt nach oben weg, der
-   neue kommt von unten scharf ins Bild. Alle vier Schritte liegen dafür in derselben Zelle,
-   so bleibt die Höhe ruhig. Ohne JavaScript oder bei "Bewegung reduzieren" bleibt die Liste
-   mit allen vier Schritten stehen. Die Texte selbst sind in beiden Fällen dieselben. */
-.elga__progress {
+/* Die vier Schritte als Raster mit zwei Spalten, auf jedem Gerät. Ohne JavaScript entfällt die
+   Auswahl, dann stehen alle vier Texte untereinander. */
+.howto__nav {
   display: none;
 }
 
-.elga.is-playing .elga__progress {
-  display: flex;
-  gap: 6px;
-  max-width: 320px;
-  margin: 0 0 var(--space-4);
+.howto.is-interactive .howto__nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
 }
 
-/* Vier Balken wie bei Stories: fertige Schritte sind gefüllt, der laufende füllt sich über die
-   Dauer seiner Szene (--scene-ms setzt das Skript). Jeder Balken ist ein Knopf: ein Klick
-   springt zu diesem Schritt. Die Klickfläche ist höher als der sichtbare Balken. */
-.elga__progress button {
-  position: relative;
-  flex: 1;
-  height: 28px;
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: none;
+.howto__tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 60px;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
   cursor: pointer;
 }
 
-.elga__progress button::before,
-.elga__progress button::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 12px;
-  height: 4px;
-  border-radius: 2px;
-  transition: top 0.15s ease, height 0.15s ease;
+.howto__num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--primary);
+  border-radius: 50%;
+  font-size: 13.5px;
+  font-weight: 700;
 }
 
-.elga__progress button::before {
-  background: var(--border);
+.howto__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.elga__progress button::after {
-  background: var(--link, var(--button-bg));
-  transform: scaleX(0);
-  transform-origin: left;
+.howto__tab:hover {
+  border-color: var(--primary);
 }
 
-.elga__progress button:hover::before,
-.elga__progress button:hover::after,
-.elga__progress button:focus-visible::before,
-.elga__progress button:focus-visible::after {
-  top: 10px;
-  height: 8px;
-  border-radius: 4px;
-}
-
-.elga__progress button:focus-visible {
+.howto__tab:focus-visible {
   outline: 2px solid var(--link, var(--button-bg));
   outline-offset: 2px;
 }
 
-.elga__progress button.is-done::after {
-  transform: scaleX(1);
+/* Gewählter Schritt: grüner Rand, gefüllte Nummer, im hellen Schema dazu die helle Fläche. */
+.howto__tab.is-active {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 
-.elga__progress button.is-active::after {
-  animation: elga-fill var(--scene-ms, 4s) linear both;
+.howto__tab.is-active .howto__num {
+  background: var(--primary);
+  color: var(--text-on-primary);
 }
 
-@keyframes elga-fill {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+/* "Schritt 1 von 4": klein und ruhig, immer an derselben Stelle über dem Titel. */
+.howto__count {
+  display: none;
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--link, var(--button-bg));
 }
 
-.elga.is-playing .elga__steps {
+.howto.is-interactive .howto__count {
+  display: block;
+}
+
+/* Alle vier Texte liegen in derselben Zelle; sichtbar ist der gewählte. So ist der Platz immer
+   der des längsten Textes und beim Wechsel springt nichts. */
+.howto__panels {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.howto.is-interactive .howto__panels {
   gap: 0;
 }
 
-.elga.is-playing .elga__step {
+.howto.is-interactive .howto__panel {
   grid-area: 1 / 1;
-  display: block;
-  max-width: 34em;
-  font-size: clamp(18px, 1.5vw, 21px);
-  line-height: 1.5;
-  opacity: 0;
-  transform: translateY(22px);
-  filter: blur(6px);
-  pointer-events: none;
+  visibility: hidden;
 }
 
-.elga.is-playing .elga__step.is-leaving {
-  transform: translateY(-22px);
-  transition: opacity 0.22s ease, transform 0.22s ease, filter 0.22s ease;
+.howto.is-interactive .howto__panel.is-active {
+  visibility: visible;
 }
 
-.elga.is-playing .elga__step.is-current {
-  opacity: 1;
-  transform: none;
-  filter: none;
-  pointer-events: auto;
-  transition: opacity 0.35s ease 0.12s, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s,
-    filter 0.35s ease 0.12s;
-}
-
-/* Statt der runden Nummer steht über dem Schritt seine Nummer als große Umrisszahl (01 bis 04). */
-.elga.is-playing .elga__step::before {
-  content: counter(elga-step, decimal-leading-zero);
-  display: block;
-  width: auto;
-  height: auto;
-  margin-bottom: var(--space-2);
-  border-radius: 0;
-  background: none;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--link, var(--button-bg));
-  font-size: clamp(54px, 6vw, 86px);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.elga.is-playing .elga__step strong {
-  margin-bottom: var(--space-3);
-  font-size: clamp(26px, 2.8vw, 40px);
+.howto__title {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(24px, 2.5vw, 34px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
-  text-wrap: balance;
 }
 
-.elga__demo {
+.howto__desc {
+  margin: 0;
+  max-width: 34em;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.howto__demo {
   justify-self: center;
   max-width: 100%;
 }
 
-.elga__note {
+.howto__note {
   margin: var(--space-3) 0 0;
   font-size: 12.5px;
   text-align: center;
   color: var(--muted);
 }
 
-/* Das bewegte Bild. Das Handy zeigt die App in ihren eigenen, hellen Farben (aus dem App-Code:
-   Hintergrund, Schrift, Fläche, Grün), unabhängig vom Farbschema der Seite. Vier Szenen liegen
-   übereinander, sichtbar ist die zum Schritt passende.
-   Grundzustand jeder Szene ist ihr Endbild. Bewegt wird nur, wenn script.js die Szene mit
-   "is-live" markiert: dann laufen die Teile vom Anfangs- zum Endbild. Ohne JavaScript und bei
-   "Bewegung reduzieren" bleibt so ein vollständiges, ruhiges Bild stehen. */
+/* Schmal: dieselbe Reihenfolge, alles etwas kleiner, damit der Abschnitt nicht zu hoch wird. */
+@media (max-width: 599px) {
+  .howto {
+    padding: var(--space-5);
+    gap: var(--space-6);
+  }
+
+  .howto__sub {
+    margin-bottom: var(--space-5);
+    font-size: 17px;
+  }
+
+  .howto.is-interactive .howto__nav {
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+
+  .howto__tab {
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-height: 0;
+    padding: 10px;
+    font-size: 13.5px;
+  }
+
+  .howto__num {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+
+  .howto__title {
+    font-size: 23px;
+  }
+
+  .howto__desc {
+    font-size: 16.5px;
+    line-height: 1.55;
+  }
+}
+
+/* Das Handy zeigt die App in ihren eigenen, hellen Farben (aus dem App-Code: Hintergrund,
+   Schrift, Fläche, Grün), unabhängig vom Farbschema der Seite. Vier Ansichten liegen
+   übereinander, sichtbar ist die zum gewählten Schritt. Jede Ansicht ist ein ruhiges Bild. */
 .demo-phone {
   --app-bg: #f9fafb;
   --app-text: #064e3b;
@@ -2004,51 +1982,24 @@ body[data-audience="aerzte"] .hero__offer {
   display: flex;
   flex-direction: column;
   opacity: 0;
-  /* Die alte Szene verschwindet schnell, die neue erscheint erst danach: so liegen nie zwei
-     Szenen lesbar übereinander. */
-  transition: opacity 0.2s ease;
+  visibility: hidden;
+  transition: opacity 0.16s ease, visibility 0s linear 0.16s;
 }
 
-.elga[data-step="1"] .demo-scene--1,
-.elga[data-step="2"] .demo-scene--2,
-.elga[data-step="3"] .demo-scene--3,
-.elga[data-step="4"] .demo-scene--4 {
+/* Beim Wechsel blendet die neue Ansicht kurz über (160 ms). */
+.howto[data-step="1"] .demo-scene--1,
+.howto[data-step="2"] .demo-scene--2,
+.howto[data-step="3"] .demo-scene--3,
+.howto[data-step="4"] .demo-scene--4 {
   opacity: 1;
-  transition: opacity 0.3s ease 0.25s;
+  visibility: visible;
+  transition: opacity 0.16s ease;
 }
 
-/* Läuft das Skript, wechseln die Szenen wie Bildschirme einer App: die neue schiebt von rechts
-   herein, die alte weicht nach links. Bei einem Sprung zu einem früheren Schritt (data-dir="back")
-   läuft es umgekehrt. Wartende Szenen stehen unsichtbar auf der Seite, von der sie kommen. */
-.elga.is-playing .demo-scene {
-  opacity: 0;
-  transform: translateX(100%);
-  transition: none;
-}
-
-.elga.is-playing[data-dir="back"] .demo-scene {
-  transform: translateX(-100%);
-}
-
-.elga.is-playing .demo-scene.is-leaving {
-  transform: translateX(-30%);
-  transition: transform 0.4s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.3s ease;
-}
-
-.elga.is-playing[data-dir="back"] .demo-scene.is-leaving {
-  transform: translateX(30%);
-}
-
-.elga.is-playing .demo-scene.is-live {
-  opacity: 1;
-  transform: none;
-  transition: transform 0.4s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.2s ease;
-}
-
-/* Breite Bildschirme: das Handy steht größer im Kasten. */
+/* Breite Bildschirme: das Handy steht etwas größer im Kasten. */
 @media (min-width: 1000px) {
-  .elga__demo .demo-phone {
-    zoom: 1.18;
+  .howto__demo .demo-phone {
+    zoom: 1.12;
   }
 }
 
@@ -2176,15 +2127,6 @@ body[data-audience="aerzte"] .hero__offer {
   margin-top: 4px;
 }
 
-/* Zwei Beschriftungen an derselben Stelle: die normale und "wird bearbeitet" */
-.demo-swap > span {
-  grid-area: 1 / 1;
-}
-
-.demo-swap__busy {
-  opacity: 0;
-}
-
 .demo-status {
   display: grid;
   gap: 3px;
@@ -2235,6 +2177,30 @@ body[data-audience="aerzte"] .hero__offer {
   opacity: 0;
 }
 
+/* Zeitraum im Checkup: zwei Datumsfelder nebeneinander */
+.demo-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.demo-date {
+  display: grid;
+  gap: 2px;
+}
+
+.demo-date small {
+  font-size: 9.5px;
+  opacity: 0.75;
+}
+
+.demo-date span {
+  padding: 6px 10px;
+  border: 1.5px solid var(--app-surface);
+  border-radius: 12px;
+  font-size: 11px;
+}
+
 .demo-group {
   display: grid;
   gap: 5px;
@@ -2264,103 +2230,213 @@ body[data-audience="aerzte"] .hero__offer {
   overflow: hidden;
 }
 
-/* Der Fingertipp: ein heller Kreis, der kurz aufblitzt. Im ruhenden Bild unsichtbar. */
-.demo-tap {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  width: 26px;
-  height: 26px;
-  margin-top: -13px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 0 0 2px rgba(6, 78, 59, 0.35);
+/* Arztbrief hochladen (Ansicht 2). Das Ruhebild zeigt das Ergebnis: die Datei mit Haken und die
+   Diagnose als Karte. Wählt jemand Schritt 2, setzt script.js "is-run" und der Ablauf spielt
+   einmal über 2,6 Sekunden: leere Liste, Dateiauswahl mit dem PDF, "Analysiere Arztbrief...",
+   dann die Karte. Danach steht wieder das Ruhebild. Alles blendet weich, nichts blinkt. */
+.demo-upload > span {
+  grid-area: 1 / 1;
+}
+
+.demo-upload__busy {
   opacity: 0;
-  pointer-events: none;
 }
 
-.demo-radio .demo-tap {
-  left: -6px;
-  right: auto;
-  top: 7px;
-  background: rgba(5, 150, 105, 0.3);
+.demo-file {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--app-surface);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 10.5px;
 }
 
-/* Zeitpunkte innerhalb einer Szene, gerechnet ab dem Szenenwechsel */
-.demo-at-1 { --at: 0.4s; }
-.demo-at-2 { --at: 0.55s; }
-.demo-at-3 { --at: 0.75s; }
-.demo-at-4 { --at: 0.95s; }
-.demo-at-5 { --at: 1.2s; }
-.demo-at-6 { --at: 1.5s; }
-.demo-at-7 { --at: 1.8s; }
-.demo-at-8 { --at: 2.1s; }
-.demo-at-9 { --at: 2.45s; }
-
-.demo-scene.is-live .demo-tap {
-  animation: demo-tap 0.5s ease-out var(--at) both;
+.demo-file__type {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--app-surface);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
-.demo-scene.is-live .demo-pop {
-  animation: demo-pop 0.25s ease-out var(--at) backwards;
+.demo-file__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.demo-scene.is-live .demo-in,
-.demo-scene.is-live .demo-say {
-  animation: demo-in 0.35s ease-out var(--at) backwards;
+.demo-file__done,
+.demo-sheet__check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--app-primary);
+  color: var(--app-bg);
 }
 
-.demo-scene.is-live .demo-out {
-  animation: demo-out 0.2s ease var(--at) both;
+.demo-file__done svg,
+.demo-sheet__check svg {
+  width: 9px;
+  height: 9px;
 }
 
-/* Die Erklärung wächst über anderthalb Sekunden auf, im Takt der Sätze, die darin erscheinen. */
-.demo-scene.is-live .demo-grow {
-  animation: demo-grow 1.55s linear var(--at) backwards;
+/* Fortschritt des Hochladens am unteren Rand der Dateizeile, im Ruhebild unsichtbar */
+.demo-file__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5px;
+  background: var(--app-primary);
+  transform-origin: left;
+  opacity: 0;
 }
 
-.demo-scene.is-live .demo-swap__idle {
-  animation: demo-swap-idle 0.65s linear var(--at) both;
+/* Dateiauswahl: ein Blatt, das von unten über die Ansicht kommt. Im Ruhebild unsichtbar. */
+.demo-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: 7px;
+  padding: 14px 14px 20px;
+  border-radius: 20px 20px 0 0;
+  background: var(--app-bg);
+  box-shadow: 0 0 0 600px rgba(6, 78, 59, 0.3);
+  opacity: 0;
+  visibility: hidden;
 }
 
-.demo-scene.is-live .demo-swap__busy {
-  animation: demo-swap-busy 0.65s linear var(--at) both;
+.demo-sheet__title {
+  margin-bottom: 2px;
+  font-size: 12.5px;
+  font-weight: 700;
 }
 
-@keyframes demo-tap {
-  0% { opacity: 0; transform: scale(0.4); }
-  35% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.5); }
+.demo-sheet__row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--app-surface);
+  border-radius: 12px;
+  font-size: 10.5px;
 }
 
-@keyframes demo-pop {
-  from { transform: scale(0); }
-  to { transform: scale(1); }
+.demo-sheet__row--picked {
+  border-color: var(--app-primary);
+  background: var(--app-surface);
 }
 
-@keyframes demo-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: none; }
+.demo-scene--2.is-run .demo-sheet {
+  animation: demo-upload-sheet 2.6s ease both;
 }
 
-@keyframes demo-out {
-  from { opacity: 0.8; }
-  to { opacity: 0; }
+.demo-scene--2.is-run .demo-sheet__row--picked {
+  animation: demo-upload-pick 2.6s linear both;
 }
 
-@keyframes demo-grow {
-  from { max-height: 0; }
-  to { max-height: 200px; }
+.demo-scene--2.is-run .demo-sheet__check {
+  animation: demo-upload-after-pick 2.6s linear both;
 }
 
-@keyframes demo-swap-idle {
-  0%, 100% { opacity: 1; }
-  10%, 90% { opacity: 0; }
+.demo-scene--2.is-run .demo-upload__idle {
+  animation: demo-upload-idle 2.6s linear both;
 }
 
-@keyframes demo-swap-busy {
-  0%, 100% { opacity: 0; }
-  10%, 90% { opacity: 1; }
+.demo-scene--2.is-run .demo-upload__busy {
+  animation: demo-upload-busy 2.6s linear both;
+}
+
+.demo-scene--2.is-run .demo-file {
+  animation: demo-upload-file 2.6s linear both;
+}
+
+.demo-scene--2.is-run .demo-file__bar {
+  animation: demo-upload-bar 2.6s linear both;
+}
+
+.demo-scene--2.is-run .demo-file__done,
+.demo-scene--2.is-run .demo-upload__card {
+  animation: demo-upload-result 2.6s linear both;
+}
+
+.demo-scene--2.is-run .demo-empty {
+  animation: demo-upload-empty 2.6s linear both;
+}
+
+/* Zeitpunkte (von 2,6 s): Blatt erscheint bei 17 %, Datei gewählt bei 38 %, Blatt geht bei 54 %,
+   Hochladen von 58 % bis 88 %, danach Haken und Karte. */
+@keyframes demo-upload-sheet {
+  0%, 17% { opacity: 0; visibility: hidden; transform: translateY(14px); }
+  25%, 54% { opacity: 1; visibility: visible; transform: none; }
+  60%, 100% { opacity: 0; visibility: hidden; transform: translateY(14px); }
+}
+
+@keyframes demo-upload-pick {
+  0%, 36% { border-color: var(--app-surface); background: transparent; }
+  40%, 100% { border-color: var(--app-primary); background: var(--app-surface); }
+}
+
+@keyframes demo-upload-after-pick {
+  0%, 36% { opacity: 0; }
+  40%, 100% { opacity: 1; }
+}
+
+@keyframes demo-upload-idle {
+  0%, 57% { opacity: 1; }
+  60%, 88% { opacity: 0; }
+  92%, 100% { opacity: 1; }
+}
+
+@keyframes demo-upload-busy {
+  0%, 57% { opacity: 0; }
+  60%, 88% { opacity: 1; }
+  92%, 100% { opacity: 0; }
+}
+
+@keyframes demo-upload-file {
+  0%, 56% { opacity: 0; }
+  62%, 100% { opacity: 1; }
+}
+
+@keyframes demo-upload-bar {
+  0%, 58% { opacity: 1; transform: scaleX(0); }
+  88% { opacity: 1; transform: scaleX(1); }
+  94%, 100% { opacity: 0; transform: scaleX(1); }
+}
+
+@keyframes demo-upload-result {
+  0%, 88% { opacity: 0; }
+  97%, 100% { opacity: 1; }
+}
+
+@keyframes demo-upload-empty {
+  0%, 86% { opacity: 0.8; }
+  90%, 100% { opacity: 0; }
+}
+
+/* Bei "Bewegung reduzieren" entfallen Überblendung und Ablauf, es steht sofort das Ruhebild. */
+@media (prefers-reduced-motion: reduce) {
+  .demo-scene,
+  .howto[data-step] .demo-scene {
+    transition: none;
+  }
+
+  .demo-scene--2.is-run * {
+    animation: none !important;
+  }
 }
 
 /* Etikett mit Punkt (über der Hero-Überschrift und über jedem Leistungs-Eintrag) */
@@ -3311,12 +3387,13 @@ body[data-audience="aerzte"] .hero__offer {
   border: 1.5px solid var(--primary);
 }
 
-:root[data-theme="dark"] .elga__progress button::before {
-  background: #6b7280;
+/* Nicht gewählte Schritte treten im dunklen Schema mit grauem Rand zurück. */
+:root[data-theme="dark"] .howto__tab:not(.is-active):not(:hover) {
+  border-color: #6b7280;
 }
 
 :root[data-theme="dark"] .service,
-:root[data-theme="dark"] .elga,
+:root[data-theme="dark"] .howto,
 :root[data-theme="dark"] .step,
 :root[data-theme="dark"] .trust-card,
 :root[data-theme="dark"] .compare-card,
@@ -3355,12 +3432,12 @@ body[data-audience="aerzte"] .hero__offer {
     border: 1.5px solid var(--primary);
   }
 
-  :root:not([data-theme="light"]) .elga__progress button::before {
-    background: #6b7280;
+  :root:not([data-theme="light"]) .howto__tab:not(.is-active):not(:hover) {
+    border-color: #6b7280;
   }
 
   :root:not([data-theme="light"]) .service,
-  :root:not([data-theme="light"]) .elga,
+  :root:not([data-theme="light"]) .howto,
   :root:not([data-theme="light"]) .step,
   :root:not([data-theme="light"]) .trust-card,
   :root:not([data-theme="light"]) .compare-card,

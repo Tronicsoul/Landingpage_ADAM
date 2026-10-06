@@ -408,98 +408,64 @@ function initReveal() {
 
 initReveal();
 
-// ELGA-Kasten ("Was ADAM über ELGA hinaus leistet"): das bewegte Bild im Handy spielt nacheinander vier Szenen durch
-// (Sprachniveau wählen, Arztbrief hochladen, Diagnose erklären lassen, digitaler Checkup).
-// Links daneben steht jeweils nur der Schritt zur Szene, vier Balken zeigen den Fortschritt;
-// ein Klick auf einen Balken springt zu diesem Schritt.
-// Je Szene setzt das Skript data-step am Kasten (welche Szene sichtbar ist, welche Nummer links
-// hervorgehoben ist) und die Klasse "is-live" an der Szene (erst dann laufen ihre Bewegungen,
-// siehe styles.css). Es läuft nur, solange der Kasten im Bild ist, und beginnt dann wieder bei
-// Schritt 1. Ohne JavaScript, ohne IntersectionObserver oder bei "Bewegung reduzieren" bleibt
-// die Szene stehen, die im HTML vorgegeben ist.
+// Abschnitt "Wie Patient:innen ADAM anwenden": vier Schritte zum Anwählen, daneben das Handy mit
+// der passenden App-Ansicht. Es wechselt nichts von selbst. Ein Klick (oder die Pfeiltasten,
+// Pos1, Ende) wählt einen Schritt: Markierung, "Schritt N von 4", Text und App-Ansicht wechseln
+// gemeinsam, Text und Markierung ohne Bewegung. Nur bei Schritt 2 läuft danach einmal ab, wie ein
+// Arztbrief als PDF hochgeladen wird (Klasse "is-run", siehe styles.css); bei "Bewegung
+// reduzieren" steht sofort das Ergebnis. Ohne JavaScript bleiben alle vier Texte sichtbar.
 
-function initElgaDemo() {
-  const box = document.querySelector(".elga[data-step]");
-  if (!box || !("IntersectionObserver" in window)) return;
-  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+function initHowto() {
+  const box = document.querySelector(".howto");
+  if (!box) return;
+  const tabs = Array.from(box.querySelectorAll(".howto__tab"));
+  const panels = Array.from(box.querySelectorAll(".howto__panel"));
+  const current = box.querySelector("[data-howto-current]");
+  const upload = box.querySelector(".demo-scene--2");
+  if (!tabs.length || tabs.length !== panels.length) return;
 
-  const scenes = Array.from(box.querySelectorAll(".demo-scene"));
-  if (!scenes.length) return;
-  const steps = Array.from(box.querySelectorAll(".elga__step"));
-  const bars = Array.from(box.querySelectorAll(".elga__progress button"));
+  const reduce =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Dauer je Szene in Millisekunden. Szene 3 (die Erklärung) bleibt am längsten stehen,
-  // damit der Text gelesen werden kann. Ein Durchlauf dauert gut zwölf Sekunden.
-  const SCENE_MS = [2600, 2700, 4500, 2600];
-  let timer = null;
-  let current = 0;
-  let inView = false;
-
-  function show(step) {
-    const previous = current;
-    current = step;
+  function show(step, byUser) {
     box.setAttribute("data-step", String(step));
-    box.style.setProperty("--scene-ms", (SCENE_MS[step - 1] || 4000) + "ms");
-    // Die Szenen wechseln wie Bildschirme einer App: vorwärts schiebt die neue von rechts
-    // herein, bei einem Sprung zu einem früheren Schritt von links. Der Neustart nach dem
-    // letzten Schritt zählt als vorwärts.
-    const back = previous > 0 && step < previous && !(previous === scenes.length && step === 1);
-    box.setAttribute("data-dir", back ? "back" : "fwd");
-    scenes.forEach((scene, index) => {
-      scene.classList.remove("is-live");
-      scene.classList.toggle("is-leaving", index === previous - 1 && previous !== step);
+    tabs.forEach((tab, index) => {
+      const active = index === step - 1;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+      tab.tabIndex = active ? 0 : -1;
+      panels[index].classList.toggle("is-active", active);
     });
-    bars.forEach((bar, index) => {
-      bar.classList.remove("is-active");
-      bar.classList.toggle("is-done", index < step - 1);
-      if (index === step - 1) bar.setAttribute("aria-current", "step");
-      else bar.removeAttribute("aria-current");
-    });
-    // Links steht nur der Schritt zur Szene: der bisherige geht ("is-leaving"), der neue kommt.
-    steps.forEach((item, index) => {
-      item.classList.toggle("is-leaving", index === previous - 1 && previous !== step);
-      item.classList.toggle("is-current", index === step - 1);
-    });
-    // Layout einmal abfragen, damit die Bewegungen auch dann neu starten, wenn dieselbe Szene
-    // zweimal hintereinander gezeigt wird.
-    void box.offsetWidth;
-    scenes[step - 1].classList.add("is-live");
-    if (bars[step - 1]) bars[step - 1].classList.add("is-active");
-    // Weiter geht es von selbst nur, solange der Kasten im Bild ist.
-    window.clearTimeout(timer);
-    timer = inView
-      ? window.setTimeout(() => show((step % scenes.length) + 1), SCENE_MS[step - 1] || 4000)
-      : null;
+    if (current) current.textContent = String(step);
+    if (upload) {
+      upload.classList.remove("is-run");
+      if (byUser && step === 2 && !reduce) {
+        void upload.offsetWidth; // Ablauf auch bei erneuter Auswahl von vorn
+        upload.classList.add("is-run");
+      }
+    }
   }
 
-  function start() {
-    inView = true;
-    if (timer) return;
-    box.classList.add("is-playing");
-    show(1);
-  }
-
-  function stop() {
-    inView = false;
-    window.clearTimeout(timer);
-    timer = null;
-  }
-
-  // Klick auf einen Balken: zu diesem Schritt springen, danach läuft es von dort weiter.
-  bars.forEach((bar, index) => {
-    bar.addEventListener("click", () => show(index + 1));
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => show(index + 1, true));
+    tab.addEventListener("keydown", (event) => {
+      let next = null;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % tabs.length;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index + tabs.length - 1) % tabs.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = tabs.length - 1;
+      if (next === null) return;
+      event.preventDefault();
+      show(next + 1, true);
+      tabs[next].focus();
+    });
   });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => (entry.isIntersecting ? start() : stop()));
-    },
-    { threshold: 0.4 }
-  );
-  observer.observe(box);
+  box.classList.add("is-interactive");
+  show(1, false);
 }
 
-initElgaDemo();
+initHowto();
 
 // Vergleich "Derselbe Termin, zwei Ausgangslagen": Der Regler stellt --p an der Karte von 0
 // (ohne ADAM) bis 1 (mit ADAM), die Darstellung dazu steht in styles.css. Ein Klick auf
