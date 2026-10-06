@@ -225,10 +225,23 @@ function initWaitlistForm(form) {
       if (payload.problem) submitData.wunsch = payload.problem;
       track("waitlist_submit", submitData);
 
+      // Die eingetragene Adresse in der Erfolgsmeldung nennen: so fällt ein Tippfehler auf.
+      const leadEl = successEl.querySelector("[data-success-lead]");
+      const sentTo = (payload.email || "").trim();
+      if (leadEl && sentTo) {
+        const address = document.createElement("strong");
+        address.textContent = sentTo;
+        leadEl.textContent = "";
+        leadEl.append("Wir haben eine E-Mail an ", address, " geschickt.");
+      }
+
       form.classList.add("is-submitted");
       successEl.classList.add("is-visible");
       successEl.setAttribute("role", "status");
-      successEl.focus();
+      // Die Karte wird durch das Ausblenden der Felder viel kürzer: Meldung in die Bildmitte
+      // holen, damit sie nicht unter der feststehenden Kopfleiste liegt.
+      successEl.focus({ preventScroll: true });
+      successEl.scrollIntoView({ block: "center" });
       form.reset();
       if (variantField) variantField.value = getVariant();
     } catch (error) {

@@ -2514,17 +2514,93 @@ section {
   text-align: center;
 }
 
+/* Erfolgsmeldung nach dem Absenden: Symbol, Dank, nächster Schritt, Hinweis. Sie ersetzt die
+   Formularfelder in der Karte und braucht deshalb keinen eigenen Rahmen. */
 .form-success {
-  background: var(--card-bg);
-  border: 2px solid var(--button-bg);
-  border-radius: var(--radius-sm);
-  padding: var(--space-4);
-  font-weight: 600;
   display: none;
+  padding: var(--space-4) 0 var(--space-2);
+  text-align: center;
+  text-wrap: balance; /* gleich lange Zeilen, kein einzelnes Wort in der letzten */
 }
 
 .form-success.is-visible {
   display: block;
+  animation: form-success-in 0.4s ease both;
+}
+
+.form-success:focus {
+  outline: none;
+}
+
+.form-success p {
+  margin: 0;
+}
+
+.form-success__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--space-5);
+  border: 1.5px solid var(--primary);
+  border-radius: 50%;
+  background: var(--background);
+  color: var(--link, var(--primary));
+}
+
+.form-success__icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.form-success .form-success__title {
+  margin-bottom: var(--space-3);
+  font-size: clamp(21px, 2vw, 24px);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.form-success .form-success__text {
+  max-width: 28em;
+  margin-inline: auto;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.form-success__text strong {
+  overflow-wrap: anywhere;
+}
+
+.form-success .form-success__hint {
+  max-width: 28em;
+  margin: var(--space-6) auto 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--primary);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Frage und Antwort des Hinweises brechen nur zwischen den beiden Sätzen um. */
+.form-success__hint span {
+  display: inline-block;
+}
+
+@keyframes form-success-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-success.is-visible {
+    animation: none;
+  }
 }
 
 .waitlist-form.is-submitted .waitlist-form__fields {

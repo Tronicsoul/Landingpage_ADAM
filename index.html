@@ -929,11 +929,18 @@
               <button class="btn btn-primary" type="submit">Jetzt eintragen</button>
               <p class="form-fineprint">Kostenlos und unverbindlich. Sie erhalten eine E-Mail zur Bestätigung Ihrer Adresse.</p>
             </div>
-            <p class="form-success" tabindex="-1">
-              Vielen Dank für Ihre Anmeldung! Bitte bestätigen Sie sie über den Link in der E-Mail,
-              die wir Ihnen gerade geschickt haben. Sollte die E-Mail fehlen, sehen Sie bitte im
-              Spam-Ordner nach.
-            </p>
+            <!-- Erfolgsmeldung: script.js setzt die eingetragene Mailadresse in den ersten Satz. -->
+            <div class="form-success" tabindex="-1">
+              <span class="form-success__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>
+              </span>
+              <p class="form-success__title">Vielen Dank für Ihre Anmeldung</p>
+              <p class="form-success__text">
+                <span data-success-lead>Wir haben Ihnen eine E-Mail geschickt.</span>
+                Bitte bestätigen Sie Ihre Anmeldung über den Link darin.
+              </p>
+              <p class="form-success__hint">Keine E-Mail erhalten? <span>Sehen Sie bitte im Spam-Ordner nach.</span></p>
+            </div>
           </form>
 
           <form class="waitlist-form" id="waitlist-form-aerzte" data-audience-content="aerzte" novalidate>
@@ -994,11 +1001,18 @@
               <button class="btn btn-primary" type="submit">Mit 10 Patient:innen kostenlos testen</button>
               <p class="form-fineprint">Kostenlos und unverbindlich. Sie erhalten eine E-Mail zur Bestätigung Ihrer Adresse.</p>
             </div>
-            <p class="form-success" tabindex="-1">
-              Vielen Dank für Ihre Anmeldung! Bitte bestätigen Sie sie über den Link in der E-Mail,
-              die wir Ihnen gerade geschickt haben. Sollte die E-Mail fehlen, sehen Sie bitte im
-              Spam-Ordner nach.
-            </p>
+            <!-- Erfolgsmeldung: script.js setzt die eingetragene Mailadresse in den ersten Satz. -->
+            <div class="form-success" tabindex="-1">
+              <span class="form-success__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>
+              </span>
+              <p class="form-success__title">Vielen Dank für Ihre Anmeldung</p>
+              <p class="form-success__text">
+                <span data-success-lead>Wir haben Ihnen eine E-Mail geschickt.</span>
+                Bitte bestätigen Sie Ihre Anmeldung über den Link darin.
+              </p>
+              <p class="form-success__hint">Keine E-Mail erhalten? <span>Sehen Sie bitte im Spam-Ordner nach.</span></p>
+            </div>
           </form>
 
         </div>
