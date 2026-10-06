@@ -137,6 +137,16 @@
 
     <!-- Hero -->
     <section class="hero" aria-labelledby="hero-heading">
+      <!-- Foto der Ansicht für Ärzt:innen und Fachpersonal (KI-generiertes Symbolbild): ab 1100 px
+           Breite als Hintergrund über den ganzen Abschnitt, darunter als Bild unter dem Button mit
+           einem Ausschnitt, der die Ärztin zeigt. -->
+      <div class="hero__photo" data-audience-content="aerzte">
+        <picture>
+          <source media="(max-width: 1099px)" srcset="assets/hero-aerztin-schmal.jpg" />
+          <img src="assets/hero-aerztin-1672.jpg" alt="" width="1672" height="941" fetchpriority="high" decoding="async" />
+        </picture>
+        <span class="hero__photo-note">Symbolbild, KI-generiert</span>
+      </div>
       <div class="hero__blob hero__blob--one" aria-hidden="true"></div>
       <div class="hero__blob hero__blob--two" aria-hidden="true"></div>
 
@@ -146,15 +156,15 @@
             <span class="eyebrow">ADAM befindet sich in Entwicklung</span>
           </div>
           <div data-audience-content="aerzte">
-            <p class="kicker">Eine neue Zusammenarbeit mit Ihren Patient:innen</p>
+            <p class="kicker">Für Vorreiter:innen in Medizin, Pflege und Therapie</p>
           </div>
 
           <!-- Genau eine H1 auf der Seite. Je Zielgruppe und Kampagnenvariante ist ein Text sichtbar. -->
           <h1 id="hero-heading">
             <span data-audience-content="patient">Ihre Gesundheit im Überblick: einfach, sicher, verständlich</span>
             <span data-audience-content="aerzte">
-              <span data-variant-content="a">Mehr Zeit für das ärztliche Gespräch</span>
-              <span data-variant-content="b">Klare Angaben für ärztliche Entscheidungen</span>
+              <span data-variant-content="a"><span class="hero__beat">Medikation erfragen,</span> <span class="hero__beat">Befunde suchen,</span> <span class="hero__beat">Verlauf klären?</span></span>
+              <span data-variant-content="b"><span class="hero__beat">Vage Angaben,</span> <span class="hero__beat">fehlende Befunde,</span> <span class="hero__beat">Missverständnisse?</span></span>
             </span>
           </h1>
 
@@ -171,29 +181,26 @@
 
           <div data-audience-content="aerzte">
             <!--
-              A/B-Test: Die zwei Varianten unterscheiden sich nur in der Überschrift und im zweiten
-              Satz der Einleitung. Alles andere ist in beiden gleich.
-                a = Effizienz: alle Daten an einem Ort gebündelt, dadurch mehr Zeit im Termin
-                b = Effektivität: bessere Verständigung, dadurch klare Angaben für die Entscheidung
+              A/B-Test: Die zwei Varianten unterscheiden sich in der Überschrift (dem Problem) und im
+              zweiten Satz der Antwort darunter. Alles andere ist in beiden gleich.
+                a = Effizienz: Angaben zusammentragen kostet Zeit, mit ADAM gehört der Termin dem Gespräch
+                b = Effektivität: vage Angaben und Missverständnisse, mit ADAM klare Angaben
             -->
-            <div data-variant-content="a">
-              <p class="lead">
-                Digitale Terminvorbereitung, ohne dass Sie etwas installieren. Ihre
-                Patient:innen bündeln Medikation, Symptomverlauf und Befunde in der ADAM&#8209;App, Sie beginnen direkt mit dem Gespräch.
-              </p>
-            </div>
+            <p class="hero__answer">
+              <span data-variant-content="a">Mit ADAM kommen Ihre Patient:innen <em class="hero__mark">vorbereitet</em>. Der Termin gehört dem Gespräch.</span>
+              <span data-variant-content="b">Mit ADAM kommen Ihre Patient:innen <em class="hero__mark">vorbereitet</em>. Sie erhalten klare Angaben.</span>
+            </p>
 
-            <div data-variant-content="b">
-              <p class="lead">
-                Digitale Terminvorbereitung, ohne dass Sie etwas installieren. ADAM erklärt Ihren
-                Patient:innen ihre Diagnosen in verständlicher Sprache, sie kommen mit klaren Angaben in den Termin.
-              </p>
-            </div>
+            <ul class="hero__checks">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Medikation, Symptomverlauf und Befunde auf einer Seite</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Diagnosen aus dem Arztbrief, verständlich erklärt</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Für Sie ohne Installation</span></li>
+            </ul>
 
             <div class="hero__actions hero__actions--tight">
-              <a class="btn btn-primary" href="#warteliste" data-track="hero">Mit 10 Patient:innen kostenlos testen</a>
+              <a class="btn btn-primary btn-lg" href="#warteliste" data-track="hero">Mit 10 Patient:innen kostenlos testen</a>
             </div>
-            <p class="hero__offer"><strong>Für die ersten 5 Anmeldungen:</strong> je zehn Einladungen für Patient:innen Ihrer Wahl.</p>
+            <p class="hero__offer"><strong>Nur für die ersten 5 Anmeldungen:</strong> je zehn Einladungen für Patient:innen Ihrer Wahl und Mitsprache bei der Weiterentwicklung. Kostenlos und unverbindlich.</p>
           </div>
 
           <p class="hero__trust-note" data-hide-for="aerzte">
@@ -221,23 +228,7 @@
             </div>
           </div>
 
-          <!-- Ärzt:innen sehen, was zum Termin bei ihnen ankommt, nicht das Dashboard der Patient:innen. -->
-          <div data-audience-content="aerzte">
-            <div class="app-preview" aria-hidden="true">
-              <div class="app-preview__bar">
-                <strong>Checkup-Zusammenfassung</strong>
-                <span>Zeitraum 01.01. – 31.03.</span>
-              </div>
-              <div class="app-preview__body">
-                <div class="app-detail"><span>DIAGNOSE</span><span>Bluthochdruck, seit 2022</span></div>
-                <div class="app-detail"><span>MEDIKAMENTE</span><span>Ramipril 5 mg, 1× täglich<br />Ibuprofen 400 mg, bei Bedarf</span></div>
-                <div class="app-detail"><span>SYMPTOME</span><span>Kopfschmerzen, leicht, seit gestern</span></div>
-                <div class="app-detail"><span>FAMILIE</span><span>Diabetes (Mutter)</span></div>
-                <div class="app-row warn"><span class="dot"></span> Mögliche Wechselwirkung: Ramipril + Ibuprofen, bitte prüfen</div>
-              </div>
-            </div>
-          </div>
-          <p class="preview-caption">Beispielhafte, vereinfachte Darstellung. Entwurf, Änderungen vorbehalten.</p>
+          <p class="preview-caption" data-audience-content="patient">Beispielhafte, vereinfachte Darstellung. Entwurf, Änderungen vorbehalten.</p>
         </div>
       </div>
     </section>

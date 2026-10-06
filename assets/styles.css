@@ -1238,6 +1238,195 @@ section {
   color: var(--text);
 }
 
+/* Hero der Ansicht für Ärzt:innen und Fachpersonal: Foto, das Problem als Überschrift, die
+   Antwort darunter, drei Haken, ein Button. Der Abschnitt ist in beiden Farbschemata dunkel,
+   weil das Foto dunkel ist; die Farben sind die dunklen Werte aus dem ADAM-Design-System. */
+
+body[data-audience="aerzte"] .hero {
+  --background: #151718;
+  --text: #f9fafb;
+  --text-muted: rgba(249, 250, 251, 0.8);
+  --primary: #059669;
+  --link: #10b981;
+  --button-bg: #059669;
+  --button-bg-hover: #10b981;
+  --text-on-primary: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--space-10) var(--space-14);
+  background: var(--background);
+  color: var(--text);
+}
+
+body[data-audience="aerzte"] .hero__blob {
+  display: none;
+}
+
+body[data-audience="aerzte"] .hero__inner {
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-audience="aerzte"] .hero__inner > div:first-child {
+  max-width: 600px;
+}
+
+body[data-audience="aerzte"] .hero h1 {
+  font-size: clamp(33px, 3.9vw, 50px);
+  line-height: 1.15;
+  margin-bottom: var(--space-5);
+}
+
+/* Die drei Teile der Überschrift stehen ab 600 px Breite untereinander. */
+@media (min-width: 600px) {
+  .hero__beat {
+    display: block;
+  }
+}
+
+.hero__answer {
+  max-width: 25em;
+  margin: 0 0 var(--space-6);
+  font-size: clamp(20px, 2vw, 27px);
+  font-weight: 700;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.hero__mark {
+  font-style: normal;
+  color: var(--link, var(--primary));
+}
+
+.hero__checks {
+  list-style: none;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+}
+
+.hero__checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 var(--space-2);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.hero__checks svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  color: var(--link, var(--primary));
+}
+
+.btn-lg {
+  min-height: 60px;
+  padding: var(--space-4) var(--space-8);
+  font-size: 20px;
+}
+
+body[data-audience="aerzte"] .hero__offer {
+  max-width: 34em;
+  text-wrap: pretty;
+}
+
+/* Foto: schmal als Bild unter dem Text, ab 1100 px als Hintergrund des Abschnitts */
+.hero__photo {
+  position: relative;
+  order: 3;
+  height: clamp(240px, 62vw, 460px);
+  margin: var(--space-8) var(--gutter) 0;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+}
+
+.hero__photo picture,
+.hero__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__photo img {
+  object-fit: cover;
+  object-position: 62% 28%;
+}
+
+.hero__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--background) 72%, transparent) 0%, transparent 28%);
+}
+
+.hero__photo-note {
+  position: absolute;
+  right: var(--space-4);
+  bottom: var(--space-2);
+  z-index: 1;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+@media (min-width: 1100px) {
+  body[data-audience="aerzte"] .hero {
+    justify-content: center;
+    min-height: clamp(620px, calc(100vh - var(--nav-height)), 820px);
+    padding-block: var(--space-10);
+  }
+
+  /* Zwischen 1100 und 1399 px rückt das Foto nach rechts aus dem Abschnitt hinaus, damit die
+     Ärztin neben dem Text steht und nicht dahinter. */
+  .hero__photo {
+    position: absolute;
+    inset: 0 -150px 0 auto;
+    z-index: 0;
+    order: 0;
+    width: min(100%, 1900px);
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .hero__photo img {
+    object-position: 100% 30%;
+  }
+
+  /* Das Foto läuft links und unten in die Seitenfarbe aus, damit der Text ruhig steht. */
+  .hero__photo::after {
+    background:
+      linear-gradient(
+        90deg,
+        var(--background) 0%,
+        color-mix(in srgb, var(--background) 92%, transparent) 30%,
+        color-mix(in srgb, var(--background) 55%, transparent) 46%,
+        transparent 64%
+      ),
+      linear-gradient(0deg, var(--background) 0%, transparent 18%);
+  }
+
+  .hero__photo-note {
+    right: calc(var(--gutter) + 150px);
+    bottom: var(--space-4);
+  }
+}
+
+@media (min-width: 1400px) {
+  body[data-audience="aerzte"] .hero__inner > div:first-child {
+    max-width: 640px;
+  }
+
+  .hero__photo {
+    right: 0;
+  }
+
+  .hero__photo-note {
+    right: var(--gutter);
+  }
+}
+
 /* App-Vorschau / Mockups (eigenständige, vom System inspirierte Darstellung) */
 
 .app-preview {
