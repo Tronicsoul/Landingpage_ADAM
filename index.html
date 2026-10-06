@@ -319,7 +319,7 @@
 
           <ul class="services">
             <li class="service">
-              <h3 class="kicker">Für Ihre Entscheidung</h3>
+              <h3 class="kicker"><span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg></span>Für Ihre Entscheidung</h3>
               <p class="service__claim">Alle relevanten Daten an einem Ort.</p>
               <ul class="service__list">
                 <li>Medikation, Symptome und Vorerkrankungen</li>
@@ -328,7 +328,7 @@
               </ul>
             </li>
             <li class="service">
-              <h3 class="kicker">Für Ihre Zeit</h3>
+              <h3 class="kicker"><span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Für Ihre Zeit</h3>
               <p class="service__claim">Alle Daten übersichtlich zusammengeführt.</p>
               <ul class="service__list">
                 <li>Digitaler Checkup auf einer Seite</li>
@@ -337,7 +337,7 @@
               </ul>
             </li>
             <li class="service">
-              <h3 class="kicker">Für Ihre Patient:innen</h3>
+              <h3 class="kicker"><span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 10h8M8 13h5"/></svg></span>Für Ihre Patient:innen</h3>
               <p class="service__claim">Gesundheitsdaten verständlich übersetzt.</p>
               <ul class="service__list">
                 <li>Diagnosen in klaren Worten, Sprachniveau einstellbar</li>
@@ -347,12 +347,13 @@
             </li>
           </ul>
 
-          <!-- Abgrenzung zu ELGA als Gegenüberstellung: links, was ELGA bereits enthält,
-               rechts, was mit ADAM dazukommt (zusätzliche Angaben und die Funktionen der App).
+          <!-- Abgrenzung zu ELGA als Gegenüberstellung: links, was ELGA bereits enthält, rechts nur
+               die Angaben, die ELGA fehlen und die Patient:innen in ADAM selbst eintragen. Die
+               Funktionen der App stehen in den drei Kästchen darüber und werden hier nicht wiederholt.
                ADAM ergänzt ELGA und ersetzt es nicht. -->
           <div class="elga">
             <h3 class="elga__title">ADAM ergänzt ELGA</h3>
-            <p class="elga__intro">ELGA speichert Befunde. ADAM bereitet sie zusammen mit den Angaben Ihrer Patient:innen für das Gespräch auf.</p>
+            <p class="elga__intro">ELGA speichert Befunde. ADAM ergänzt, was nur Ihre Patient:innen wissen.</p>
             <div class="elga__cols">
               <div>
                 <p class="kicker kicker--muted">Steht in ELGA</p>
@@ -365,11 +366,9 @@
               <div>
                 <p class="kicker">Kommt mit ADAM dazu</p>
                 <ul class="service__list">
-                  <li>Symptomverlauf, Familiengeschichte und rezeptfreie Medikamente</li>
-                  <li>Digitaler Checkup als Zusammenfassung vor dem Termin</li>
-                  <li>Diagnosen in verständlicher Sprache erklärt</li>
-                  <li>Hinweise auf mögliche Wechselwirkungen</li>
-                  <li>Arztbriefe und Diagnosen automatisiert einlesen und erklären lassen</li>
+                  <li>Symptomverlauf seit dem letzten Termin</li>
+                  <li>Rezeptfreie Medikamente</li>
+                  <li>Familiengeschichte</li>
                 </ul>
               </div>
             </div>

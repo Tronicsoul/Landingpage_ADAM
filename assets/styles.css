@@ -758,6 +758,22 @@ section {
   padding-block: var(--space-14);
 }
 
+/* Am Rechner mehr Luft zwischen den Abschnitten. Am Handy bleibt es kompakt, weil die Seite
+   dort ohnehin lang ist. Der Hero behält seinen eigenen Abstand. */
+@media (min-width: 960px) {
+  section {
+    padding-block: 96px;
+  }
+}
+
+/* Auf großen Bildschirmen etwas breiter, damit der Inhalt nicht in der Mitte zusammenrückt.
+   Nicht mehr, sonst werden die Zeilen zu lang. */
+@media (min-width: 1500px) {
+  :root {
+    --max-width: 1280px;
+  }
+}
+
 .section-header {
   max-width: 720px;
   margin: 0 auto var(--space-10);
@@ -1213,7 +1229,7 @@ section {
 /* Gegenüberstellung mit ELGA unter den drei Kästchen: ein breites Kästchen im selben Stil,
    links ELGA (zurückgenommen), rechts ADAM. Die Listen nutzen den Stil der Leistungs-Kästchen. */
 .elga {
-  margin-top: var(--space-5);
+  margin-top: var(--space-8);
   padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1312,12 +1328,31 @@ section {
   transition: translate 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
+/* In den Kästchen ersetzt ein Symbol im Kreis den Punkt vor dem Etikett. */
 .service .kicker::before {
+  display: none;
+}
+
+.service__icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--button-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: box-shadow 0.2s ease;
 }
 
+.service__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 /* Kleine Rückmeldung beim Überfahren mit der Maus: das Kästchen hebt sich leicht, der Rand
-   wird kräftiger und der Punkt am Etikett bekommt einen Ring. Nur auf Geräten mit Maus, damit
+   wird kräftiger und das Symbol am Etikett bekommt einen Ring. Nur auf Geräten mit Maus, damit
    der Zustand auf dem Handy nicht nach dem Antippen hängen bleibt. Die Bewegung läuft über
    "translate" und nicht über "transform", damit sie das Einblenden weiter unten nicht stört. */
 @media (hover: hover) {
@@ -1327,7 +1362,7 @@ section {
     box-shadow: var(--shadow-card);
   }
 
-  .service:hover .kicker::before {
+  .service:hover .service__icon {
     box-shadow: 0 0 0 4px var(--surface-strong);
   }
 }
@@ -1339,6 +1374,8 @@ section {
 }
 
 .service .kicker {
+  align-items: center;
+  gap: var(--space-3);
   margin-bottom: var(--space-3);
 }
 
