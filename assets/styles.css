@@ -47,8 +47,23 @@
   --shadow-card: 0px 8px 24px rgba(6, 78, 59, 0.08);
   --shadow-lg: 0px 20px 45px rgba(6, 78, 59, 0.16);
 
-  --max-width: 1180px;
+  /* Breite des Inhalts und Seitenrand. Der Rand wächst mit dem Bildschirm, bleibt aber schmal
+     (höchstens 64px), damit der Inhalt die Breite nutzt. Über 1440px Inhalt wird nicht mehr
+     verbreitert, sonst werden die Zeilen zu lang. */
+  --max-width: 1440px;
+  --gutter: clamp(20px, 4vw, 64px);
+  /* Abstände zwischen Inhalten: zwischen Kästchen einer Reihe und zwischen Blöcken eines
+     Abschnitts (Überschrift, Kästchen, Kasten, Formular). Am Rechner größer, siehe unten. */
+  --gap-cards: var(--space-6);
+  --gap-block: var(--space-10);
   --nav-height: 76px;
+}
+
+@media (min-width: 860px) {
+  :root {
+    --gap-cards: var(--space-8);
+    --gap-block: var(--space-14);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -133,9 +148,9 @@ a {
 
 .container {
   width: 100%;
-  max-width: var(--max-width);
+  max-width: calc(var(--max-width) + 2 * var(--gutter));
   margin-inline: auto;
-  padding-inline: var(--space-5);
+  padding-inline: var(--gutter);
 }
 
 section[id] {
@@ -573,14 +588,14 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
 .problem .section-header {
   text-align: left;
   max-width: 680px;
-  margin: 0 0 var(--space-10);
+  margin: 0 0 var(--gap-block);
 }
 
 /* Vorher/Nachher-Vergleich */
 
 .compare-grid {
   display: grid;
-  gap: var(--space-6);
+  gap: var(--gap-cards);
   align-items: stretch;
 }
 
@@ -675,9 +690,9 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   list-style: none;
   margin: 0 auto var(--space-8);
   padding: 0;
-  max-width: 980px;
+  max-width: 1120px;
   display: grid;
-  gap: var(--space-5);
+  gap: var(--gap-cards);
   grid-template-columns: 1fr;
   text-align: left;
 }
@@ -729,7 +744,7 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-3);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--gap-block);
 }
 
 .benefit-chip {
@@ -766,17 +781,9 @@ section {
   }
 }
 
-/* Auf großen Bildschirmen etwas breiter, damit der Inhalt nicht in der Mitte zusammenrückt.
-   Nicht mehr, sonst werden die Zeilen zu lang. */
-@media (min-width: 1500px) {
-  :root {
-    --max-width: 1280px;
-  }
-}
-
 .section-header {
   max-width: 720px;
-  margin: 0 auto var(--space-10);
+  margin: 0 auto var(--gap-block);
   text-align: center;
 }
 
@@ -861,6 +868,7 @@ section {
 @media (min-width: 960px) {
   .hero__inner {
     grid-template-columns: 1.05fr 0.95fr;
+    gap: 72px;
   }
 }
 
@@ -910,7 +918,7 @@ section {
 }
 
 .hero__actions--tight {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .hero__offer {
@@ -1219,7 +1227,7 @@ section {
 
 .overview__header {
   max-width: 720px;
-  margin: 0 0 var(--space-8);
+  margin: 0 0 var(--gap-block);
 }
 
 .overview__header .section-intro {
@@ -1229,7 +1237,7 @@ section {
 /* ADAM und ELGA unter den drei Kästchen: links kurzer Text mit vier Schritten, rechts ein
    bewegtes Bild in Form eines Handys, das vier Ansichten der App durchspielt. */
 .elga {
-  margin-top: var(--space-8);
+  margin-top: var(--gap-block);
   padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1737,7 +1745,7 @@ section {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-5);
+  gap: var(--gap-cards);
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -1898,7 +1906,7 @@ section {
 
 .trust-grid {
   display: grid;
-  gap: var(--space-6);
+  gap: var(--gap-cards);
   grid-template-columns: 1fr;
 }
 
@@ -1951,6 +1959,12 @@ section {
 
 .waitlist {
   text-align: center;
+}
+
+/* Der Satz unter der Überschrift bleibt schmal und mittig, auch wenn der Inhalt breit ist. */
+.waitlist .section-intro {
+  max-width: 760px;
+  margin: 0 auto var(--gap-block);
 }
 
 .waitlist-card {
@@ -2060,11 +2074,12 @@ section {
   display: none;
 }
 
+/* Kleine Zeile unter dem Knopf: 16px Abstand wie im Hero, mittig unter dem Knopf. */
 .form-fineprint {
   font-size: 14px;
   color: var(--text-muted);
-  margin: 0;
-  text-align: left;
+  margin: var(--space-4) 0 0;
+  text-align: center;
 }
 
 .form-success {
@@ -2308,7 +2323,7 @@ section {
 
 .consent__inner {
   pointer-events: auto;
-  max-width: var(--max-width);
+  max-width: 1180px;
   margin-inline: auto;
   background: var(--card-bg);
   color: var(--text);

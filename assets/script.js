@@ -215,7 +215,7 @@ document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
 
 const PAGE_TITLES = {
   patient: "ADAM – Ihre Gesundheit einfach im Überblick",
-  aerzte: "ADAM für Praxen – Patient:innen kommen vorbereitet zum Termin",
+  aerzte: "ADAM für Gesundheitsberufe – Patient:innen kommen vorbereitet zum Termin",
 };
 
 function initAudienceTabs() {
@@ -348,7 +348,7 @@ function initReveal() {
 
 initReveal();
 
-// Kasten "ADAM ergänzt ELGA": das bewegte Bild im Handy spielt nacheinander vier Szenen durch
+// ELGA-Kasten ("Was ADAM über ELGA hinaus leistet"): das bewegte Bild im Handy spielt nacheinander vier Szenen durch
 // (Sprachniveau wählen, Arztbrief hochladen, Diagnose erklären lassen, digitaler Checkup).
 // Je Szene setzt das Skript data-step am Kasten (welche Szene sichtbar ist, welche Nummer links
 // hervorgehoben ist) und die Klasse "is-live" an der Szene (erst dann laufen ihre Bewegungen,
