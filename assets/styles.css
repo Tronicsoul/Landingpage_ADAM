@@ -48,10 +48,10 @@
   --shadow-lg: 0px 20px 45px rgba(6, 78, 59, 0.16);
 
   /* Breite des Inhalts und Seitenrand. Der Rand wächst mit dem Bildschirm, bleibt aber schmal
-     (höchstens 64px), damit der Inhalt die Breite nutzt. Über 1440px Inhalt wird nicht mehr
+     (höchstens 96px), damit der Inhalt die Breite nutzt. Über 1440px Inhalt wird nicht mehr
      verbreitert, sonst werden die Zeilen zu lang. */
   --max-width: 1440px;
-  --gutter: clamp(20px, 4vw, 64px);
+  --gutter: clamp(20px, 6vw, 96px);
   /* Abstände zwischen Inhalten: zwischen Kästchen einer Reihe und zwischen Blöcken eines
      Abschnitts (Überschrift, Kästchen, Kasten, Formular). Am Rechner größer, siehe unten. */
   --gap-cards: var(--space-6);
@@ -66,13 +66,23 @@
   }
 }
 
+/* Dunkles Farbschema mit den Farben aus dem App-Code (theme.ts), damit sich die Flächen klar
+   voneinander abheben:
+     Seite          #151718  darkBackground
+     Kästchen       #1f2937  darkSurface
+     grüne Bänder   #064e3b  darkMoss (jeder zweite Abschnitt, Formularkasten, Symbolkreise)
+     Knöpfe         #10b981  lightEmerald, Kopfleisten #059669 emeraldGreen
+     Schrift        #f9fafb  ivory, gedämpft ein abgedunkeltes mintGreen
+     Akzent         #f59e0b  sunGold (Angebotszeile unter dem Knopf)
+   Ränder und Hover-Töne sind aus Smaragdgrün und Hintergrund gemischt.
+   In den grünen Bändern liegen die Kästchen in der Seitenfarbe, siehe weiter unten. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #10231b;
-    --surface: #16342a;
-    --surface-strong: #1d4235;
-    --text: #f2fbf7;
-    --text-muted: #b7d9cc;
+    --background: #151718;
+    --surface: #064e3b;
+    --surface-strong: #0a6b52;
+    --text: #f9fafb;
+    --text-muted: #c5e8d8;
     --primary: #059669;
     --button-bg: #10b981;
     --button-bg-hover: #34d399;
@@ -81,19 +91,19 @@
     --error: #f87171;
     --error-bg: rgba(239, 68, 68, 0.18);
     --muted: #8fb2a3;
-    --border: #1d4235;
-    --card-bg: #12281f;
+    --border: #17604a;
+    --card-bg: #1f2937;
     --shadow-card: 0px 8px 24px rgba(0, 0, 0, 0.35);
     --shadow-lg: 0px 20px 45px rgba(0, 0, 0, 0.45);
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #10231b;
-  --surface: #16342a;
-  --surface-strong: #1d4235;
-  --text: #f2fbf7;
-  --text-muted: #b7d9cc;
+  --background: #151718;
+  --surface: #064e3b;
+  --surface-strong: #0a6b52;
+  --text: #f9fafb;
+  --text-muted: #c5e8d8;
   --primary: #059669;
   --button-bg: #10b981;
   --button-bg-hover: #34d399;
@@ -102,8 +112,8 @@
   --error: #f87171;
   --error-bg: rgba(239, 68, 68, 0.18);
   --muted: #8fb2a3;
-  --border: #1d4235;
-  --card-bg: #12281f;
+  --border: #17604a;
+  --card-bg: #1f2937;
 }
 
 /* Grundlagen */
@@ -2545,4 +2555,46 @@ section {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Nur dunkles Farbschema: Kästchen in den grünen Bändern (Vergleich, Sicherheit) liegen in der
+   dunklen Seitenfarbe, ihre Zeilen in der Kästchenfarbe. So steht nie Grün auf Grün.
+   Die Zeile mit dem Angebot unter dem Knopf trägt den Akzent der App. */
+:root[data-theme="dark"] .problem,
+:root[data-theme="dark"] .trust {
+  --card-bg: #151718;
+  --surface: #1f2937;
+  --border: #0d7a5c;
+}
+
+:root[data-theme="dark"] .problem,
+:root[data-theme="dark"] .trust {
+  background: #064e3b;
+}
+
+:root[data-theme="dark"] .hero__offer strong {
+  color: var(--accent);
+}
+
+/* Links im grünen Formularkasten in Mint, damit sie auf Grün gut lesbar bleiben. */
+:root[data-theme="dark"] .waitlist-card a {
+  color: #d1fae5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .problem,
+  :root:not([data-theme="light"]) .trust {
+    --card-bg: #151718;
+    --surface: #1f2937;
+    --border: #0d7a5c;
+    background: #064e3b;
+  }
+
+  :root:not([data-theme="light"]) .hero__offer strong {
+    color: var(--accent);
+  }
+
+  :root:not([data-theme="light"]) .waitlist-card a {
+    color: #d1fae5;
+  }
 }
