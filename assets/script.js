@@ -311,7 +311,7 @@ function initThemeToggle() {
 
 initThemeToggle();
 
-// Formularfrage zum A/B-Test ("Was ist für Sie das größere Problem?"): Die Reihenfolge der beiden
+// Formularfrage zum A/B-Test ("Welches Problem wiegt für Sie schwerer?"): Die Reihenfolge der beiden
 // Antworten wird je Seitenaufruf zufällig getauscht, damit nicht immer die obere bevorzugt wird.
 
 function initAnswerOrder() {
