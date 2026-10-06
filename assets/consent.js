@@ -16,8 +16,9 @@
   "use strict";
 
   var CONFIG = {
-    // Google Tag Manager: Container-ID, z. B. "GTM-XXXXXXX". Leer = wird nie geladen.
-    gtmId: "",
+    // Google Tag Manager: Container-ID. Leer = wird nie geladen.
+    // Im Container läuft Google Analytics 4 (Mess-ID G-PD2604L3NF), siehe datenschutz.html.
+    gtmId: "GTM-KSDQNDDV",
     // Umami (cookiefreie Webanalyse): Adresse des Skripts und Website-ID. Leer = wird nicht geladen.
     umamiSrc: "",
     umamiWebsiteId: "",
