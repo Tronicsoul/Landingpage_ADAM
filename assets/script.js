@@ -434,20 +434,38 @@ function initHowto() {
   const reduce =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let step = 1;
+  const resetTimers = [];
 
   function show(target, byUser) {
     step = Math.max(1, Math.min(panels.length, target));
     box.setAttribute("data-step", String(step));
     panels.forEach((panel, index) => panel.classList.toggle("is-active", index === step - 1));
-    if (current) current.textContent = String(step);
+    if (current) {
+      current.textContent = String(step);
+      if (byUser && !reduce) {
+        current.classList.remove("is-roll");
+        void current.offsetWidth;
+        current.classList.add("is-roll");
+      }
+    }
     prev.setAttribute("aria-disabled", step === 1 ? "true" : "false");
     next.setAttribute("aria-disabled", step === panels.length ? "true" : "false");
     // Abläufe im Handy: nur nach einem Blättern, nie beim Laden der Seite.
-    scenes.forEach((scene) => scene.classList.remove("is-run"));
+    // Die verlassene Ansicht behält ihren Ablauf-Zustand, bis sie ganz ausgeblendet ist. Sonst
+    // würde sie beim Überblenden kurz ins Ruhebild springen (bei Schritt 2 sähe man den Arztbrief).
     const scene = scenes[step - 1];
-    if (byUser && scene && !reduce) {
-      void scene.offsetWidth; // Ablauf bei jedem Erreichen des Schritts von vorn
-      scene.classList.add("is-run");
+    scenes.forEach((other, index) => {
+      if (other === scene) return;
+      clearTimeout(resetTimers[index]);
+      resetTimers[index] = setTimeout(() => other.classList.remove("is-run"), 900);
+    });
+    if (scene) {
+      clearTimeout(resetTimers[step - 1]);
+      scene.classList.remove("is-run");
+      if (byUser && !reduce) {
+        void scene.offsetWidth; // Ablauf bei jedem Erreichen des Schritts von vorn
+        scene.classList.add("is-run");
+      }
     }
     // Ansage für Bildschirmleser: Anzeige, Titel und Text des neuen Schritts
     if (byUser && live) {
@@ -479,6 +497,22 @@ function initHowto() {
   });
 
   box.classList.add("is-interactive");
+
+  // Schmal: Das Handy-Bild füllt die Inhaltsbreite. Seine Teile sind für 260 px gezeichnet und
+  // werden entsprechend vergrößert (zoom); am Desktop gilt der feste Wert aus der Stilvorlage.
+  const phone = box.querySelector(".demo-phone");
+  function fitPhone() {
+    if (!phone) return;
+    if (window.innerWidth < 900) {
+      const zoom = Math.min(1.7, box.clientWidth / 260);
+      phone.style.zoom = zoom.toFixed(3);
+    } else {
+      phone.style.zoom = "";
+    }
+  }
+  fitPhone();
+  window.addEventListener("resize", fitPhone);
+
   show(1, false);
 }
 
@@ -705,3 +739,346 @@ function initKeepView() {
 }
 
 initKeepView();
+
+// Bewegung: Einblenden beim Scrollen, Parallax (Elemente mit data-parallax laufen gegen oder mit der
+// Scrollrichtung, je nach Vorzeichen) und gezeichnete Linien bei den Zierzeichnungen. Bei "Bewegung
+// reduzieren" bleibt alles still. Ohne diese Funktion ist die Seite vollständig sichtbar, weil die
+// Verstecken-Regeln erst an der Klasse js-motion hängen.
+
+function initMotion() {
+  const reduce =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+
+  document.documentElement.classList.add("js-motion");
+
+  const revealSelector =
+    ".section-header, .ablauf__header, .service, .step, .trust-card, .waitlist-card, .benefit-chips, .howto, .cmp, .feature-section .container > *, main section:not(.hero) > .container > *:not(.trust-grid), .footer-main, .footer-bottom";
+  // Nur die Blöcke selbst bewegen sich, nicht der Abschnitt darum: Enthält ein Element Karten
+  // (Schritte, Vertrauen, Leistungen), wird es durch seine Kinder ersetzt, bis die Karten selbst
+  // an der Reihe sind. So steigt jede umrahmte Karte einzeln auf, mit kleinem Versatz.
+  const cardSelector = ".step, .trust-card, .service";
+  function expand(el) {
+    if (!el.matches(cardSelector) && el.querySelector(cardSelector)) {
+      return Array.from(el.children).flatMap(expand);
+    }
+    return [el];
+  }
+  const targets = Array.from(
+    new Set(Array.from(document.querySelectorAll(revealSelector)).flatMap(expand))
+  );
+
+  // Beim Start wird nichts "ausgeblendet": Die Übergänge sind kurz abgeschaltet, damit nicht
+  // schon sichtbare Blöcke beim Laden verschwinden und neu einblenden.
+  const root = document.documentElement;
+  root.classList.add("no-reveal-transition");
+  targets.forEach((el) => {
+    el.classList.add("reveal");
+    const siblings = el.parentElement ? Array.from(el.parentElement.children).filter((n) => n.classList.contains("reveal")) : [];
+    const index = Math.max(0, siblings.indexOf(el));
+    el.style.setProperty("--reveal-delay", Math.min(index, 5) * 110 + "ms");
+  });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-in");
+        io.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -12% 0px" }
+  );
+  targets.forEach((el) => io.observe(el));
+  void root.offsetWidth;
+  window.requestAnimationFrame(() => root.classList.remove("no-reveal-transition"));
+  // Die Herzschlag-Linie im Footer zeichnet sich bei jedem Hinscrollen neu: Sie wird zurückgesetzt,
+  // sobald sie aus dem Bild ist, und läuft wieder von links nach rechts, wenn sie erscheint.
+  const pulseObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle("is-in", entry.isIntersecting));
+    },
+    { threshold: 0, rootMargin: "0px 0px -12% 0px" }
+  );
+  document.querySelectorAll(".footer-pulse").forEach((el) => pulseObserver.observe(el));
+
+  // Parallax: Die Lage jedes Abschnitts wird nur beim Laden und bei Größenänderung gemessen. Beim
+  // Scrollen wird dann nichts gelesen, nur je Bild ein transform gesetzt (flüssig, ohne Layout).
+  const items = Array.from(document.querySelectorAll("[data-parallax]")).map((el) => ({
+    el,
+    speed: parseFloat(el.getAttribute("data-parallax")) || 0,
+    rot: parseFloat(el.style.getPropertyValue("--rot")) || 0,
+    host: el.closest("section, footer") || el.parentElement,
+    top: 0,
+    bottom: 0,
+    base: 0,
+  }));
+  const photo = document.querySelector(".hero__photo img");
+  const heroEl = document.querySelector(".hero");
+  let vh = window.innerHeight;
+  let photoScale = 1.1;
+  let ticking = false;
+
+  function measure() {
+    vh = window.innerHeight;
+    photoScale = window.innerWidth >= 1100 ? 1.22 : 1.1;
+    const y = window.scrollY;
+    items.forEach((item) => {
+      const rect = item.host.getBoundingClientRect();
+      item.top = rect.top + y;
+      item.bottom = rect.bottom + y;
+      item.base = (item.top + item.bottom) / 2;
+    });
+    update();
+  }
+
+  function update() {
+    ticking = false;
+    const y = window.scrollY;
+    items.forEach((item) => {
+      if (y + vh < item.top - 200 || y > item.bottom + 200) return;
+      const shift = (item.base - (y + vh / 2)) * item.speed;
+      item.el.style.transform = "translate3d(0," + shift.toFixed(1) + "px,0) rotate(" + item.rot + "deg)";
+    });
+    const wide = window.innerWidth >= 1100;
+    if (photo && y < vh * 1.5) {
+      // Am Handy bleibt das Foto stehen (sticky), nur am Desktop wandert es mit.
+      photo.style.transform = "translate3d(0," + (wide ? (y * 0.12).toFixed(1) : 0) + "px,0) scale(" + photoScale + ")";
+    }
+    if (heroEl) {
+      const dim = wide ? 0 : Math.min(0.88, Math.max(0, (y - vh * 0.08) / (vh * 0.55)) * 0.88);
+      heroEl.style.setProperty("--hero-dim", dim.toFixed(3));
+    }
+  }
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(update);
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", measure);
+  window.addEventListener("load", measure);
+  setTimeout(measure, 1200); // nach Schriften und Bildern noch einmal
+  measure();
+}
+
+initMotion();
+
+// Ladeanzeige: nach dem Laden (mindestens kurz sichtbar) blendet sie aus und wird entfernt.
+(function initLoader() {
+  const root = document.documentElement;
+  if (!root.classList.contains("js-loading")) return;
+  const started = Date.now();
+  let done = false;
+  function finish() {
+    if (done) return;
+    done = true;
+    const wait = Math.max(0, 700 - (Date.now() - started));
+    setTimeout(() => {
+      root.classList.add("is-loaded");
+      setTimeout(() => root.classList.remove("js-loading", "is-loaded"), 800);
+    }, wait);
+  }
+  if (document.readyState === "complete") finish();
+  else window.addEventListener("load", finish);
+})();
+
+// Auswahlfelder im Formular: Statt der Liste des Browsers (deren Breite und Aussehen die Seite nicht
+// bestimmt) steht ein eigenes Auswahlfeld mit einer Liste genau in Feldbreite. Das echte <select>
+// bleibt im Formular (unsichtbar): Es liefert den Wert, wird beim Absenden geprüft und beim
+// Zurücksetzen mitgeführt. Bedienung wie bei einem Auswahlfeld: Klick, Pfeiltasten, Enter,
+// Leertaste, Escape, Tippen des ersten Buchstabens, Tab. Ohne JavaScript bleibt das normale Feld.
+
+function initCustomSelects() {
+  document.querySelectorAll(".form-field select").forEach((select) => {
+    if (select.dataset.csReady) return;
+    select.dataset.csReady = "1";
+
+    const wrap = document.createElement("div");
+    wrap.className = "cs";
+    select.parentNode.insertBefore(wrap, select);
+    wrap.appendChild(select);
+    select.classList.add("cs__native");
+    select.tabIndex = -1;
+    select.setAttribute("aria-hidden", "true");
+
+    const label = document.querySelector('label[for="' + select.id + '"]');
+    if (label && !label.id) label.id = select.id + "-label";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "cs__btn";
+    button.id = select.id + "-btn";
+    button.setAttribute("aria-haspopup", "listbox");
+    button.setAttribute("aria-expanded", "false");
+    if (label) button.setAttribute("aria-labelledby", label.id + " " + button.id);
+
+    const text = document.createElement("span");
+    text.className = "cs__text";
+    const chevron = document.createElement("span");
+    chevron.className = "cs__chevron";
+    chevron.setAttribute("aria-hidden", "true");
+    button.append(text, chevron);
+
+    const list = document.createElement("ul");
+    list.className = "cs__list";
+    list.id = select.id + "-list";
+    list.setAttribute("role", "listbox");
+    list.tabIndex = -1;
+    list.hidden = true;
+    if (label) list.setAttribute("aria-labelledby", label.id);
+    button.setAttribute("aria-controls", list.id);
+
+    const items = [];
+    Array.from(select.options).forEach((option, index) => {
+      if (option.disabled) return;
+      const item = document.createElement("li");
+      item.className = "cs__option";
+      item.setAttribute("role", "option");
+      item.id = select.id + "-opt-" + index;
+      item.dataset.value = option.value;
+      item.textContent = option.textContent;
+      items.push(item);
+      list.appendChild(item);
+    });
+
+    wrap.append(button, list);
+
+    let active = -1;
+
+    function selectedIndex() {
+      return items.findIndex((item) => item.dataset.value === select.value);
+    }
+
+    function sync() {
+      const option = select.options[select.selectedIndex];
+      text.textContent = option ? option.textContent : "";
+      text.classList.toggle("is-placeholder", !select.value);
+      const current = selectedIndex();
+      items.forEach((item, index) => item.setAttribute("aria-selected", String(index === current)));
+      const invalid = select.getAttribute("aria-invalid");
+      if (invalid) button.setAttribute("aria-invalid", invalid);
+      else button.removeAttribute("aria-invalid");
+    }
+
+    function setActive(index) {
+      if (!items.length) return;
+      active = Math.max(0, Math.min(items.length - 1, index));
+      items.forEach((item, i) => item.classList.toggle("is-active", i === active));
+      button.setAttribute("aria-activedescendant", items[active].id);
+      items[active].scrollIntoView({ block: "nearest" });
+    }
+
+    function open() {
+      if (!list.hidden) return;
+      list.hidden = false;
+      wrap.classList.add("is-open");
+      button.setAttribute("aria-expanded", "true");
+      setActive(selectedIndex() >= 0 ? selectedIndex() : 0);
+    }
+
+    function close() {
+      if (list.hidden) return;
+      list.hidden = true;
+      wrap.classList.remove("is-open");
+      button.setAttribute("aria-expanded", "false");
+      button.removeAttribute("aria-activedescendant");
+    }
+
+    function choose(index) {
+      const item = items[index];
+      if (!item) return;
+      select.value = item.dataset.value;
+      if (select.value && select.getAttribute("aria-invalid")) {
+        // Eine gewählte Antwort nimmt die Fehlermeldung zum Feld zurück.
+        select.removeAttribute("aria-invalid");
+        const error = select.closest(".form-field").querySelector(".form-error");
+        if (error) error.textContent = "";
+      }
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      sync();
+      close();
+      button.focus();
+    }
+
+    button.addEventListener("click", () => (list.hidden ? open() : close()));
+
+    button.addEventListener("keydown", (event) => {
+      const isOpen = !list.hidden;
+      switch (event.key) {
+        case "ArrowDown":
+          event.preventDefault();
+          if (!isOpen) open();
+          else setActive(active + 1);
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          if (!isOpen) open();
+          else setActive(active - 1);
+          break;
+        case "Home":
+          if (isOpen) { event.preventDefault(); setActive(0); }
+          break;
+        case "End":
+          if (isOpen) { event.preventDefault(); setActive(items.length - 1); }
+          break;
+        case "Enter":
+        case " ":
+          event.preventDefault();
+          if (isOpen) choose(active);
+          else open();
+          break;
+        case "Escape":
+          if (isOpen) { event.preventDefault(); close(); }
+          break;
+        case "Tab":
+          close();
+          break;
+        default:
+          if (event.key.length === 1 && /\S/.test(event.key)) {
+            const letter = event.key.toLowerCase();
+            const start = (isOpen ? active : selectedIndex()) + 1;
+            const order = items.slice(start).concat(items.slice(0, start));
+            const hit = order.find((item) => item.textContent.trim().toLowerCase().startsWith(letter));
+            if (hit) {
+              if (!isOpen) open();
+              setActive(items.indexOf(hit));
+            }
+          }
+      }
+    });
+
+    list.addEventListener("mousedown", (event) => event.preventDefault()); // Fokus bleibt am Feld
+    list.addEventListener("click", (event) => {
+      const item = event.target.closest(".cs__option");
+      if (item) choose(items.indexOf(item));
+    });
+    list.addEventListener("mousemove", (event) => {
+      const item = event.target.closest(".cs__option");
+      if (item) {
+        const index = items.indexOf(item);
+        if (index !== active) setActive(index);
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!wrap.contains(event.target)) close();
+    });
+    button.addEventListener("blur", () => setTimeout(() => {
+      if (!wrap.contains(document.activeElement)) close();
+    }, 0));
+
+    // Die Beschriftung und die Fehlerprüfung der Seite sprechen das echte Feld an: Fokus und
+    // Fehlerzustand werden an das sichtbare Feld weitergegeben.
+    select.addEventListener("focus", () => button.focus());
+    new MutationObserver(sync).observe(select, { attributes: true, attributeFilter: ["aria-invalid"] });
+    const form = select.closest("form");
+    if (form) form.addEventListener("reset", () => setTimeout(sync, 0));
+
+    sync();
+  });
+}
+
+initCustomSelects();

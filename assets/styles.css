@@ -143,6 +143,13 @@ html {
   }
 }
 
+/* Nichts darf die Seite seitlich verschiebbar machen (z. B. Texte, die beim Wechsel von der Seite
+   einfliegen, oder Zeichnungen am Rand). "clip" schneidet nur ab und macht keinen Scrollbereich. */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -574,7 +581,7 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   body[data-campaign] .nav-cta {
     display: inline-flex;
     font-size: 15px;
-    min-height: 44px;
+    min-height: 40px;
     padding: var(--space-2) var(--space-4);
     white-space: nowrap;
   }
@@ -1237,6 +1244,50 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   margin: var(--space-1) 0 var(--space-3);
 }
 
+/* Handy: Zeitstrahl. Links läuft eine Linie, auf ihr sitzen die Nummern als Knoten (abgerundete
+   Quadrate mit Umriss); die Kästen stehen rechts daneben. So steht die Nummer nicht mehr als Kreis
+   im Kasten. */
+@media (max-width: 759px) {
+  .steps {
+    position: relative;
+    padding-left: 64px;
+    gap: var(--space-4);
+  }
+
+  .steps::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 36px;
+    bottom: 36px;
+    width: 2px;
+    border-radius: 1px;
+    background: linear-gradient(180deg, var(--button-bg), color-mix(in srgb, var(--button-bg) 25%, transparent));
+  }
+
+  .step.is-collapsible {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .steps .step__number {
+    position: absolute;
+    left: -64px;
+    top: 16px;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--button-bg), #10b981);
+    color: #f9fafb;
+    font-size: 19px;
+    box-shadow:
+      0 0 0 5px var(--background),
+      0 0 0 7px color-mix(in srgb, var(--button-bg) 45%, transparent);
+  }
+}
+
 /* Benefit-Chips (Pioneer-/CTA-Sektion) */
 
 .benefit-chips {
@@ -1260,6 +1311,30 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   color: var(--text);
 }
 
+/* Handy: Die Hinweise stehen als gleich breite Zeilen untereinander statt als Pillen
+   unterschiedlicher Breite. */
+@media (max-width: 599px) {
+  .benefit-chips {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .benefit-chip {
+    justify-content: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 15.5px;
+    text-align: left;
+  }
+
+  .benefit-chips .benefit-chip svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 .benefit-chip svg {
   width: 15px;
   height: 15px;
@@ -1270,14 +1345,14 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
 /* Abschnitte */
 
 section {
-  padding-block: var(--space-14);
+  padding-block: 34px;
 }
 
 /* Am Rechner mehr Luft zwischen den Abschnitten. Am Handy bleibt es kompakt, weil die Seite
    dort ohnehin lang ist. Der Hero behält seinen eigenen Abstand. */
 @media (min-width: 960px) {
   section {
-    padding-block: 96px;
+    padding-block: 60px;
   }
 }
 
@@ -1458,26 +1533,168 @@ body[data-audience="aerzte"] .hero__blob {
 body[data-audience="aerzte"] .hero__inner {
   width: 100%;
   grid-template-columns: minmax(0, 1fr);
+  flex: 1; /* füllt den Raum über dem Band, der Text steht darin mittig */
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* linksbündig mit dem Logo, nicht in der Mitte */
+  justify-content: center;
+}
+
+body[data-audience="aerzte"] .hero__inner > div:last-child {
+  display: none;
 }
 
 body[data-audience="aerzte"] .hero__inner > div:first-child {
   max-width: 600px;
 }
 
+
+
 body[data-audience="aerzte"] .hero h1 {
-  font-size: clamp(31px, 3.5vw, 46px);
-  line-height: 1.15;
-  margin-bottom: var(--space-5);
+  font-size: clamp(34px, 4vw, 54px);
+  line-height: 1.12;
+  margin-bottom: var(--space-8);
   text-wrap: balance; /* die Frage bricht in etwa gleich lange Zeilen um */
+}
+
+/* Die Geschichte unter der Überschrift: drei Absätze mit viel Luft, der letzte ist die Antwort */
+.hero__story {
+  margin: var(--space-4) 0 var(--space-8);
+}
+
+@media (min-width: 900px) {
+  body[data-audience="aerzte"] .hero h1 {
+    margin-bottom: var(--space-10);
+  }
+}
+
+.hero__story p {
+  max-width: 30em;
+  margin: 0 0 var(--space-6);
+  font-size: clamp(18px, 1.6vw, 21px);
+  line-height: 1.6;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.hero__story p:last-child {
+  margin-bottom: 0;
+}
+
+/* Band unter dem Hero über die ganze Breite: links die Wendung, rechts die Antwort */
+.hero__band {
+  position: relative;
+  z-index: 1;
+  order: 2;
+  margin-top: var(--space-10);
+  padding-block: var(--space-10);
+  /* Hell im hellen Farbschema, dunkel im dunklen (siehe unten). */
+  --text: #f9fafb;
+  --text-muted: rgba(249, 250, 251, 0.88);
+  --link: #d1fae5;
+  background: linear-gradient(100deg, rgba(6, 78, 59, 0.82), rgba(15, 92, 72, 0.72));
+  color: var(--text);
+  border-block: 0;
+}
+
+:root[data-theme="dark"] .hero__band {
+  --text: #f9fafb;
+  --text-muted: rgba(249, 250, 251, 0.8);
+  --link: #10b981;
+  background: rgba(21, 23, 24, 0.55);
+  border-block-color: rgba(249, 250, 251, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero__band {
+    --text: #f9fafb;
+    --text-muted: rgba(249, 250, 251, 0.8);
+    --link: #10b981;
+    background: rgba(21, 23, 24, 0.55);
+    border-block-color: rgba(249, 250, 251, 0.12);
+  }
+}
+
+.hero__band-inner > div {
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.hero__band-inner > div[data-variant-content] {
+  display: none;
+}
+
+body[data-variant="a"] .hero__band-inner > div[data-variant-content="a"],
+body[data-variant="b"] .hero__band-inner > div[data-variant-content="b"] {
+  display: grid;
+}
+
+.hero__band-turn {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+/* Schmal: Die Wendung ist eine ruhige, kleinere Zeile mit senkrechtem Strich (wie ein Zitat), die
+   Antwort steht groß in einer abgesetzten, abgerundeten Fläche. So sind es zwei Aussagen. */
+@media (max-width: 899px) {
+  .hero__band {
+    padding-block: var(--space-8);
+  }
+
+  .hero__band-inner > div {
+    gap: var(--space-5);
+  }
+
+  .hero__band-turn {
+    padding-left: 14px;
+    border-left: 3px solid color-mix(in srgb, var(--text) 38%, transparent);
+    font-size: 16.5px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+
+  .hero__band-answer {
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--text) 11%, transparent);
+  }
+
+  .hero__band-answer .hero__answer {
+    font-size: clamp(20px, 5.8vw, 24px);
+    line-height: 1.3;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero__band-inner > div {
+    grid-template-columns: 1fr 1.3fr;
+    gap: var(--space-14);
+  }
+
+  .hero__band-answer {
+    padding-left: var(--space-8);
+    border-left: 3px solid var(--link, var(--primary));
+  }
 }
 
 .hero__answer {
   max-width: 25em;
-  margin: 0 0 var(--space-5);
-  font-size: clamp(20px, 2vw, 27px);
+  margin: var(--space-10) 0 0;
+  font-size: clamp(22px, 2.2vw, 28px);
   font-weight: 700;
   line-height: 1.35;
   text-wrap: balance;
+}
+
+.hero__band-inner .hero__answer {
+  margin: 0;
+  max-width: none;
 }
 
 .hero__mark {
@@ -1524,27 +1741,74 @@ body[data-audience="aerzte"] .hero__offer {
   text-wrap: pretty;
 }
 
-/* Foto: schmal (Handy, Tablet) als Kopfbild direkt unter der Kopfleiste, randlos. Es läuft unten
-   in die Seitenfarbe aus, und der Text setzt in diesem Auslauf an: so kostet das Foto wenig Höhe
-   und Überschrift und Antwort stehen im ersten Bildschirm. Ab 1100 px liegt es als Hintergrund
-   hinter dem Abschnitt. */
+/* Foto: schmal als Bild unter dem Text, ab 1100 px als Hintergrund des Abschnitts */
+/* Am Handy steht das Foto ganz oben über die volle Breite und läuft nach unten in die Seitenfarbe
+   aus; die Überschrift schiebt sich darüber. */
 .hero__photo {
   position: relative;
-  order: -1;
-  height: clamp(230px, 60vw, 440px);
+  order: 0;
+  height: clamp(300px, 56vh, 500px);
+  margin: 0;
   overflow: hidden;
 }
 
 @media (max-width: 1099px) {
+  /* Handy und Tablet: Das Foto steht im ersten Bildschirm ganz frei, nur die Überschrift setzt
+     unten am Bildrand an. Beim Scrollen bleibt das Foto stehen, wird dunkler, und der Text
+     läuft darüber nach oben (Foto "klebt", Klasse sticky; Dunkelheit setzt script.js). Ohne
+     JavaScript bleibt es gedämpft dunkel. */
   body[data-audience="aerzte"] .hero {
-    padding-top: 0;
-    padding-bottom: var(--space-10);
+    --hero-h: calc(100vh - var(--nav-height));
+    --hero-h: calc(100svh - var(--nav-height));
+    display: block;
+    padding-block: 0;
+    overflow: clip;
+  }
+
+  body[data-audience="aerzte"] .hero__photo {
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 0;
+    height: var(--hero-h);
+    margin-bottom: calc(-1 * var(--hero-h));
+  }
+
+  /* Die Überschrift unten steht auf einem Verlauf, das Gesicht oben bleibt frei. */
+  body[data-audience="aerzte"] .hero__photo::after {
+    background:
+      linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--background) 94%, transparent) 0%,
+        color-mix(in srgb, var(--background) 72%, transparent) 24%,
+        transparent 58%
+      );
+  }
+
+  body[data-audience="aerzte"] .hero__photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--background);
+    opacity: var(--hero-dim, 0.78);
+    pointer-events: none;
   }
 
   body[data-audience="aerzte"] .hero__inner {
     position: relative;
-    z-index: 1;
-    margin-top: clamp(-120px, -21vw, -76px);
+    z-index: 2;
+    min-height: 0;
+    padding-top: max(110px, calc(var(--hero-h) - 400px));
+    padding-bottom: var(--space-8);
+  }
+
+  body[data-audience="aerzte"] .hero h1 {
+    font-size: clamp(34px, 9.4vw, 46px);
+    line-height: 1.1;
+  }
+
+  body[data-audience="aerzte"] .hero__story p {
+    font-size: 18px;
   }
 }
 
@@ -1564,27 +1828,13 @@ body[data-audience="aerzte"] .hero__offer {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    0deg,
-    var(--background) 0%,
-    color-mix(in srgb, var(--background) 88%, transparent) 20%,
-    color-mix(in srgb, var(--background) 45%, transparent) 42%,
-    transparent 62%
-  );
+  background:
+    linear-gradient(0deg, var(--background) 0%, color-mix(in srgb, var(--background) 80%, transparent) 38%, transparent 78%);
 }
 
-/* Der Hinweis steht schmal oben rechts auf dem Foto, auf einer dunklen Fläche, damit er auch vor
-   dem hellen Fenster lesbar ist. */
-.hero__photo-note {
-  position: absolute;
-  right: var(--space-3);
-  top: var(--space-3);
-  z-index: 1;
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--background) 62%, transparent);
-  font-size: 12px;
-  color: var(--text-muted);
+.hero__photo img {
+  transform: scale(1.1);
+  will-change: transform;
 }
 
 /* Tablet: das ganze Foto, die Ärztin steht rechts, der Text setzt links unten an. */
@@ -1596,8 +1846,12 @@ body[data-audience="aerzte"] .hero__offer {
 
 @media (min-width: 1100px) {
   body[data-audience="aerzte"] .hero {
-    justify-content: center;
-    min-height: clamp(620px, calc(100vh - var(--nav-height)), 820px);
+    padding-block: 0;
+  }
+
+  /* Der Hero ohne Band ist so hoch wie das Fenster unter der Kopfzeile; das Band folgt darunter. */
+  body[data-audience="aerzte"] .hero__inner {
+    min-height: clamp(560px, calc(100vh - var(--nav-height)), 900px);
     padding-block: var(--space-10);
   }
 
@@ -1605,15 +1859,17 @@ body[data-audience="aerzte"] .hero__offer {
      Ärztin neben dem Text steht und nicht dahinter. */
   .hero__photo {
     position: absolute;
-    inset: 0 -150px 0 auto;
+    inset: 0;
     z-index: 0;
     order: 0;
-    width: min(100%, 1900px);
+    width: 100%;
     height: auto;
   }
 
   .hero__photo img {
-    object-position: 100% 30%;
+    object-position: 85% 30%;
+    transform-origin: 80% 32%;
+    transform: scale(1.22);
   }
 
   /* Das Foto läuft links und unten in die Seitenfarbe aus, damit der Text ruhig steht. */
@@ -1625,16 +1881,7 @@ body[data-audience="aerzte"] .hero__offer {
         color-mix(in srgb, var(--background) 92%, transparent) 30%,
         color-mix(in srgb, var(--background) 55%, transparent) 46%,
         transparent 64%
-      ),
-      linear-gradient(0deg, var(--background) 0%, transparent 18%);
-  }
-
-  .hero__photo-note {
-    top: auto;
-    right: calc(var(--gutter) + 150px);
-    bottom: var(--space-4);
-    padding: 0;
-    background: none;
+      );
   }
 }
 
@@ -1645,10 +1892,6 @@ body[data-audience="aerzte"] .hero__offer {
 
   .hero__photo {
     right: 0;
-  }
-
-  .hero__photo-note {
-    right: var(--gutter);
   }
 }
 
@@ -1961,10 +2204,27 @@ body[data-audience="aerzte"] .hero__offer {
    der Titel des Schritts eine Stufe kleiner. Nichts bewegt sich von selbst. */
 .ablauf__header {
   max-width: 720px;
-  margin: 0 0 var(--gap-block);
+  margin: 0 0 var(--space-5);
+}
+
+/* Überschrift und Unterzeile stehen im Kasten über der Schrittzahl, mit Luft zwischen allen Teilen. */
+.howto__heading {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.howto__sub {
+  margin: 0 0 var(--space-10);
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
 .howto {
+  overflow-x: clip; /* die Texte fliegen beim Wechsel seitlich ein und verlassen die Bühne */
   padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1992,7 +2252,7 @@ body[data-audience="aerzte"] .hero__offer {
 /* "Schritt 1 von 4": klein und ruhig, immer an derselben Stelle über dem Titel. */
 .howto__count {
   display: none;
-  margin: 0 0 var(--space-2);
+  margin: 0 0 var(--space-8);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -2018,11 +2278,75 @@ body[data-audience="aerzte"] .hero__offer {
 .howto.is-interactive .howto__panel {
   grid-area: 1 / 1;
   visibility: hidden;
+  transition: visibility 0s linear 0.5s;
 }
 
 .howto.is-interactive .howto__panel.is-active {
   visibility: visible;
+  transition: visibility 0s;
 }
+
+/* Beim Wechsel fliegt die Überschrift von links ein, kurz danach der Text von rechts; beim Gehen
+   verlassen sie die Bühne in die jeweils andere Richtung. */
+.howto.is-interactive .howto__title,
+.howto.is-interactive .howto__desc {
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.45s ease;
+}
+
+.howto.is-interactive .howto__title {
+  transform: translateX(-48px);
+}
+
+.howto.is-interactive .howto__desc {
+  transform: translateX(48px);
+}
+
+.howto.is-interactive .howto__panel.is-active .howto__title,
+.howto.is-interactive .howto__panel.is-active .howto__desc {
+  opacity: 1;
+  transform: none;
+}
+
+.howto.is-interactive .howto__panel.is-active .howto__title {
+  transition: opacity 0.7s ease 0.12s, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.12s;
+}
+
+.howto.is-interactive .howto__panel.is-active .howto__desc {
+  transition: opacity 0.8s ease 0.38s, transform 1s cubic-bezier(0.22, 0.61, 0.36, 1) 0.38s;
+}
+
+/* Die Schrittzahl rollt beim Wechsel ein; darunter wächst ein dünner Fortschrittsbalken. */
+.howto__count [data-howto-current] {
+  display: inline-block;
+}
+
+.howto__count [data-howto-current].is-roll {
+  animation: howto-roll 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes howto-roll {
+  from { opacity: 0; transform: perspective(200px) translateY(-0.7em) rotateX(-80deg); }
+  to { opacity: 1; transform: none; }
+}
+
+.howto.is-interactive .howto__count::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 3px;
+  margin-top: var(--space-3);
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--link, var(--button-bg)), var(--link, var(--button-bg))) 0 0 / calc(var(--step-progress, 0.25) * 100%) 100% no-repeat,
+    color-mix(in srgb, var(--text) 14%, transparent);
+  transition: background-size 0.9s ease;
+}
+
+.howto[data-step="1"] { --step-progress: 0.25; }
+.howto[data-step="2"] { --step-progress: 0.5; }
+.howto[data-step="3"] { --step-progress: 0.75; }
+.howto[data-step="4"] { --step-progress: 1; }
 
 .howto__title {
   margin: 0 0 var(--space-3);
@@ -2113,14 +2437,16 @@ body[data-audience="aerzte"] .hero__offer {
    vier Titel und alle vier Texte liegen jeweils in derselben Zelle, sichtbar ist der gewählte. */
 @media (max-width: 899px) {
   .howto.is-interactive {
-    /* Die Pfeile stehen unter den Kanten des Handy-Bilds (260 px breit), nicht am Kastenrand. */
-    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 164px) 48px minmax(0, 1fr);
+    /* Das Handy-Bild füllt die Inhaltsbreite (script.js passt die Größe an); die Pfeile stehen
+       unter seinen Kanten, "Schritt N von 4" mit Balken dazwischen. */
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
     grid-template-areas:
-      "title title title title title"
-      "demo demo demo demo demo"
-      ". prev count next ."
-      "desc desc desc desc desc"
-      "note note note note note";
+      "intro intro intro"
+      "title title title"
+      "demo demo demo"
+      "prev count next"
+      "desc desc desc"
+      "note note note";
     gap: 0;
     align-items: center;
   }
@@ -2133,10 +2459,20 @@ body[data-audience="aerzte"] .hero__offer {
     display: contents;
   }
 
+  .howto.is-interactive .howto__intro {
+    grid-area: intro;
+    margin-bottom: var(--space-8);
+    text-align: center;
+  }
+
+  .howto__sub {
+    margin-bottom: 0;
+  }
+
   .howto.is-interactive .howto__title {
     grid-area: title;
     align-self: end;
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-6);
     text-align: center;
     text-wrap: balance;
   }
@@ -2151,25 +2487,51 @@ body[data-audience="aerzte"] .hero__offer {
 
   .howto.is-interactive [data-howto-prev] {
     grid-area: prev;
-    margin-top: var(--space-4);
+    margin-top: var(--space-6);
   }
 
   .howto.is-interactive [data-howto-next] {
     grid-area: next;
-    margin-top: var(--space-4);
+    margin-top: var(--space-6);
   }
 
+  /* Schrittzahl samt Balken sind genauso hoch wie die Pfeile (48 px) und stehen auf gleicher
+     Höhe: Der Block aus Text und Balken liegt damit senkrecht genau mittig zu den Pfeilen. */
   .howto.is-interactive .howto__count {
     grid-area: count;
-    margin: var(--space-4) 0 0;
+    align-self: start;
+    box-sizing: border-box;
+    height: 48px;
+    /* Zeile (18 px) + Abstand (12 px) + Balken (5 px) = 35 px, mittig in 48 px */
+    padding-top: 6.5px;
+    margin: var(--space-6) 0 0;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    line-height: 18px;
+    white-space: nowrap;
     text-align: center;
+  }
+
+  .howto.is-interactive [data-howto-prev],
+  .howto.is-interactive [data-howto-next] {
+    align-self: start;
+  }
+
+  /* Der Balken ist kürzer als die Spalte und lässt zu den Pfeilen Luft. */
+  .howto.is-interactive .howto__count::after {
+    width: calc(100% - 36px);
+    height: 5px;
+    margin: 12px auto 0;
+    border-radius: 3px;
   }
 
   .howto.is-interactive .howto__desc {
     grid-area: desc;
     align-self: start;
     max-width: none;
-    margin-top: var(--space-5);
+    margin-top: var(--space-6);
+    text-align: center;
+    text-wrap: pretty;
   }
 
   .howto.is-interactive .howto__note--end {
@@ -2179,10 +2541,33 @@ body[data-audience="aerzte"] .hero__offer {
   }
 }
 
+/* Schmal: kein Kasten um den Ablauf, das Handy steht breiter (zoom 1,2 von 260 px auf etwa 312 px);
+   die Spalte der Pfeile folgt der Breite. Auf ganz schmalen Geräten etwas weniger. */
+@media (max-width: 899px) {
+  .howto {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  /* Das Handy ist so breit wie der Inhalt der Seite (Größe setzt script.js) und liegt ohne
+     Schatten auf der Seite. */
+  .howto__demo {
+    justify-self: stretch;
+  }
+
+  .howto__demo .demo-phone {
+    max-width: none;
+    box-shadow: none;
+  }
+}
+
 /* Handy: alles etwas kleiner, damit der Abschnitt nicht zu hoch wird. */
 @media (max-width: 599px) {
   .howto {
-    padding: var(--space-5);
+    padding: 0;
     gap: var(--space-6);
   }
 
@@ -2237,7 +2622,7 @@ body[data-audience="aerzte"] .hero__offer {
   flex-direction: column;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.16s ease, visibility 0s linear 0.16s;
+  transition: opacity 0.6s ease-in-out, visibility 0s linear 0.6s;
 }
 
 /* Beim Wechsel blendet die neue Ansicht kurz über (160 ms). */
@@ -2247,7 +2632,7 @@ body[data-audience="aerzte"] .hero__offer {
 .howto[data-step="4"] .demo-scene--4 {
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.16s ease;
+  transition: opacity 0.7s ease-in-out 0.1s;
 }
 
 /* Breite Bildschirme: das Handy steht etwas größer im Kasten. */
@@ -2526,7 +2911,7 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 .demo-scene.is-run .demo-tap {
-  animation: demo-tap 0.5s ease-out var(--tap, 0.4s) both;
+  animation: demo-tap 0.8s ease-out var(--tap, 0.5s) both;
 }
 
 .demo-scene--2.is-run .demo-sub--doc .demo-tap {
@@ -2534,15 +2919,16 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 @keyframes demo-tap {
-  0% { opacity: 0; transform: scale(0.4); }
-  40% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.4); }
+  0% { opacity: 0; transform: scale(0.5); }
+  35% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.3); }
 }
 
 /* Ansicht 2 besteht aus zwei Bildschirmen übereinander. */
 .demo-scene--2 {
-  --med-time: 2.9s;
-  --doc-delay: 2.9s;
+  --med-time: 4.4s;
+  --doc-delay: 4.4s;
+  --doc-time: 3.8s;
 }
 
 .demo-sub {
@@ -2598,78 +2984,78 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 .demo-scene--2.is-run .demo-sub--med {
-  animation: demo-med-screen var(--med-time) linear both;
+  animation: demo-med-screen var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-sub--doc {
-  animation: demo-doc-screen var(--med-time) linear both;
+  animation: demo-doc-screen var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-med__empty {
-  animation: demo-med-empty var(--med-time) linear both;
+  animation: demo-med-empty var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-med__form {
-  animation: demo-med-form var(--med-time) linear both;
+  animation: demo-med-form var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-med__v1 {
-  animation: demo-med-v1 var(--med-time) linear both;
+  animation: demo-med-v1 var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-med__v2 {
-  animation: demo-med-v2 var(--med-time) linear both;
+  animation: demo-med-v2 var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-med__v3 {
-  animation: demo-med-v3 var(--med-time) linear both;
+  animation: demo-med-v3 var(--med-time) ease-in-out both;
 }
 
 .demo-scene--2.is-run .demo-med__card {
-  animation: demo-med-card var(--med-time) linear both;
+  animation: demo-med-card var(--med-time) ease-in-out both;
 }
 
 /* Zeitpunkte (von 2,9 s): Formular ab 10 %, Name 26 %, Dosierung 36 %, Häufigkeit 46 %,
    Speichern bei 52 %, Karte ab 66 %, Wechsel zu "Diagnosen" ab 93 %. */
 @keyframes demo-med-screen {
-  0%, 93% { opacity: 1; visibility: visible; }
+  0%, 90% { opacity: 1; visibility: visible; }
   100% { opacity: 0; visibility: hidden; }
 }
 
 @keyframes demo-doc-screen {
-  0%, 93% { opacity: 0; }
+  0%, 90% { opacity: 0; }
   100% { opacity: 1; }
 }
 
 @keyframes demo-med-empty {
-  0%, 9% { opacity: 0.8; }
-  13%, 100% { opacity: 0; }
+  0%, 8% { opacity: 0.8; }
+  15%, 100% { opacity: 0; }
 }
 
 @keyframes demo-med-form {
-  0%, 9% { opacity: 0; visibility: hidden; }
-  15%, 60% { opacity: 1; visibility: visible; }
-  66%, 100% { opacity: 0; visibility: hidden; }
+  0%, 8% { opacity: 0; visibility: hidden; }
+  16%, 62% { opacity: 1; visibility: visible; }
+  70%, 100% { opacity: 0; visibility: hidden; }
 }
 
 @keyframes demo-med-v1 {
-  0%, 24% { opacity: 0; }
-  28%, 100% { opacity: 1; }
+  0%, 22% { opacity: 0; }
+  30%, 100% { opacity: 1; }
 }
 
 @keyframes demo-med-v2 {
-  0%, 34% { opacity: 0; }
-  38%, 100% { opacity: 1; }
+  0%, 32% { opacity: 0; }
+  40%, 100% { opacity: 1; }
 }
 
 @keyframes demo-med-v3 {
-  0%, 44% { opacity: 0; }
-  48%, 100% { opacity: 1; }
+  0%, 42% { opacity: 0; }
+  50%, 100% { opacity: 1; }
 }
 
 @keyframes demo-med-card {
-  0%, 64% { opacity: 0; }
-  71%, 100% { opacity: 1; }
+  0%, 62% { opacity: 0; transform: translateY(6px); }
+  74%, 100% { opacity: 1; transform: none; }
 }
 
 /* Arztbrief hochladen: Dateizeile, Fortschritt und Dateiauswahl */
@@ -2779,91 +3165,91 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 .demo-scene--2.is-run .demo-sheet {
-  animation: demo-upload-sheet 2.6s ease var(--doc-delay) both;
+  animation: demo-upload-sheet var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-sheet__row--picked {
-  animation: demo-upload-pick 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-pick var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-sheet__check {
-  animation: demo-upload-after-pick 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-after-pick var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-upload__idle {
-  animation: demo-upload-idle 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-idle var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-upload__busy {
-  animation: demo-upload-busy 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-busy var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-file {
-  animation: demo-upload-file 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-file var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-file__bar {
-  animation: demo-upload-bar 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-bar var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-file__done,
 .demo-scene--2.is-run .demo-upload__card {
-  animation: demo-upload-result 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-result var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 .demo-scene--2.is-run .demo-sub--doc .demo-empty {
-  animation: demo-upload-empty 2.6s linear var(--doc-delay) both;
+  animation: demo-upload-empty var(--doc-time) ease-in-out var(--doc-delay) both;
 }
 
 /* Zeitpunkte (von 2,6 s): Blatt erscheint bei 17 %, Datei gewählt bei 38 %, Blatt geht bei 54 %,
    Hochladen von 58 % bis 88 %, danach Haken und Karte. */
 @keyframes demo-upload-sheet {
-  0%, 17% { opacity: 0; visibility: hidden; transform: translateY(14px); }
-  25%, 54% { opacity: 1; visibility: visible; transform: none; }
-  60%, 100% { opacity: 0; visibility: hidden; transform: translateY(14px); }
+  0%, 14% { opacity: 0; visibility: hidden; transform: translateY(10px); }
+  28%, 52% { opacity: 1; visibility: visible; transform: none; }
+  64%, 100% { opacity: 0; visibility: hidden; transform: translateY(10px); }
 }
 
 @keyframes demo-upload-pick {
-  0%, 36% { border-color: var(--app-surface); background: transparent; }
-  40%, 100% { border-color: var(--app-primary); background: var(--app-surface); }
+  0%, 34% { border-color: var(--app-surface); background: transparent; }
+  44%, 100% { border-color: var(--app-primary); background: var(--app-surface); }
 }
 
 @keyframes demo-upload-after-pick {
-  0%, 36% { opacity: 0; }
-  40%, 100% { opacity: 1; }
+  0%, 34% { opacity: 0; }
+  44%, 100% { opacity: 1; }
 }
 
 @keyframes demo-upload-idle {
-  0%, 57% { opacity: 1; }
-  60%, 88% { opacity: 0; }
-  92%, 100% { opacity: 1; }
+  0%, 54% { opacity: 1; }
+  64%, 86% { opacity: 0; }
+  95%, 100% { opacity: 1; }
 }
 
 @keyframes demo-upload-busy {
-  0%, 57% { opacity: 0; }
-  60%, 88% { opacity: 1; }
-  92%, 100% { opacity: 0; }
+  0%, 54% { opacity: 0; }
+  64%, 86% { opacity: 1; }
+  95%, 100% { opacity: 0; }
 }
 
 @keyframes demo-upload-file {
-  0%, 56% { opacity: 0; }
-  62%, 100% { opacity: 1; }
+  0%, 52% { opacity: 0; }
+  66%, 100% { opacity: 1; }
 }
 
 @keyframes demo-upload-bar {
-  0%, 58% { opacity: 1; transform: scaleX(0); }
+  0%, 60% { opacity: 1; transform: scaleX(0); }
   88% { opacity: 1; transform: scaleX(1); }
-  94%, 100% { opacity: 0; transform: scaleX(1); }
+  97%, 100% { opacity: 0; transform: scaleX(1); }
 }
 
 @keyframes demo-upload-result {
-  0%, 88% { opacity: 0; }
-  97%, 100% { opacity: 1; }
+  0%, 86% { opacity: 0; }
+  99%, 100% { opacity: 1; }
 }
 
 @keyframes demo-upload-empty {
-  0%, 86% { opacity: 0.8; }
-  90%, 100% { opacity: 0; }
+  0%, 82% { opacity: 0.8; }
+  92%, 100% { opacity: 0; }
 }
 
 /* Ansicht 3: Knopf mit zwei Beschriftungen, die Erklärung klappt auf und erscheint Satz für Satz. */
@@ -2876,29 +3262,29 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 .demo-scene--3.is-run .demo-explain__idle {
-  animation: demo-explain-idle 0.9s linear 0.55s both;
+  animation: demo-explain-idle 1.4s ease-in-out 0.7s both;
 }
 
 .demo-scene--3.is-run .demo-explain__busy {
-  animation: demo-explain-busy 0.9s linear 0.55s both;
+  animation: demo-explain-busy 1.4s ease-in-out 0.7s both;
 }
 
 .demo-scene--3.is-run .demo-answer {
-  animation: demo-answer-grow 1.3s linear 1.3s backwards;
+  animation: demo-answer-grow 1.8s cubic-bezier(0.22, 0.61, 0.36, 1) 1.9s backwards;
 }
 
 .demo-scene--3.is-run .demo-say {
-  animation: demo-say-in 0.3s ease-out calc(1.35s + var(--n, 0) * 0.28s) backwards;
+  animation: demo-say-in 0.6s ease-out calc(2.0s + var(--n, 0) * 0.42s) backwards;
 }
 
 @keyframes demo-explain-idle {
   0%, 100% { opacity: 1; }
-  12%, 88% { opacity: 0; }
+  22%, 78% { opacity: 0; }
 }
 
 @keyframes demo-explain-busy {
   0%, 100% { opacity: 0; }
-  12%, 88% { opacity: 1; }
+  22%, 78% { opacity: 1; }
 }
 
 @keyframes demo-answer-grow {
@@ -2907,7 +3293,7 @@ body[data-audience="aerzte"] .hero__offer {
 }
 
 @keyframes demo-say-in {
-  from { opacity: 0; transform: translateY(5px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
 
@@ -3192,6 +3578,20 @@ body[data-audience="aerzte"] .hero__offer {
   padding: var(--space-8);
 }
 
+/* Handy: das Formular steht ohne Kasten auf der vollen Inhaltsbreite; Abstand gibt es nur oben und
+   unten, links und rechts weder Rahmen noch Polster. */
+@media (max-width: 759px) {
+  :root:root:root .waitlist-card {
+    max-width: none;
+    margin-block: var(--space-6) 0;
+    padding: var(--space-8) 0 var(--space-6);
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+}
+
 .waitlist-form {
   display: flex;
   flex-direction: column;
@@ -3201,6 +3601,18 @@ body[data-audience="aerzte"] .hero__offer {
 
 .waitlist-form__fields .btn-primary {
   width: 100%;
+}
+
+@media (max-width: 759px) {
+  /* Etwas mehr Luft über der Einwilligung (Kästchen). */
+  .waitlist-form .form-field--checkbox {
+    margin-top: var(--space-3);
+  }
+
+  /* Mehr Luft zwischen dem letzten Feld (Einwilligung) und dem Button. */
+  .waitlist-form__fields .btn-primary {
+    margin-top: var(--space-8);
+  }
 }
 
 .form-field {
@@ -3958,5 +4370,605 @@ body[data-audience="aerzte"] .hero__offer {
 
   :root:not([data-theme="light"]) .hero__blob {
     display: none;
+  }
+}
+/* Footer nach dem Muster guter Produktseiten (Vercel, Linear, Stripe), aber kompakt: in den Farben
+   der Seite, oben eine Herzschlag-Linie, darunter drei gleich breite Spalten (Marke, Kontakt,
+   Rechtliches), der Hinweis als Kleingedrucktes und eine Fußzeile. Linien sind neutral. */
+
+.site-footer {
+  --footer-line: color-mix(in srgb, var(--text) 12%, transparent);
+  --footer-muted: color-mix(in srgb, var(--text) 68%, transparent);
+  padding-block: var(--space-8) var(--space-5);
+  border-top: 0;
+  background: var(--background);
+}
+
+.footer-pulse {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--space-14);
+  overflow: visible;
+}
+
+.footer-pulse--mobile {
+  display: none;
+}
+
+@media (max-width: 699px) {
+  .footer-pulse--wide {
+    display: none;
+  }
+
+  .footer-pulse--mobile {
+    display: block;
+  }
+}
+
+.footer-pulse path {
+  fill: none;
+  stroke: var(--link, var(--primary));
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.js-motion .footer-pulse path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 2.8s ease-in-out;
+}
+
+.js-motion .footer-pulse.is-in path {
+  stroke-dashoffset: 0;
+}
+
+.footer-main {
+  display: grid;
+  gap: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--footer-line);
+}
+
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+@media (min-width: 860px) {
+  /* Marke links, Kontakt in der Mitte, Rechtliches am rechten Rand (space-between). */
+  .footer-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-10);
+  }
+
+  .footer-cols {
+    display: contents;
+  }
+
+  .footer-about {
+    flex: 0 1 34ch;
+  }
+
+  .footer-cols > div {
+    flex: none;
+  }
+}
+
+.footer-brand {
+  margin-bottom: var(--space-3);
+}
+
+.footer-brand span {
+  font-size: 21px;
+}
+
+.footer-brand img {
+  width: 28px;
+  height: 28px;
+}
+
+.footer-about p {
+  max-width: 34ch;
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--footer-muted);
+}
+
+.site-footer h4 {
+  margin: 0 0 var(--space-3);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--text);
+}
+
+.site-footer ul {
+  gap: var(--space-2);
+}
+
+.site-footer a,
+.footer-link-button {
+  font-size: 14.5px;
+  color: var(--footer-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.site-footer a:hover,
+.footer-link-button:hover {
+  color: var(--text);
+}
+
+.footer-bottom {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  text-align: center;
+}
+
+.footer-disclaimer,
+.footer-note {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--footer-muted);
+}
+
+/* Der Hinweis ist wichtiger und etwas größer, der Rechtstext bleibt klein. */
+.footer-bottom {
+  justify-items: stretch;
+}
+
+.footer-disclaimer {
+  width: 100%;
+  max-width: none;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.footer-note {
+  width: 100%;
+  max-width: none;
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.footer-bottom .footer-top {
+  justify-self: center;
+}
+
+.footer-disclaimer strong {
+  color: var(--text);
+}
+
+.footer-note a {
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.site-footer a.footer-top {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--footer-line);
+  border-radius: 50%;
+  color: var(--footer-muted);
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.25s ease;
+}
+
+.site-footer a.footer-top svg {
+  width: 16px;
+  height: 16px;
+}
+
+.site-footer a.footer-top:hover {
+  color: var(--text);
+  border-color: var(--link, var(--primary));
+  transform: translateY(-2px);
+}
+
+/* Bewegung: Einblenden beim Scrollen und Parallax der Zierzeichnungen.
+   Alles hängt an der Klasse js-motion (script.js); ohne JavaScript oder bei "Bewegung reduzieren"
+   steht alles sofort an seinem Platz. */
+
+.js-motion .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 1.2s ease var(--reveal-delay, 0ms), transform 1.3s cubic-bezier(0.22, 0.61, 0.36, 1) var(--reveal-delay, 0ms);
+}
+
+.no-reveal-transition .reveal {
+  transition: none !important;
+}
+
+.js-motion .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Die Karten (Vertrauen, Schritte) steigen etwas weiter auf und wachsen dabei leicht an. */
+.js-motion .step.reveal,
+.js-motion .trust-card.reveal {
+  transform: translateY(56px) scale(0.95);
+  transition: opacity 1.3s ease var(--reveal-delay, 0ms), transform 1.5s cubic-bezier(0.16, 0.84, 0.3, 1) var(--reveal-delay, 0ms);
+}
+
+.js-motion .step.reveal.is-in,
+.js-motion .trust-card.reveal.is-in {
+  transform: none;
+}
+
+/* Die Zeichnungen werden nicht mehr an der Abschnittskante abgeschnitten. Sie laufen in den
+   Nachbarabschnitt hinein. Abschnitte mit eigener Hintergrundfarbe (hell: Vergleich, Vertrauen)
+   decken sie ab, so verschwinden sie dahinter; gleichfarbige Abschnitte sind durchsichtig. Der
+   Inhalt liegt immer über den Zeichnungen. */
+.has-deco {
+  position: relative;
+}
+
+main section:not(.hero) > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Der erste Abschnitt nach dem Hero: nach oben nicht über den Hero hinaus. */
+.problem .deco {
+  clip-path: inset(0 -40px -6000px -40px);
+  /* oben läuft die Zeichnung sanft aus, statt hart abgeschnitten zu werden */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+}
+
+.site-footer {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.deco {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.has-deco > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Zeichnungen stehen im Seitenrand, ganz im Bild. Ihre Breite richtet sich nach dem Rand (--gutter)
+   mal einem Faktor je Zeichnung; die größeren schieben sich ein Stück hinter die Karten (der Inhalt
+   liegt darüber). Wo kein Platz ist (unter 900 px), fehlen sie. */
+.deco__item {
+  position: absolute;
+  width: min(150px, calc(var(--gutter) * var(--size, 1)));
+  color: var(--link, var(--primary));
+  opacity: 0.38;
+  transform: rotate(var(--rot, 0deg));
+  will-change: transform;
+}
+
+.deco__item[data-side="l"] {
+  left: 10px;
+}
+
+.deco__item[data-side="r"] {
+  right: 10px;
+}
+
+.deco__item svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+
+@media (max-width: 899px) {
+  .deco {
+    display: none;
+  }
+}
+
+/* Ladeanzeige: Logo mit ruhigem Pulsieren und einem dünnen Balken; blendet nach dem Laden weich aus. */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  place-items: center;
+  background: var(--background);
+  opacity: 1;
+  transition: opacity 0.7s ease, visibility 0s linear 0.7s;
+}
+
+.js-loading .loader {
+  display: grid;
+}
+
+.js-loading.is-loaded .loader {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader__mark {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+}
+
+.loader__mark img {
+  width: 56px;
+  height: 56px;
+  animation: loader-pulse 1.8s ease-in-out infinite;
+}
+
+.loader__name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--text);
+}
+
+.loader__bar {
+  position: relative;
+  width: 120px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text) 14%, transparent);
+}
+
+.loader__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: 2px;
+  background: var(--link, var(--primary));
+  animation: loader-run 1.4s ease-in-out infinite;
+}
+
+@keyframes loader-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes loader-run {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader__mark img,
+  .loader__bar::after {
+    animation: none;
+  }
+}
+
+/* Eigenes Auswahlfeld (script.js, initCustomSelects): sieht aus wie die Textfelder, die Liste ist
+   genau so breit wie das Feld. Das echte <select> bleibt unsichtbar im Formular. */
+
+.cs {
+  position: relative;
+}
+
+.cs__native {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 56px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cs__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-4);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cs__btn:hover {
+  border-color: var(--button-bg);
+}
+
+.cs__btn:focus-visible,
+.cs.is-open .cs__btn {
+  outline: none;
+  border-color: var(--button-bg);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--button-bg) 25%, transparent);
+}
+
+.cs__btn[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.cs__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cs__text.is-placeholder {
+  color: var(--muted);
+}
+
+.cs__chevron {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin: -4px 2px 0 0;
+  border-right: 2px solid var(--link, var(--button-bg));
+  border-bottom: 2px solid var(--link, var(--button-bg));
+  transform: rotate(45deg);
+  transition: transform 0.25s ease, margin 0.25s ease;
+}
+
+.cs.is-open .cs__chevron {
+  margin-top: 4px;
+  transform: rotate(-135deg);
+}
+
+.cs__list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  max-height: 280px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md, 14px);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-lg);
+  animation: cs-in 0.18s ease-out;
+}
+
+.cs__option {
+  position: relative;
+  padding: 12px 40px 12px 14px;
+  border-radius: 10px;
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.cs__option.is-active {
+  background: color-mix(in srgb, var(--button-bg) 14%, transparent);
+}
+
+.cs__option[aria-selected="true"] {
+  font-weight: 700;
+}
+
+.cs__option[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 6px;
+  height: 11px;
+  margin-top: -8px;
+  border-right: 2px solid var(--link, var(--button-bg));
+  border-bottom: 2px solid var(--link, var(--button-bg));
+  transform: rotate(45deg);
+}
+
+@keyframes cs-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs__list {
+    animation: none;
+  }
+}
+
+/* Footer: größere Beschriftungen der Spalten; die Links stehen mit mittlerem Abstand (etwa 38 px
+   Zeilenhöhe), nicht zu eng zum Treffen und nicht so weit auseinander. */
+.site-footer h4 {
+  margin-bottom: var(--space-3);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.site-footer ul {
+  gap: 0;
+}
+
+.site-footer ul a,
+.site-footer ul .footer-link-button {
+  padding-block: 7px;
+}
+
+/* Handy: Zwischen Formular und Fußzeile nicht zu viel Leerraum (Abschnitt, Karte und Fußzeile
+   rechnen sich sonst zusammen). */
+@media (max-width: 759px) {
+  .waitlist {
+    padding-bottom: var(--space-6);
+  }
+
+  .site-footer {
+    padding-top: var(--space-6);
+  }
+}
+
+/* Dunkel ist die Fläche der getönten Abschnitte genauso dunkel wie die Seite: Sie sind dann
+   durchsichtig, damit die Zeichnungen nicht an ihrer Kante scheinbar abgeschnitten werden. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .problem,
+  :root:not([data-theme="light"]) .trust {
+    background: transparent;
+  }
+}
+
+:root[data-theme="dark"] .problem,
+:root[data-theme="dark"] .trust {
+  background: transparent;
+}
+
+/* Handy: Das Band schließt direkt an den Text an, ohne freien Streifen, durch den das Foto
+   blitzt; es ist dichter, damit das Foto dahinter nicht durchscheint. */
+@media (max-width: 899px) {
+  .hero__band {
+    margin-top: 0;
+    background: linear-gradient(100deg, rgba(6, 78, 59, 0.96), rgba(15, 92, 72, 0.94));
+  }
+
+  body[data-audience="aerzte"] .hero__inner {
+    padding-bottom: var(--space-6);
+  }
+}
+
+@media (max-width: 899px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero__band {
+    background: rgba(21, 23, 24, 0.94);
+  }
+}
+
+@media (max-width: 899px) {
+  :root[data-theme="dark"] .hero__band {
+    background: rgba(21, 23, 24, 0.94);
   }
 }
