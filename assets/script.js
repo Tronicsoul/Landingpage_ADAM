@@ -752,8 +752,14 @@ function initMotion() {
 
   document.documentElement.classList.add("js-motion");
 
+  // Beim Scrollen schweben ein: die umrahmten Karten (Leistungen, Vertrauen, Schritte) und der
+  // Vergleichs-Block "Derselbe Termin, zwei Ausgangslagen". Ganze Abschnitte, der Ablauf mit dem
+  // Handy und das Formular bleiben ruhig stehen.
+  const scrollTimeline = !!(window.CSS && CSS.supports && CSS.supports("animation-timeline: view()"));
+  // Das Handy im Ablauf übernimmt der Browser (CSS); ohne diese Funktion schwebt es per Skript ein.
   const revealSelector =
-    ".section-header, .ablauf__header, .service, .step, .trust-card, .waitlist-card, .benefit-chips, .howto, .cmp, .feature-section .container > *, main section:not(.hero) > .container > *:not(.trust-grid), .footer-main, .footer-bottom";
+    ".service, .step, .trust-card, .problem .section-header, .problem .cmp" +
+    (scrollTimeline ? "" : ", .howto__demo");
   // Nur die Blöcke selbst bewegen sich, nicht der Abschnitt darum: Enthält ein Element Karten
   // (Schritte, Vertrauen, Leistungen), wird es durch seine Kinder ersetzt, bis die Karten selbst
   // an der Reihe sind. So steigt jede umrahmte Karte einzeln auf, mit kleinem Versatz.
@@ -815,6 +821,7 @@ function initMotion() {
   }));
   const photo = document.querySelector(".hero__photo img");
   const heroEl = document.querySelector(".hero");
+  const cssScroll = !!(window.CSS && CSS.supports && CSS.supports("animation-timeline: view()"));
   let vh = window.innerHeight;
   let photoScale = 1.1;
   let ticking = false;
@@ -835,23 +842,27 @@ function initMotion() {
   function update() {
     ticking = false;
     const y = window.scrollY;
-    items.forEach((item) => {
-      if (y + vh < item.top - 200 || y > item.bottom + 200) return;
-      const shift = (item.base - (y + vh / 2)) * item.speed;
-      item.el.style.transform = "translate3d(0," + shift.toFixed(1) + "px,0) rotate(" + item.rot + "deg)";
-    });
     const wide = window.innerWidth >= 1100;
-    if (photo && y < vh * 1.5) {
+    if (!cssScroll) {
+      items.forEach((item) => {
+        if (y + vh < item.top - 200 || y > item.bottom + 200) return;
+        const shift = (item.base - (y + vh / 2)) * item.speed;
+        item.el.style.transform = "translate3d(0," + shift.toFixed(1) + "px,0)";
+      });
+    }
+    if (photo && !cssScroll && y < vh * 1.5) {
       // Am Handy bleibt das Foto stehen (sticky), nur am Desktop wandert es mit.
       photo.style.transform = "translate3d(0," + (wide ? (y * 0.12).toFixed(1) : 0) + "px,0) scale(" + photoScale + ")";
     }
-    if (heroEl) {
+    if (heroEl && !wide) {
       const dim = wide ? 0 : Math.min(0.88, Math.max(0, (y - vh * 0.08) / (vh * 0.55)) * 0.88);
       heroEl.style.setProperty("--hero-dim", dim.toFixed(3));
     }
   }
 
   function onScroll() {
+    // Am Desktop erledigt der Browser die Bewegung allein; das Skript ist dort nicht nötig.
+    if (cssScroll && window.innerWidth >= 1100) return;
     if (ticking) return;
     ticking = true;
     window.requestAnimationFrame(update);
