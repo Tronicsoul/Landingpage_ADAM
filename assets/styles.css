@@ -273,6 +273,7 @@ summary:focus-visible {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  min-height: 44px;
   text-decoration: none;
   color: var(--text);
   flex: none;
@@ -337,8 +338,8 @@ summary:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   border-radius: var(--radius-sm);
   border: 2px solid var(--border);
@@ -348,8 +349,8 @@ summary:focus-visible {
 
 .nav-toggle svg,
 .theme-toggle svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   color: var(--text);
 }
 
@@ -554,13 +555,19 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   background: var(--surface);
 }
 
-/* Der Button-Text der Ärzte-Ansicht ist lang: Zwischen 860 und 1099 px passen Sprungmarken
-   und Button nicht nebeneinander, dann hat der Button Vorrang. */
+/* Der Button-Text der Ärzte-Ansicht ist lang: Unter 1280 px passen die vier Sprungmarken und
+   der Button nicht nebeneinander, dann hat der Button Vorrang. */
 
-@media (min-width: 860px) and (max-width: 1099px) {
+@media (min-width: 860px) and (max-width: 1279px) {
   body[data-audience="aerzte"] .nav-links {
     display: none;
   }
+}
+
+/* Am Handy trägt der Button die Kurzform ("Kostenlos testen"). So stehen Logo,
+   Farbschema-Umschalter und Button in einer Zeile, der Button einzeilig. */
+.nav-cta__short {
+  display: none;
 }
 
 @media (max-width: 859px) {
@@ -569,9 +576,13 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
     font-size: 15px;
     min-height: 44px;
     padding: var(--space-2) var(--space-4);
+    white-space: nowrap;
   }
-  body[data-campaign] .theme-toggle {
+  .nav-cta__long {
     display: none;
+  }
+  .nav-cta__short {
+    display: inline;
   }
 }
 
@@ -802,6 +813,7 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
 }
 
 .cmp__end {
+  min-height: 44px;
   padding: var(--space-2) var(--space-1);
   border: 0;
   background: none;
@@ -820,7 +832,7 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 32px;
+  height: 44px;
   margin: 0;
   background: transparent;
   cursor: grab;
@@ -1331,14 +1343,28 @@ body[data-audience="aerzte"] .hero__offer {
   text-wrap: pretty;
 }
 
-/* Foto: schmal als Bild unter dem Text, ab 1100 px als Hintergrund des Abschnitts */
+/* Foto: schmal (Handy, Tablet) als Kopfbild direkt unter der Kopfleiste, randlos. Es läuft unten
+   in die Seitenfarbe aus, und der Text setzt in diesem Auslauf an: so kostet das Foto wenig Höhe
+   und Überschrift und Antwort stehen im ersten Bildschirm. Ab 1100 px liegt es als Hintergrund
+   hinter dem Abschnitt. */
 .hero__photo {
   position: relative;
-  order: 3;
-  height: clamp(240px, 62vw, 460px);
-  margin: var(--space-8) var(--gutter) 0;
-  border-radius: var(--radius-2xl);
+  order: -1;
+  height: clamp(230px, 60vw, 440px);
   overflow: hidden;
+}
+
+@media (max-width: 1099px) {
+  body[data-audience="aerzte"] .hero {
+    padding-top: 0;
+    padding-bottom: var(--space-10);
+  }
+
+  body[data-audience="aerzte"] .hero__inner {
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(-120px, -21vw, -76px);
+  }
 }
 
 .hero__photo picture,
@@ -1350,23 +1376,41 @@ body[data-audience="aerzte"] .hero__offer {
 
 .hero__photo img {
   object-fit: cover;
-  object-position: 62% 28%;
+  object-position: 62% 22%;
 }
 
 .hero__photo::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, color-mix(in srgb, var(--background) 72%, transparent) 0%, transparent 28%);
+  background: linear-gradient(
+    0deg,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 88%, transparent) 20%,
+    color-mix(in srgb, var(--background) 45%, transparent) 42%,
+    transparent 62%
+  );
 }
 
+/* Der Hinweis steht schmal oben rechts auf dem Foto, auf einer dunklen Fläche, damit er auch vor
+   dem hellen Fenster lesbar ist. */
 .hero__photo-note {
   position: absolute;
-  right: var(--space-4);
-  bottom: var(--space-2);
+  right: var(--space-3);
+  top: var(--space-3);
   z-index: 1;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--background) 62%, transparent);
   font-size: 12px;
   color: var(--text-muted);
+}
+
+/* Tablet: das ganze Foto, die Ärztin steht rechts, der Text setzt links unten an. */
+@media (min-width: 700px) and (max-width: 1099px) {
+  .hero__photo img {
+    object-position: 100% 25%;
+  }
 }
 
 @media (min-width: 1100px) {
@@ -1385,8 +1429,6 @@ body[data-audience="aerzte"] .hero__offer {
     order: 0;
     width: min(100%, 1900px);
     height: auto;
-    margin: 0;
-    border-radius: 0;
   }
 
   .hero__photo img {
@@ -1407,8 +1449,11 @@ body[data-audience="aerzte"] .hero__offer {
   }
 
   .hero__photo-note {
+    top: auto;
     right: calc(var(--gutter) + 150px);
     bottom: var(--space-4);
+    padding: 0;
+    background: none;
   }
 }
 
@@ -1729,11 +1774,16 @@ body[data-audience="aerzte"] .hero__offer {
   margin-bottom: 0;
 }
 
-/* Abschnitt "Wie Patient:innen ADAM anwenden": links Überschrift, der aktuelle Schritt (Anzeige,
-   Titel, Text) und zwei Pfeile zum Blättern, rechts ein Handy mit der passenden App-Ansicht.
-   Schrift, Gewichte, Grüntöne und Rundungen folgen dem Hero. Nichts bewegt sich von selbst. */
+/* Abschnitt "Ablauf": Etikett, Überschrift und Unterzeile wie bei "Leistungen", darunter ein
+   Kasten: links der aktuelle Schritt (Anzeige, Titel, Text) und zwei Pfeile zum Blättern, rechts
+   ein Handy mit der passenden App-Ansicht. Die Überschrift des Abschnitts ist die größte Schrift,
+   der Titel des Schritts eine Stufe kleiner. Nichts bewegt sich von selbst. */
+.ablauf__header {
+  max-width: 720px;
+  margin: 0 0 var(--gap-block);
+}
+
 .howto {
-  margin-top: var(--gap-block);
   padding: var(--space-6);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1744,29 +1794,18 @@ body[data-audience="aerzte"] .hero__offer {
   align-items: center;
 }
 
-/* Breit: Text und Handy stehen als ein Block mittig im Kasten, mit festem Abstand zueinander. */
+/* Breit: Der Text beginnt links im Kasten, in einer Flucht mit der Überschrift des Abschnitts;
+   das Handy steht mittig in der rechten Hälfte. */
 @media (min-width: 900px) {
   .howto {
-    grid-template-columns: minmax(0, 580px) auto;
-    justify-content: center;
-    gap: clamp(40px, 6vw, 88px);
-    padding: var(--space-10) var(--space-8);
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--space-8);
+    padding: var(--space-10) clamp(32px, 4vw, 56px);
   }
-}
 
-.howto__heading {
-  margin: 0 0 var(--space-2);
-  font-size: clamp(24px, 2.3vw, 30px);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.howto__sub {
-  margin: 0 0 var(--space-6);
-  font-size: 19px;
-  line-height: 1.5;
-  color: var(--text-muted);
+  .howto__text {
+    max-width: 600px;
+  }
 }
 
 /* "Schritt 1 von 4": klein und ruhig, immer an derselben Stelle über dem Titel. */
@@ -1806,7 +1845,7 @@ body[data-audience="aerzte"] .hero__offer {
 
 .howto__title {
   margin: 0 0 var(--space-3);
-  font-size: clamp(24px, 2.5vw, 34px);
+  font-size: clamp(22px, 2.1vw, 28px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -1888,13 +1927,8 @@ body[data-audience="aerzte"] .hero__offer {
     gap: var(--space-6);
   }
 
-  .howto__sub {
-    margin-bottom: var(--space-5);
-    font-size: 17px;
-  }
-
   .howto__title {
-    font-size: 23px;
+    font-size: 22px;
   }
 
   .howto__desc {
@@ -2985,6 +3019,21 @@ body[data-audience="aerzte"] .hero__offer {
   font-weight: 600;
 }
 
+/* Die Regeln für Beschriftungen und Textfelder (fett, 56 px hoch, gepolstert) gelten sonst auch
+   hier: Der Einwilligungstext ist normaler Fließtext, das Kästchen bleibt 24 px groß. Der ganze
+   Text ist Tippfläche. */
+.form-field .checkbox-label {
+  font-size: 15.5px;
+  font-weight: 400;
+}
+
+.form-field .checkbox-label input[type="checkbox"] {
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: 6px;
+}
+
 .form-error {
   color: var(--error);
   font-size: 15px;
@@ -3153,6 +3202,17 @@ body[data-audience="aerzte"] .hero__offer {
 .site-footer a {
   color: var(--text);
   text-decoration: underline;
+}
+
+/* Die Links in den Listen der Fußzeile sind 44 px hoch, damit sie am Handy sicher zu treffen sind. */
+.site-footer ul a,
+.site-footer ul .footer-link-button {
+  display: inline-block;
+  padding-block: 10px;
+}
+
+.site-footer ul {
+  gap: 0;
 }
 
 .footer-disclaimer {

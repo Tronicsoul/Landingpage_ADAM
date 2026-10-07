@@ -67,7 +67,7 @@
       </a>
 
       <nav aria-label="Hauptnavigation">
-        <!-- Sprungmarken innerhalb der Seite. Ärzt:innen: Vergleich, Leistungen, Sicherheit.
+        <!-- Sprungmarken innerhalb der Seite. Ärzt:innen: Vergleich, Leistungen, Ablauf, Sicherheit.
              Patient:innen: Funktionen, Sicherheit. -->
         <ul class="nav-links">
           <li data-hide-for="patient"><a href="#problem">Vergleich</a></li>
@@ -77,6 +77,7 @@
               <span data-audience-content="aerzte">Leistungen</span>
             </a>
           </li>
+          <li data-hide-for="patient"><a href="#ablauf">Ablauf</a></li>
           <li><a href="#sicherheit">Sicherheit</a></li>
         </ul>
       </nav>
@@ -86,9 +87,11 @@
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
         </button>
+        <!-- Ärzte-Ansicht: am Rechner derselbe Text wie der Hero-Button, am Handy die Kurzform,
+             damit Logo, Farbschema-Umschalter und Button in eine Zeile passen. -->
         <a class="btn btn-primary nav-cta" href="#warteliste" data-track="header">
           <span data-audience-content="patient">Warteliste</span>
-          <span data-audience-content="aerzte">Mit 10 Patient:innen kostenlos testen</span>
+          <span data-audience-content="aerzte"><span class="nav-cta__long">Mit 10 Patient:innen kostenlos testen</span><span class="nav-cta__short">Kostenlos testen</span></span>
         </a>
         <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu">
           <span class="visually-hidden">Menü öffnen</span>
@@ -107,6 +110,7 @@
               <span data-audience-content="aerzte">Leistungen</span>
             </a>
           </li>
+          <li data-hide-for="patient"><a href="#ablauf">Ablauf</a></li>
           <li><a href="#sicherheit">Sicherheit</a></li>
         </ul>
         <a class="btn btn-primary btn-block" href="#warteliste" data-track="mobile-menu">
@@ -142,7 +146,7 @@
            einem Ausschnitt, der die Ärztin zeigt. -->
       <div class="hero__photo" data-audience-content="aerzte">
         <picture>
-          <source media="(max-width: 1099px)" srcset="assets/hero-aerztin-schmal.jpg" />
+          <source media="(max-width: 699px)" srcset="assets/hero-aerztin-schmal.jpg" />
           <img src="assets/hero-aerztin-1672.jpg" alt="" width="1672" height="941" fetchpriority="high" decoding="async" />
         </picture>
         <span class="hero__photo-note">Symbolbild, KI-generiert</span>
@@ -323,8 +327,9 @@
         </div>
 
         <!-- Ärzte-Ansicht: ein kompakter Block statt der sechs Funktionsabschnitte.
-             Aufbau: kurze Überschrift, ein Satz, drei Kästchen (Entscheidung, Zeit, Patient:innen),
-             darunter der Abschnitt "Wie Patient:innen ADAM anwenden". Jede Funktion der App steht genau in einem Kästchen.
+             Aufbau: kurze Überschrift, ein Satz, drei Kästchen (Entscheidung, Zeit, Patient:innen).
+             Jede Funktion der App steht genau in einem Kästchen. Wie Patient:innen die App
+             anwenden, zeigt der eigene Abschnitt "Ablauf" darunter.
              Je Kästchen gleich aufgebaut: Etikett, kurzer Kernsatz (zwei Zeilen), drei Punkte. -->
         <div class="overview" data-audience-content="aerzte">
           <div class="overview__header">
@@ -363,207 +368,215 @@
             </li>
           </ul>
 
-          <!-- Abschnitt "Wie Patient:innen ADAM anwenden": an fester Stelle "Schritt N von 4", der
-               Titel des Schritts und ein kurzer Text, darunter zwei Pfeile (zurück, weiter); daneben
-               ein Handy mit der passenden App-Ansicht. Nichts wechselt von selbst. script.js
-               (initHowto) schaltet mit den Pfeilen um: Anzeige, Titel, Text und App-Ansicht wechseln
-               gemeinsam, der Text ohne Bewegung, die App-Ansicht blendet kurz über. Beim ersten
-               Schritt ist "zurück", beim letzten "weiter" außer Funktion. Blättert jemand zu Schritt 2
-               oder 3, läuft dort einmal ein kurzer Ablauf (Schritt 2: ein Medikament erfassen, dann
-               einen Arztbrief als PDF hochladen; Schritt 3: Tipp auf "Erklären lassen", dann
-               erscheint der Text); danach steht das Bild. Ohne JavaScript stehen alle vier Texte
-               untereinander.
-               Die App-Ansichten sind der App nachgebaut (Farben, Kopfleiste, Karten, Knöpfe und
-               Beschriftungen wie in der App, Texte gekürzt), die Inhalte sind Beispieldaten.
-               Das Wort "KI" kommt auf dieser Seite bewusst nicht vor. -->
-          <div class="howto" data-step="1">
-            <div class="howto__text">
-              <h3 class="howto__heading">Wie Patient:innen ADAM anwenden</h3>
-              <p class="howto__sub">Vier Schritte zu besser vorbereiteten Terminen</p>
+        </div>
+      </div>
+    </section>
 
-              <!-- Wechselt der Schritt, lesen Bildschirmleser Anzeige, Titel und Text neu vor. -->
-              <div class="howto__step" aria-live="polite" aria-atomic="true">
-              <p class="howto__count">Schritt <span data-howto-current>1</span> von 4</p>
-              <div class="howto__panels">
-                <div class="howto__panel is-active">
-                  <h4 class="howto__title">Sprachniveau wählen</h4>
-                  <p class="howto__desc">Ihre Patient:innen wählen, wie einfach oder fachlich ADAM erklärt. Verstandene Erklärungen können Ihnen im Termin das Erklären von Grundlagen ersparen.</p>
-                </div>
-                <div class="howto__panel">
-                  <h4 class="howto__title">Angaben erfassen und Arztbrief hochladen</h4>
-                  <p class="howto__desc">Ihre Patient:innen erfassen Symptome und Medikamente und laden Arztbriefe als Bild oder PDF hoch. So können Ihnen die Angaben zum Termin gebündelt vorliegen, statt dass Sie sie einzeln erfragen.</p>
-                </div>
-                <div class="howto__panel">
-                  <h4 class="howto__title">Diagnosen erklären lassen</h4>
-                  <p class="howto__desc">ADAM erklärt Diagnosen aus dem Arztbrief im gewählten Sprachniveau. Das kann zu klareren Angaben und gezielteren Fragen in Ihrem Gespräch führen.</p>
-                </div>
-                <div class="howto__panel">
-                  <h4 class="howto__title">Checkup zusammenfassen</h4>
-                  <p class="howto__desc">Der digitale Checkup führt Diagnosen, Medikamente und Symptome auf einer Seite zusammen. Die Übersicht gibt Ihnen schnell Orientierung und kann Nachfragen im Termin ersparen.</p>
-                </div>
-              </div>
-              </div>
+    <!-- Ablauf (nur Ansicht für Ärzt:innen und Fachpersonal): eigener Abschnitt mit Etikett,
+         Überschrift und Unterzeile wie die anderen Abschnitte. Darunter ein Kasten: an fester
+         Stelle "Schritt N von 4", der Titel des Schritts und ein kurzer Text, darunter zwei Pfeile
+         (zurück, weiter); daneben ein Handy mit der passenden App-Ansicht. Nichts wechselt von
+         selbst. script.js (initHowto) schaltet mit den Pfeilen um: Anzeige, Titel, Text und
+         App-Ansicht wechseln gemeinsam, der Text ohne Bewegung, die App-Ansicht blendet kurz über.
+         Beim ersten Schritt ist "zurück", beim letzten "weiter" außer Funktion. Blättert jemand zu
+         Schritt 2 oder 3, läuft dort einmal ein kurzer Ablauf (Schritt 2: ein Medikament erfassen,
+         dann einen Arztbrief als PDF hochladen; Schritt 3: Tipp auf "Erklären lassen", dann
+         erscheint der Text); danach steht das Bild. Ohne JavaScript stehen alle vier Texte
+         untereinander.
+         Die App-Ansichten sind der App nachgebaut (Farben, Kopfleiste, Karten, Knöpfe und
+         Beschriftungen wie in der App, Texte gekürzt), die Inhalte sind Beispieldaten.
+         Das Wort "KI" kommt auf dieser Seite bewusst nicht vor. -->
+    <section class="ablauf" id="ablauf" aria-labelledby="ablauf-heading" data-hide-for="patient">
+      <div class="container">
+        <div class="ablauf__header">
+          <span class="eyebrow">Ablauf</span>
+          <h2 class="section-title" id="ablauf-heading">Wie Patient:innen ADAM anwenden</h2>
+          <p class="section-intro">Vier Schritte zu besser vorbereiteten Terminen</p>
+        </div>
 
-              <div class="howto__pager">
-                <button type="button" class="howto__arrow" data-howto-prev aria-label="Zurück: vorheriger Schritt" title="Zurück"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-                <button type="button" class="howto__arrow" data-howto-next aria-label="Weiter: nächster Schritt" title="Weiter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <div class="howto" data-step="1">
+          <div class="howto__text">
+            <!-- Wechselt der Schritt, lesen Bildschirmleser Anzeige, Titel und Text neu vor. -->
+            <div class="howto__step" aria-live="polite" aria-atomic="true">
+            <p class="howto__count">Schritt <span data-howto-current>1</span> von 4</p>
+            <div class="howto__panels">
+              <div class="howto__panel is-active">
+                <h3 class="howto__title">Sprachniveau wählen</h3>
+                <p class="howto__desc">Ihre Patient:innen wählen, wie einfach oder fachlich ADAM erklärt. Verstandene Erklärungen können Ihnen im Termin das Erklären von Grundlagen ersparen.</p>
+              </div>
+              <div class="howto__panel">
+                <h3 class="howto__title">Angaben erfassen und Arztbrief hochladen</h3>
+                <p class="howto__desc">Ihre Patient:innen erfassen Symptome und Medikamente und laden Arztbriefe als Bild oder PDF hoch. So können Ihnen die Angaben zum Termin gebündelt vorliegen, statt dass Sie sie einzeln erfragen.</p>
+              </div>
+              <div class="howto__panel">
+                <h3 class="howto__title">Diagnosen erklären lassen</h3>
+                <p class="howto__desc">ADAM erklärt Diagnosen aus dem Arztbrief im gewählten Sprachniveau. Das kann zu klareren Angaben und gezielteren Fragen in Ihrem Gespräch führen.</p>
+              </div>
+              <div class="howto__panel">
+                <h3 class="howto__title">Checkup zusammenfassen</h3>
+                <p class="howto__desc">Der digitale Checkup führt Diagnosen, Medikamente und Symptome auf einer Seite zusammen. Die Übersicht gibt Ihnen schnell Orientierung und kann Nachfragen im Termin ersparen.</p>
               </div>
             </div>
+            </div>
 
-            <div class="howto__demo" aria-hidden="true">
-              <div class="demo-phone">
-                <div class="demo-screen">
-
-                  <!-- Ansicht 1: Sprachniveau wählen (in der App: "Kommunikationstool") -->
-                  <div class="demo-scene demo-scene--1">
-                    <div class="demo-head">
-                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Kommunikationstool</span>
-                      <span class="demo-head__sub">Stellen Sie Ihr persönliches Level ein</span>
-                    </div>
-                    <div class="demo-body">
-                      <div class="demo-card">
-                        <p class="demo-question">Wie sicher fühlen Sie sich mit medizinischen Fachbegriffen?</p>
-                        <p class="demo-radio"><i><b></b></i><span>Bitte erklären Sie es mir wie einem Laien.</span></p>
-                        <p class="demo-radio"><i></i><span>Ich kenne die Grundlagen ganz gut.</span></p>
-                        <p class="demo-radio"><i></i><span>Ich habe beruflich mit Medizin zu tun.</span></p>
-                      </div>
-                      <div class="demo-btn">Antworten speichern</div>
-                      <div class="demo-levels">
-                        <p class="demo-level demo-level--current"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.5"/></svg><span><strong>L1</strong> Einfache Alltagssprache</span></p>
-                        <p class="demo-level"><i></i><span><strong>L2</strong> Mit medizinischen Grundbegriffen</span></p>
-                        <p class="demo-level"><i></i><span><strong>L3</strong> Medizinische Fachsprache</span></p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Ansicht 2: zwei Bildschirme der App übereinander. Ruhebild ist der zweite
-                       ("Diagnosen"): der Arztbrief ist hochgeladen, die Diagnose steht als Karte da.
-                       Mit "is-run" (setzt script.js beim Blättern auf Schritt 2) läuft einmal ab:
-                       erst "Aktuelle Medikamente" (Eintrag hinzufügen, Formular füllt sich,
-                       Speichern, Karte), dann "Diagnosen" (leere Liste, Dateiauswahl mit dem PDF,
-                       "Analysiere Arztbrief...", Karte). -->
-                  <div class="demo-scene demo-scene--2">
-                    <div class="demo-sub demo-sub--med">
-                    <div class="demo-head">
-                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Aktuelle Medikamente</span>
-                      <span class="demo-head__sub">Verwalten Sie Ihre medizinischen Daten</span>
-                    </div>
-                    <div class="demo-body">
-                      <div class="demo-btn">+ Eintrag hinzufügen<em class="demo-tap" style="--tap: 0.15s"></em></div>
-                      <p class="demo-section">Einträge</p>
-                      <div class="demo-slot">
-                        <p class="demo-empty demo-med__empty">Keine Medikamente vorhanden.</p>
-                        <div class="demo-card demo-med__form">
-                          <p class="demo-card__title">Neues Medikament</p>
-                          <p class="demo-input"><small>Medikamentenname</small><span><b class="demo-med__v1">Ramipril</b></span></p>
-                          <div class="demo-input-row">
-                            <p class="demo-input"><small>Dosierung</small><span><b class="demo-med__v2">5</b></span></p>
-                            <p class="demo-input"><small>Einheit</small><span><b class="demo-med__v2">mg</b></span></p>
-                          </div>
-                          <p class="demo-input"><small>Einnahmehäufigkeit</small><span><b class="demo-med__v3">1x täglich</b></span></p>
-                          <div class="demo-btn">Speichern<em class="demo-tap" style="--tap: 1.5s"></em></div>
-                        </div>
-                        <div class="demo-card demo-med__card">
-                          <p class="demo-card__title">Ramipril</p>
-                          <p class="demo-field"><small>Wirkung/Dosierung:</small>5 mg</p>
-                          <p class="demo-field"><small>Einnahmehäufigkeit:</small>1x täglich</p>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                    <div class="demo-sub demo-sub--doc">
-                    <div class="demo-head">
-                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
-                      <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
-                    </div>
-                    <div class="demo-body">
-                      <div class="demo-btn">+ Manuell hinzufügen</div>
-                      <div class="demo-btn demo-btn--grey demo-upload">
-                        <span class="demo-upload__idle">Arztbrief hochladen (Bild / PDF)</span>
-                        <span class="demo-upload__busy">Analysiere Arztbrief...</span>
-                      </div>
-                      <p class="demo-file">
-                        <span class="demo-file__type">PDF</span>
-                        <span class="demo-file__name">Arztbrief_02-10-2026.pdf</span>
-                        <span class="demo-file__done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                        <span class="demo-file__bar"></span>
-                      </p>
-                      <p class="demo-section">Diagnosen</p>
-                      <div class="demo-slot">
-                        <p class="demo-empty">Keine Diagnosen vorhanden.</p>
-                        <div class="demo-card demo-upload__card">
-                          <p class="demo-card__title">Essentielle Hypertonie</p>
-                          <p class="demo-field"><small>ICD-Code:</small>I10</p>
-                          <p class="demo-field"><small>Medikamente:</small>Ramipril 5 mg, 1× täglich</p>
-                          <p class="demo-field"><small>Datum:</small>02.10.2026</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="demo-sheet">
-                      <p class="demo-sheet__title">Datei auswählen</p>
-                      <p class="demo-sheet__row demo-sheet__row--picked"><span class="demo-file__type">PDF</span><span class="demo-file__name">Arztbrief_02-10-2026.pdf</span><span class="demo-sheet__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></p>
-                      <p class="demo-sheet__row"><span class="demo-file__type">JPG</span><span class="demo-file__name">Impfpass.jpg</span></p>
-                    </div>
-                    </div>
-                  </div>
-
-                  <!-- Ansicht 3: Diagnose mit der Erklärung im gewählten Sprachniveau. Mit "is-run" läuft
-                       einmal ab: Tipp auf "Erklären lassen", "Wird generiert...", dann erscheint die
-                       Erklärung Satz für Satz. -->
-                  <div class="demo-scene demo-scene--3">
-                    <div class="demo-head">
-                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
-                      <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
-                    </div>
-                    <div class="demo-body">
-                      <div class="demo-card">
-                        <p class="demo-card__title">Essentielle Hypertonie</p>
-                        <p class="demo-field"><small>ICD-Code:</small>I10</p>
-                        <div class="demo-answer">
-                          <p class="demo-field"><small>Erklärung:</small><span class="demo-say" style="--n: 0">Im Arztbrief steht: essentielle Hypertonie.</span> <span class="demo-say" style="--n: 1">Das bedeutet Bluthochdruck. Der Blutdruck ist dauerhaft zu hoch.</span> <span class="demo-say" style="--n: 2">Oft spürt man lange nichts davon.</span> <span class="demo-say" style="--n: 3">Fragen dazu am besten beim nächsten Termin besprechen.</span></p>
-                          <p class="demo-field demo-say" style="--n: 4"><small>Hinweis:</small>Kein Ersatz für ein persönliches Arztgespräch.</p>
-                        </div>
-                        <div class="demo-btn demo-explain">
-                          <span class="demo-explain__idle">Erklären lassen</span>
-                          <span class="demo-explain__busy">Wird generiert...</span>
-                          <em class="demo-tap" style="--tap: 0.35s"></em>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Ansicht 4: der digitale Checkup fasst alles auf einer Seite zusammen -->
-                  <div class="demo-scene demo-scene--4">
-                    <div class="demo-head">
-                      <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Digitaler Checkup</span>
-                      <span class="demo-head__sub">Zusammenfassung Ihrer Gesundheitsdaten</span>
-                    </div>
-                    <div class="demo-body">
-                      <div class="demo-dates">
-                        <p class="demo-date"><small>Von:</small><span>01.09.2026</span></p>
-                        <p class="demo-date"><small>Bis:</small><span>06.10.2026</span></p>
-                      </div>
-                      <div class="demo-btn">Checkup erstellen</div>
-                      <div class="demo-group">
-                        <p class="demo-section">Diagnosen (1)</p>
-                        <p class="demo-mini"><strong>Essentielle Hypertonie</strong><small>I10 · 2026</small></p>
-                      </div>
-                      <div class="demo-group">
-                        <p class="demo-section">Medikamente (1)</p>
-                        <p class="demo-mini"><strong>Ramipril</strong><small>5 mg · 1× täglich</small></p>
-                      </div>
-                      <div class="demo-group">
-                        <p class="demo-section">Symptome (1)</p>
-                        <p class="demo-mini"><strong>Kopfschmerzen</strong><small>Intensität 4/10 · 2 Tage</small></p>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-              <p class="howto__note">Beispielhafte Darstellung mit Beispieldaten</p>
+            <div class="howto__pager">
+              <button type="button" class="howto__arrow" data-howto-prev aria-label="Zurück: vorheriger Schritt" title="Zurück"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+              <button type="button" class="howto__arrow" data-howto-next aria-label="Weiter: nächster Schritt" title="Weiter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
             </div>
           </div>
+
+          <div class="howto__demo" aria-hidden="true">
+            <div class="demo-phone">
+              <div class="demo-screen">
+
+                <!-- Ansicht 1: Sprachniveau wählen (in der App: "Kommunikationstool") -->
+                <div class="demo-scene demo-scene--1">
+                  <div class="demo-head">
+                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Kommunikationstool</span>
+                    <span class="demo-head__sub">Stellen Sie Ihr persönliches Level ein</span>
+                  </div>
+                  <div class="demo-body">
+                    <div class="demo-card">
+                      <p class="demo-question">Wie sicher fühlen Sie sich mit medizinischen Fachbegriffen?</p>
+                      <p class="demo-radio"><i><b></b></i><span>Bitte erklären Sie es mir wie einem Laien.</span></p>
+                      <p class="demo-radio"><i></i><span>Ich kenne die Grundlagen ganz gut.</span></p>
+                      <p class="demo-radio"><i></i><span>Ich habe beruflich mit Medizin zu tun.</span></p>
+                    </div>
+                    <div class="demo-btn">Antworten speichern</div>
+                    <div class="demo-levels">
+                      <p class="demo-level demo-level--current"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.5"/></svg><span><strong>L1</strong> Einfache Alltagssprache</span></p>
+                      <p class="demo-level"><i></i><span><strong>L2</strong> Mit medizinischen Grundbegriffen</span></p>
+                      <p class="demo-level"><i></i><span><strong>L3</strong> Medizinische Fachsprache</span></p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ansicht 2: zwei Bildschirme der App übereinander. Ruhebild ist der zweite
+                     ("Diagnosen"): der Arztbrief ist hochgeladen, die Diagnose steht als Karte da.
+                     Mit "is-run" (setzt script.js beim Blättern auf Schritt 2) läuft einmal ab:
+                     erst "Aktuelle Medikamente" (Eintrag hinzufügen, Formular füllt sich,
+                     Speichern, Karte), dann "Diagnosen" (leere Liste, Dateiauswahl mit dem PDF,
+                     "Analysiere Arztbrief...", Karte). -->
+                <div class="demo-scene demo-scene--2">
+                  <div class="demo-sub demo-sub--med">
+                  <div class="demo-head">
+                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Aktuelle Medikamente</span>
+                    <span class="demo-head__sub">Verwalten Sie Ihre medizinischen Daten</span>
+                  </div>
+                  <div class="demo-body">
+                    <div class="demo-btn">+ Eintrag hinzufügen<em class="demo-tap" style="--tap: 0.15s"></em></div>
+                    <p class="demo-section">Einträge</p>
+                    <div class="demo-slot">
+                      <p class="demo-empty demo-med__empty">Keine Medikamente vorhanden.</p>
+                      <div class="demo-card demo-med__form">
+                        <p class="demo-card__title">Neues Medikament</p>
+                        <p class="demo-input"><small>Medikamentenname</small><span><b class="demo-med__v1">Ramipril</b></span></p>
+                        <div class="demo-input-row">
+                          <p class="demo-input"><small>Dosierung</small><span><b class="demo-med__v2">5</b></span></p>
+                          <p class="demo-input"><small>Einheit</small><span><b class="demo-med__v2">mg</b></span></p>
+                        </div>
+                        <p class="demo-input"><small>Einnahmehäufigkeit</small><span><b class="demo-med__v3">1x täglich</b></span></p>
+                        <div class="demo-btn">Speichern<em class="demo-tap" style="--tap: 1.5s"></em></div>
+                      </div>
+                      <div class="demo-card demo-med__card">
+                        <p class="demo-card__title">Ramipril</p>
+                        <p class="demo-field"><small>Wirkung/Dosierung:</small>5 mg</p>
+                        <p class="demo-field"><small>Einnahmehäufigkeit:</small>1x täglich</p>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="demo-sub demo-sub--doc">
+                  <div class="demo-head">
+                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
+                    <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
+                  </div>
+                  <div class="demo-body">
+                    <div class="demo-btn">+ Manuell hinzufügen</div>
+                    <div class="demo-btn demo-btn--grey demo-upload">
+                      <span class="demo-upload__idle">Arztbrief hochladen (Bild / PDF)</span>
+                      <span class="demo-upload__busy">Analysiere Arztbrief...</span>
+                    </div>
+                    <p class="demo-file">
+                      <span class="demo-file__type">PDF</span>
+                      <span class="demo-file__name">Arztbrief_02-10-2026.pdf</span>
+                      <span class="demo-file__done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+                      <span class="demo-file__bar"></span>
+                    </p>
+                    <p class="demo-section">Diagnosen</p>
+                    <div class="demo-slot">
+                      <p class="demo-empty">Keine Diagnosen vorhanden.</p>
+                      <div class="demo-card demo-upload__card">
+                        <p class="demo-card__title">Essentielle Hypertonie</p>
+                        <p class="demo-field"><small>ICD-Code:</small>I10</p>
+                        <p class="demo-field"><small>Medikamente:</small>Ramipril 5 mg, 1× täglich</p>
+                        <p class="demo-field"><small>Datum:</small>02.10.2026</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="demo-sheet">
+                    <p class="demo-sheet__title">Datei auswählen</p>
+                    <p class="demo-sheet__row demo-sheet__row--picked"><span class="demo-file__type">PDF</span><span class="demo-file__name">Arztbrief_02-10-2026.pdf</span><span class="demo-sheet__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></p>
+                    <p class="demo-sheet__row"><span class="demo-file__type">JPG</span><span class="demo-file__name">Impfpass.jpg</span></p>
+                  </div>
+                  </div>
+                </div>
+
+                <!-- Ansicht 3: Diagnose mit der Erklärung im gewählten Sprachniveau. Mit "is-run" läuft
+                     einmal ab: Tipp auf "Erklären lassen", "Wird generiert...", dann erscheint die
+                     Erklärung Satz für Satz. -->
+                <div class="demo-scene demo-scene--3">
+                  <div class="demo-head">
+                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
+                    <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
+                  </div>
+                  <div class="demo-body">
+                    <div class="demo-card">
+                      <p class="demo-card__title">Essentielle Hypertonie</p>
+                      <p class="demo-field"><small>ICD-Code:</small>I10</p>
+                      <div class="demo-answer">
+                        <p class="demo-field"><small>Erklärung:</small><span class="demo-say" style="--n: 0">Im Arztbrief steht: essentielle Hypertonie.</span> <span class="demo-say" style="--n: 1">Das bedeutet Bluthochdruck. Der Blutdruck ist dauerhaft zu hoch.</span> <span class="demo-say" style="--n: 2">Oft spürt man lange nichts davon.</span> <span class="demo-say" style="--n: 3">Fragen dazu am besten beim nächsten Termin besprechen.</span></p>
+                        <p class="demo-field demo-say" style="--n: 4"><small>Hinweis:</small>Kein Ersatz für ein persönliches Arztgespräch.</p>
+                      </div>
+                      <div class="demo-btn demo-explain">
+                        <span class="demo-explain__idle">Erklären lassen</span>
+                        <span class="demo-explain__busy">Wird generiert...</span>
+                        <em class="demo-tap" style="--tap: 0.35s"></em>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ansicht 4: der digitale Checkup fasst alles auf einer Seite zusammen -->
+                <div class="demo-scene demo-scene--4">
+                  <div class="demo-head">
+                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Digitaler Checkup</span>
+                    <span class="demo-head__sub">Zusammenfassung Ihrer Gesundheitsdaten</span>
+                  </div>
+                  <div class="demo-body">
+                    <div class="demo-dates">
+                      <p class="demo-date"><small>Von:</small><span>01.09.2026</span></p>
+                      <p class="demo-date"><small>Bis:</small><span>06.10.2026</span></p>
+                    </div>
+                    <div class="demo-btn">Checkup erstellen</div>
+                    <div class="demo-group">
+                      <p class="demo-section">Diagnosen (1)</p>
+                      <p class="demo-mini"><strong>Essentielle Hypertonie</strong><small>I10 · 2026</small></p>
+                    </div>
+                    <div class="demo-group">
+                      <p class="demo-section">Medikamente (1)</p>
+                      <p class="demo-mini"><strong>Ramipril</strong><small>5 mg · 1× täglich</small></p>
+                    </div>
+                    <div class="demo-group">
+                      <p class="demo-section">Symptome (1)</p>
+                      <p class="demo-mini"><strong>Kopfschmerzen</strong><small>Intensität 4/10 · 2 Tage</small></p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <p class="howto__note">Beispielhafte Darstellung mit Beispieldaten</p>
           </div>
         </div>
       </div>
