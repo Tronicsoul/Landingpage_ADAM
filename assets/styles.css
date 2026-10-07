@@ -791,37 +791,120 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   margin-top: var(--space-5);
 }
 
-/* Am Handy steht der Regler in voller Breite, die beiden Enden darunter. */
-@media (max-width: 520px) {
-  .cmp__control {
+/* Am Handy steht der Regler über der Karte, damit er zuerst gesehen wird: oben die beiden Enden,
+   darunter die Schiene mit einem großen Griff (Pfeile nach links und rechts). Beim Scrollen durch
+   die Karte bleibt er unter der Kopfleiste stehen. Die Karte ist kompakter, damit Regler und alle
+   vier Zeilen zusammen auf einen Bildschirm passen. */
+@media (max-width: 599px) {
+  .cmp.is-interactive {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cmp.is-interactive .cmp__control {
+    order: -1;
+    position: sticky;
+    top: var(--nav-height);
+    z-index: 5;
     grid-template-columns: 1fr 1fr;
     row-gap: 0;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: var(--space-1) var(--gutter) var(--space-3);
+    background: var(--surface);
   }
 
   .cmp__range {
     grid-column: 1 / -1;
-    grid-row: 1;
+    grid-row: 2;
+    height: 48px;
+  }
+
+  .cmp__end {
+    min-height: 40px;
+    font-size: 15px;
+  }
+
+  /* Das Ende, an dem der Regler gerade steht, ist hervorgehoben. */
+  .cmp__end:first-child {
+    justify-self: start;
+    color: color-mix(in srgb, var(--text-muted) calc(var(--p) * 100%), var(--text));
   }
 
   .cmp__end:last-child {
     justify-self: end;
+    color: color-mix(in srgb, var(--link, var(--button-bg)) calc(var(--p) * 100%), var(--text-muted));
   }
 
-  .cmp__end:first-child {
-    justify-self: start;
+  .cmp__range::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 5px;
+  }
+
+  .cmp__range::-moz-range-track,
+  .cmp__range::-moz-range-progress {
+    height: 10px;
+    border-radius: 5px;
+  }
+
+  .cmp__range::-webkit-slider-thumb {
+    width: 44px;
+    height: 44px;
+    margin-top: -17px;
+    background: var(--primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f9fafb' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 7.5 5 12l4.5 4.5M14.5 7.5 19 12l-4.5 4.5'/%3E%3C/svg%3E") center / 24px 24px no-repeat;
+  }
+
+  .cmp__range::-moz-range-thumb {
+    width: 38px;
+    height: 38px;
+    background: var(--primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f9fafb' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 7.5 5 12l4.5 4.5M14.5 7.5 19 12l-4.5 4.5'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
+  }
+
+  .cmp__bar {
+    padding: var(--space-3) var(--space-5);
+    font-size: 16px;
+  }
+
+  .cmp__rows {
+    padding: var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .cmp__row {
+    column-gap: var(--space-3);
+    padding: 10px var(--space-3);
+  }
+
+  .cmp__icon {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+  .cmp__label {
+    font-size: 12px;
+  }
+
+  .cmp__values > span {
+    font-size: 16px;
+    line-height: 1.35;
   }
 }
 
 .cmp__end {
-  min-height: 44px;
   padding: var(--space-2) var(--space-1);
   border: 0;
   background: none;
   font: inherit;
-  font-size: 14.5px;
   font-weight: 700;
-  color: var(--text-muted);
   cursor: pointer;
+}
+
+@media (min-width: 600px) {
+  .cmp__end {
+    min-height: 44px;
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
 }
 
 .cmp__end:hover {
@@ -832,10 +915,15 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 44px;
   margin: 0;
   background: transparent;
   cursor: grab;
+}
+
+@media (min-width: 600px) {
+  .cmp__range {
+    height: 44px;
+  }
 }
 
 .cmp__range:active {
@@ -843,41 +931,55 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
 }
 
 .cmp__range::-webkit-slider-runnable-track {
-  height: 6px;
-  border-radius: 3px;
   background: linear-gradient(to right, var(--link, var(--primary)) calc(var(--p) * 100%), var(--cmp-off) 0);
 }
 
 .cmp__range::-moz-range-track {
-  height: 6px;
-  border-radius: 3px;
   background: var(--cmp-off);
 }
 
 .cmp__range::-moz-range-progress {
-  height: 6px;
-  border-radius: 3px;
   background: var(--link, var(--primary));
 }
 
 .cmp__range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 30px;
-  height: 30px;
-  margin-top: -12px;
   border: 3px solid var(--text-on-primary);
   border-radius: 50%;
-  background: var(--primary);
   box-shadow: var(--shadow-sm);
 }
 
 .cmp__range::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
   border: 3px solid var(--text-on-primary);
   border-radius: 50%;
-  background: var(--primary);
   box-shadow: var(--shadow-sm);
+}
+
+/* Maße von Schiene und Griff ab 600 px; die Maße fürs Handy stehen im Block darüber. */
+@media (min-width: 600px) {
+  .cmp__range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .cmp__range::-moz-range-track,
+  .cmp__range::-moz-range-progress {
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .cmp__range::-webkit-slider-thumb {
+    width: 30px;
+    height: 30px;
+    margin-top: -12px;
+    background: var(--primary);
+  }
+
+  .cmp__range::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+  }
 }
 
 .cmp__range:focus-visible {
@@ -1054,6 +1156,85 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   line-height: 1.6;
   color: var(--text-muted);
   margin: 0;
+}
+
+/* Am Handy (unter 760 px, gesetzt von script.js, initStepToggles) zeigt jeder Schritt nur Nummer
+   und Titel in einer Zeile; ein Tipp auf den Kasten klappt den Text auf. So sind die drei Kästen
+   niedrig und das Formular rückt nach oben. */
+.steps.is-collapsible {
+  gap: var(--space-3);
+}
+
+.step.is-collapsible {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+}
+
+.step.is-collapsible .step__number {
+  margin: 0;
+}
+
+.step.is-collapsible h3 {
+  margin: 0;
+}
+
+.step__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Der ganze Kasten ist Tippfläche. */
+.step__toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+
+/* Pfeil nach unten, aufgeklappt nach oben */
+.step__toggle::after {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin: -4px 4px 0 0;
+  border-right: 2px solid var(--link, var(--button-bg));
+  border-bottom: 2px solid var(--link, var(--button-bg));
+  transform: rotate(45deg);
+}
+
+.step__toggle[aria-expanded="true"]::after {
+  margin-top: 6px;
+  transform: rotate(-135deg);
+}
+
+.step__toggle:focus-visible {
+  outline: none;
+}
+
+.step__toggle:focus-visible::before {
+  outline: 2px solid var(--link, var(--button-bg));
+  outline-offset: 2px;
+}
+
+.step.is-collapsible p {
+  grid-column: 1 / -1;
+  margin: var(--space-1) 0 var(--space-3);
 }
 
 /* Benefit-Chips (Pioneer-/CTA-Sektion) */
@@ -1920,7 +2101,85 @@ body[data-audience="aerzte"] .hero__offer {
   color: var(--muted);
 }
 
-/* Schmal: dieselbe Reihenfolge, alles etwas kleiner, damit der Abschnitt nicht zu hoch wird. */
+/* Der Hinweis am Ende des Kastens gilt nur für die schmale Anordnung darunter. */
+.howto__note--end {
+  display: none;
+}
+
+/* Schmal (einspaltig): Titel, Handy-Bild und direkt darunter die Pfeile mit "Schritt N von 4"
+   bilden eine Einheit, damit klar ist, was die Pfeile umschalten: Wer tippt, hat Titel und
+   Handy-Bild darüber im Blick. Der Text zum Schritt folgt darunter. Dafür lösen sich die
+   Behälter auf (display: contents) und ihre Inhalte ordnen sich im Raster des Kastens an; alle
+   vier Titel und alle vier Texte liegen jeweils in derselben Zelle, sichtbar ist der gewählte. */
+@media (max-width: 899px) {
+  .howto.is-interactive {
+    /* Die Pfeile stehen unter den Kanten des Handy-Bilds (260 px breit), nicht am Kastenrand. */
+    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 164px) 48px minmax(0, 1fr);
+    grid-template-areas:
+      "title title title title title"
+      "demo demo demo demo demo"
+      ". prev count next ."
+      "desc desc desc desc desc"
+      "note note note note note";
+    gap: 0;
+    align-items: center;
+  }
+
+  .howto.is-interactive .howto__text,
+  .howto.is-interactive .howto__step,
+  .howto.is-interactive .howto__panels,
+  .howto.is-interactive .howto__panel,
+  .howto.is-interactive .howto__pager {
+    display: contents;
+  }
+
+  .howto.is-interactive .howto__title {
+    grid-area: title;
+    align-self: end;
+    margin: 0 0 var(--space-4);
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .howto.is-interactive .howto__demo {
+    grid-area: demo;
+  }
+
+  .howto.is-interactive .howto__demo .howto__note {
+    display: none;
+  }
+
+  .howto.is-interactive [data-howto-prev] {
+    grid-area: prev;
+    margin-top: var(--space-4);
+  }
+
+  .howto.is-interactive [data-howto-next] {
+    grid-area: next;
+    margin-top: var(--space-4);
+  }
+
+  .howto.is-interactive .howto__count {
+    grid-area: count;
+    margin: var(--space-4) 0 0;
+    text-align: center;
+  }
+
+  .howto.is-interactive .howto__desc {
+    grid-area: desc;
+    align-self: start;
+    max-width: none;
+    margin-top: var(--space-5);
+  }
+
+  .howto.is-interactive .howto__note--end {
+    display: block;
+    grid-area: note;
+    margin-top: var(--space-4);
+  }
+}
+
+/* Handy: alles etwas kleiner, damit der Abschnitt nicht zu hoch wird. */
 @media (max-width: 599px) {
   .howto {
     padding: var(--space-5);

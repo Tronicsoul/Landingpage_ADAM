@@ -253,6 +253,8 @@
              "Mit ADAM") blendet Zeile für Zeile vom einen zum anderen. script.js (initCompare) setzt
              dafür --p von 0 bis 1 und führt den Wechsel einmal vor und zurück, wenn die Karte ins Bild
              kommt, und erneut bei jedem Klick auf "Vergleich" im Menü. Danach steht der Regler.
+             Am Handy steht der Regler über der Karte und bleibt beim Scrollen durch die Karte
+             unter der Kopfleiste stehen; die Vorführung beginnt dort erst, wenn er zu sehen ist.
              Ohne JavaScript stehen in jeder Zeile beide Angaben untereinander. Beispieldaten. -->
         <div class="cmp">
           <div class="cmp__card">
@@ -375,8 +377,9 @@
     <!-- Ablauf (nur Ansicht für Ärzt:innen und Fachpersonal): eigener Abschnitt mit Etikett,
          Überschrift und Unterzeile wie die anderen Abschnitte. Darunter ein Kasten: an fester
          Stelle "Schritt N von 4", der Titel des Schritts und ein kurzer Text, darunter zwei Pfeile
-         (zurück, weiter); daneben ein Handy mit der passenden App-Ansicht. Nichts wechselt von
-         selbst. script.js (initHowto) schaltet mit den Pfeilen um: Anzeige, Titel, Text und
+         (zurück, weiter); daneben ein Handy mit der passenden App-Ansicht. Schmal (unter 900 px)
+         stehen Titel, Handy-Bild und direkt darunter die Pfeile mit "Schritt N von 4" als eine
+         Einheit, der Text folgt darunter. Nichts wechselt von selbst. script.js (initHowto) schaltet mit den Pfeilen um: Anzeige, Titel, Text und
          App-Ansicht wechseln gemeinsam, der Text ohne Bewegung, die App-Ansicht blendet kurz über.
          Beim ersten Schritt ist "zurück", beim letzten "weiter" außer Funktion. Blättert jemand zu
          Schritt 2 oder 3, läuft dort einmal ein kurzer Ablauf (Schritt 2: ein Medikament erfassen,
@@ -396,8 +399,10 @@
 
         <div class="howto" data-step="1">
           <div class="howto__text">
-            <!-- Wechselt der Schritt, lesen Bildschirmleser Anzeige, Titel und Text neu vor. -->
-            <div class="howto__step" aria-live="polite" aria-atomic="true">
+            <!-- Wechselt der Schritt, schreibt script.js Anzeige, Titel und Text in die unsichtbare
+                 Zeile; Bildschirmleser lesen sie dann vor. -->
+            <p class="visually-hidden" aria-live="polite" aria-atomic="true" data-howto-live></p>
+            <div class="howto__step">
             <p class="howto__count">Schritt <span data-howto-current>1</span> von 4</p>
             <div class="howto__panels">
               <div class="howto__panel is-active">
@@ -423,6 +428,8 @@
               <button type="button" class="howto__arrow" data-howto-prev aria-label="Zurück: vorheriger Schritt" title="Zurück"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
               <button type="button" class="howto__arrow" data-howto-next aria-label="Weiter: nächster Schritt" title="Weiter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
             </div>
+            <!-- Am Handy steht der Hinweis hier am Ende des Kastens statt unter dem Handy-Bild. -->
+            <p class="howto__note howto__note--end">Beispielhafte Darstellung mit Beispieldaten</p>
           </div>
 
           <div class="howto__demo" aria-hidden="true">
@@ -941,6 +948,8 @@
             mit je 10 Patient:innen, alle weiteren kommen auf die Warteliste.
           </p>
 
+          <!-- Am Handy (unter 760 px) zeigt script.js (initStepToggles) nur Nummer und Titel; ein
+               Tipp klappt den Text auf. Am Rechner und ohne JavaScript steht der Text immer da. -->
           <ol class="steps">
             <li class="step">
               <span class="step__number" aria-hidden="true">1</span>

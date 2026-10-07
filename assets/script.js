@@ -417,7 +417,8 @@ initReveal();
 // (Klasse "is-run" an der Ansicht, siehe styles.css): bei Schritt 2 ein Medikament erfassen und
 // einen Arztbrief als PDF hochladen, bei Schritt 3 der Tipp auf "Erklären lassen" und die
 // Erklärung. Bei "Bewegung reduzieren" steht sofort das Ergebnis. Ohne JavaScript bleiben alle
-// vier Texte sichtbar.
+// vier Texte sichtbar. Schmal (unter 900 px) ordnet styles.css dieselben Elemente anders an:
+// Titel, Handy, darunter die Pfeile mit der Anzeige, dann der Text.
 
 function initHowto() {
   const box = document.querySelector(".howto");
@@ -427,6 +428,7 @@ function initHowto() {
   const prev = box.querySelector("[data-howto-prev]");
   const next = box.querySelector("[data-howto-next]");
   const scenes = Array.from(box.querySelectorAll(".demo-scene"));
+  const live = box.querySelector("[data-howto-live]");
   if (!panels.length || !prev || !next) return;
 
   const reduce =
@@ -446,6 +448,16 @@ function initHowto() {
     if (byUser && scene && !reduce) {
       void scene.offsetWidth; // Ablauf bei jedem Erreichen des Schritts von vorn
       scene.classList.add("is-run");
+    }
+    // Ansage für Bildschirmleser: Anzeige, Titel und Text des neuen Schritts
+    if (byUser && live) {
+      const panel = panels[step - 1];
+      const title = panel.querySelector(".howto__title");
+      const desc = panel.querySelector(".howto__desc");
+      live.textContent =
+        "Schritt " + step + " von " + panels.length + ": " +
+        (title ? title.textContent.trim() : "") + ". " +
+        (desc ? desc.textContent.trim() : "");
     }
   }
 
@@ -475,7 +487,8 @@ initHowto();
 // Vergleich "Derselbe Termin, zwei Ausgangslagen": Der Regler stellt --p an der Karte von 0
 // (ohne ADAM) bis 1 (mit ADAM), die Darstellung dazu steht in styles.css. Ein Klick auf
 // "Ohne ADAM" oder "Mit ADAM" fährt dorthin. Kommt die Karte ins Bild, wird der Wechsel einmal
-// vorgeführt, solange niemand den Regler berührt hat (nicht bei "Bewegung reduzieren").
+// vorgeführt, solange niemand den Regler berührt hat (nicht bei "Bewegung reduzieren"). Am Handy
+// steht der Regler über der Karte; dort wartet die Vorführung, bis der Regler zu sehen ist.
 
 function initCompare() {
   const box = document.querySelector(".cmp");
@@ -571,20 +584,98 @@ function initCompare() {
   });
 
   if ("IntersectionObserver" in window && !reduce) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          inView = entry.intersectionRatio >= 0.6;
-          if (inView && !played) play(START_MS);
-        });
-      },
-      { threshold: [0, 0.6] }
-    );
-    observer.observe(box);
+    const control = box.querySelector(".cmp__control");
+    const phone = window.matchMedia("(max-width: 599px)");
+    let observer = null;
+
+    // Am Handy steht der Regler über der Karte. Die Vorführung beginnt dort, sobald der Regler
+    // ganz zu sehen ist und darunter Platz für den Anfang der Karte bleibt (er steht also in den
+    // oberen zwei Dritteln unter der Kopfleiste). So sieht man den Griff laufen und die Zeilen
+    // darunter umschlagen. Ab 600 px gilt wie bisher: sobald 60 % des Vergleichs im Bild sind.
+    function watch() {
+      if (observer) observer.disconnect();
+      if (phone.matches && control) {
+        const headerHeight = document.querySelector(".site-header")?.offsetHeight || 76;
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              inView = entry.intersectionRatio >= 0.99;
+              if (inView && !played) play(START_MS);
+            });
+          },
+          { rootMargin: `-${headerHeight}px 0px -33% 0px`, threshold: [0, 0.99] }
+        );
+        observer.observe(control);
+      } else {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              inView = entry.intersectionRatio >= 0.6;
+              if (inView && !played) play(START_MS);
+            });
+          },
+          { threshold: [0, 0.6] }
+        );
+        observer.observe(box);
+      }
+    }
+
+    watch();
+    if (phone.addEventListener) phone.addEventListener("change", watch);
   }
 }
 
 initCompare();
+
+// Die drei Schritte über dem Formular (Ärzte-Ansicht): Am Handy (unter 760 px, wo sie untereinander
+// stehen) zeigt jeder Kasten nur Nummer und Titel; ein Tipp klappt den Text auf und wieder zu. Der
+// Titel wird dafür zu einem Knopf (aria-expanded). Wird das Fenster breiter, steht wieder der
+// einfache Titel mit Text. Ohne JavaScript ist der Text immer sichtbar.
+
+function initStepToggles() {
+  const list = document.querySelector(".steps");
+  const steps = list ? Array.from(list.querySelectorAll(".step")) : [];
+  if (!steps.length || !window.matchMedia) return;
+  const narrow = window.matchMedia("(max-width: 759px)");
+
+  function apply() {
+    list.classList.toggle("is-collapsible", narrow.matches);
+    steps.forEach((step, index) => {
+      const heading = step.querySelector("h3");
+      const text = step.querySelector("p");
+      if (!heading || !text) return;
+      const existing = heading.querySelector("button");
+
+      if (narrow.matches && !existing) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "step__toggle";
+        button.textContent = heading.textContent;
+        if (!text.id) text.id = "schritt-text-" + (index + 1);
+        button.setAttribute("aria-controls", text.id);
+        button.setAttribute("aria-expanded", "false");
+        button.addEventListener("click", () => {
+          const open = button.getAttribute("aria-expanded") !== "true";
+          button.setAttribute("aria-expanded", String(open));
+          text.hidden = !open;
+        });
+        heading.textContent = "";
+        heading.appendChild(button);
+        text.hidden = true;
+        step.classList.add("is-collapsible");
+      } else if (!narrow.matches && existing) {
+        heading.textContent = existing.textContent;
+        text.hidden = false;
+        step.classList.remove("is-collapsible");
+      }
+    });
+  }
+
+  apply();
+  if (narrow.addEventListener) narrow.addEventListener("change", apply);
+}
+
+initStepToggles();
 
 // Ansicht beim Wechsel zwischen Startseite, Impressum und Datenschutz beibehalten: Wer über einen
 // Kampagnenlink (?v=a, ?v=b) oder über ?zielgruppe=patient kam, behält diese Angabe in den Links
