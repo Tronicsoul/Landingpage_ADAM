@@ -82,9 +82,9 @@
         <!-- Sprungmarken innerhalb der Seite. Ärzt:innen: Vergleich, Leistungen, Ablauf, Sicherheit.
              Patient:innen: Funktionen, Sicherheit. -->
         <ul class="nav-links">
-          <li data-hide-for="patient"><a href="#problem">Vergleich</a></li>
+          <li data-hide-for="patient"><a href="#vergleich">Vergleich</a></li>
           <li>
-            <a href="#funktionen">
+            <a href="#leistungen">
               <span data-audience-content="patient">Funktionen</span>
               <span data-audience-content="aerzte">Leistungen</span>
             </a>
@@ -115,9 +115,9 @@
     <div class="mobile-menu" id="mobileMenu">
       <div class="container">
         <ul>
-          <li data-hide-for="patient"><a href="#problem">Vergleich</a></li>
+          <li data-hide-for="patient"><a href="#vergleich">Vergleich</a></li>
           <li>
-            <a href="#funktionen">
+            <a href="#leistungen">
               <span data-audience-content="patient">Funktionen</span>
               <span data-audience-content="aerzte">Leistungen</span>
             </a>
@@ -190,7 +190,7 @@
             </p>
             <div class="hero__actions">
               <a class="btn btn-primary" href="#warteliste" data-track="hero">Jetzt auf die Warteliste eintragen</a>
-              <a class="btn btn-ghost" href="#funktionen">Funktionen entdecken</a>
+              <a class="btn btn-ghost" href="#leistungen">Funktionen entdecken</a>
             </div>
           </div>
 
@@ -260,7 +260,7 @@
     </section>
 
     <!-- Vorher/Nachher-Vergleich (nur Ärzt:innen & Fachpersonal) -->
-    <section class="has-deco problem" id="problem" aria-labelledby="problem-heading" data-hide-for="patient">
+    <section class="has-deco problem" id="vergleich" aria-labelledby="problem-heading" data-hide-for="patient">
       <div class="deco" aria-hidden="true">
         <div class="deco__item" data-parallax="-0.2" data-side="l" style="--speed: -0.2; --size: 1.3; top: 30%; --rot: 8deg"><svg viewBox="0 0 64 64"><rect x="10" y="14" width="44" height="40" rx="5"/><path d="M10 26h44M22 8v10M42 8v10M22 36h6M36 36h6M22 45h6"/></svg></div>
       </div>
@@ -329,7 +329,7 @@
     </section>
 
     <!-- Funktionen -->
-    <section class="has-deco" id="funktionen" aria-label="Leistungen">
+    <section class="has-deco" id="leistungen" aria-label="Leistungen">
       <div class="deco" aria-hidden="true">
         <div class="deco__item" data-parallax="0.2" data-side="r" style="--speed: 0.2; --size: 1.6; top: 28%; --rot: -8deg"><svg viewBox="0 0 64 64"><rect x="14" y="8" width="36" height="48" rx="5"/><path d="M22 22h20M22 32h20M22 42h12"/></svg></div>
         <div class="deco__item" data-parallax="-0.2" data-side="l" style="--speed: -0.2; --size: 1.1; top: 66%; --rot: 10deg"><svg viewBox="0 0 64 64"><path d="M32 54S8 40 8 24a12 12 0 0 1 24-3 12 12 0 0 1 24 3c0 16-24 30-24 30z"/></svg></div>

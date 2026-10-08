@@ -613,7 +613,7 @@ function initCompare() {
 
   // Klick auf "Vergleich" im Menü: von vorn. Die Seite scrollt erst zum Abschnitt, deshalb
   // beginnt die Vorführung etwas später als beim Hineinscrollen.
-  document.querySelectorAll('a[href$="#problem"]').forEach((link) => {
+  document.querySelectorAll('a[href$="#vergleich"]').forEach((link) => {
     link.addEventListener("click", () => play(inView ? START_MS : 1100));
   });
 
