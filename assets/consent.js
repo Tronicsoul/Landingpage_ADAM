@@ -88,9 +88,27 @@
     document.head.appendChild(script);
   }
 
+  // Variante des A/B-Tests ("a", "b" oder "direkt"). Der Wert kommt aus getVariant() in
+  // assets/script.js, damit ihn nur eine Stelle bestimmt. script.js steht am Ende von <body> und
+  // läuft damit vor init() (DOMContentLoaded). Fehlt die Funktion, gilt "direkt".
+  function currentVariant() {
+    try {
+      if (typeof window.getVariant === "function") return window.getVariant();
+    } catch (e) {
+      /* kein Zugriff: unten gilt "direkt" */
+    }
+    return "direkt";
+  }
+
   function loadGtm() {
     if (gtmLoaded || !CONFIG.gtmId) return;
     gtmLoaded = true;
+    // Vor dem Laden gesetzt, damit die Variante an jedem Ereignis hängt, auch am page_view:
+    // einmal als Variable der Datenschicht (für den Tag Manager) und einmal als gtag-Einstellung
+    // (für Google Analytics, das sie dann an alle folgenden Ereignisse hängt).
+    var variante = currentVariant();
+    window.dataLayer.push({ variante: variante });
+    gtag("set", { variante: variante });
     window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     loadScript("https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(CONFIG.gtmId));
   }

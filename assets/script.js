@@ -1093,3 +1093,107 @@ function initCustomSelects() {
 }
 
 initCustomSelects();
+
+// Weitere Messpunkte: Scrolltiefe, Beginn des Formulars und gesehene Abschnitte.
+//
+// Gesendet wird nur, wenn im Cookie-Banner "Statistik" erlaubt wurde (assets/consent.js, geprüft
+// über window.adamConsent.get()). Wird die Zustimmung erst später erteilt, gehen nur noch die
+// danach erreichten Marken mit. Die Variante hängt an diesen Ereignissen über die globale
+// Einstellung in assets/consent.js, sie steht deshalb nicht noch einmal in den Angaben.
+
+function trackingAllowed() {
+  try {
+    const state = window.adamConsent && window.adamConsent.get();
+    return !!(state && state.statistik);
+  } catch (e) {
+    return false;
+  }
+}
+
+// Scrolltiefe: 25, 50, 75 und 90 Prozent, je einmal pro Seitenaufruf. Gezählt wird, wie weit der
+// untere Fensterrand gekommen ist. Auf Seiten ohne Bildlauf wird nichts gesendet.
+
+function initScrollDepth() {
+  const marks = [25, 50, 75, 90];
+  const sent = [];
+  let ticking = false;
+
+  function check() {
+    ticking = false;
+    if (sent.length === marks.length) return;
+    const full = document.documentElement.scrollHeight;
+    if (full <= window.innerHeight) return;
+    const depth = ((window.scrollY + window.innerHeight) / full) * 100;
+    marks.forEach((mark) => {
+      if (depth < mark || sent.indexOf(mark) !== -1 || !trackingAllowed()) return;
+      sent.push(mark);
+      track("scroll_depth", { tiefe: mark });
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(check);
+    },
+    { passive: true }
+  );
+}
+
+initScrollDepth();
+
+// Beginn des Formulars: einmal pro Seitenaufruf, sobald jemand zum ersten Mal in ein Feld eines
+// Anmeldeformulars tippt oder es anwählt.
+
+function initFormStart() {
+  const forms = document.querySelectorAll(".waitlist-form");
+  if (!forms.length) return;
+  let started = false;
+
+  function start() {
+    if (started || !trackingAllowed()) return;
+    started = true;
+    track("form_start", { zielgruppe: getAudience() });
+  }
+
+  forms.forEach((form) => {
+    form.addEventListener("focusin", start);
+    form.addEventListener("input", start);
+  });
+}
+
+initFormStart();
+
+// Gesehene Abschnitte: einmal je Abschnitt, sobald er zur Hälfte sichtbar ist. Abschnitte, die
+// höher sind als das Fenster, können nie zur Hälfte sichtbar sein; bei ihnen zählt, dass sie das
+// halbe Fenster füllen.
+
+function initSectionView() {
+  if (!("IntersectionObserver" in window)) return;
+  const sections = ["vergleich", "leistungen", "ablauf", "sicherheit", "warteliste"]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  if (!sections.length) return;
+
+  const steps = [];
+  for (let i = 0; i <= 10; i++) steps.push(i / 10);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const visible = entry.intersectionRect.height;
+        const needed = Math.min(entry.boundingClientRect.height, window.innerHeight) / 2;
+        if (!needed || visible < needed || !trackingAllowed()) return;
+        observer.unobserve(entry.target);
+        track("section_view", { abschnitt: entry.target.id });
+      });
+    },
+    { threshold: steps }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+}
+
+initSectionView();
