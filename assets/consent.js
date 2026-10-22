@@ -11,6 +11,10 @@
 // wird im Tag Manager eingestellt. Jeder dort aktivierte Dienst muss in datenschutz.html stehen.
 // Im Tag Manager müssen die Tags an die Einwilligung gebunden sein (analytics_storage für
 // Statistik, ad_storage/ad_user_data/ad_personalization für Marketing).
+//
+// Ausnahme: GoatCounter zählt Seitenaufrufe und die Schritte zur Anmeldung ohne Cookies und
+// unabhängig von der Auswahl im Banner (siehe loadGoatCounter und datenschutz.html). So fehlen
+// in den Zahlen auch die Besuche nicht, die "Nur notwendige" wählen.
 
 (function () {
   "use strict";
@@ -25,7 +29,16 @@
     // Umami setzt keine Cookies und läuft laut Datenschutzerklärung auf Basis des berechtigten
     // Interesses. Auf true stellen, wenn es erst nach Zustimmung zu "Statistik" laden soll.
     umamiNeedsConsent: false,
+    // GoatCounter (cookiefreie Zählung, Konto adam-landingpage): Zieladresse. Leer = wird nicht
+    // geladen. Die Zahlen stehen unter https://adam-landingpage.goatcounter.com
+    goatcounterEndpoint: "https://adam-landingpage.goatcounter.com/count",
   };
+
+  // Ordner dieser Datei, damit assets/goatcounter.js auf jeder Seite gefunden wird.
+  var scriptBase = (function () {
+    var current = document.currentScript;
+    return current && current.src ? current.src.replace(/[^/]*$/, "") : "assets/";
+  })();
 
   var STORAGE_KEY = "adam-consent";
   var CONSENT_VERSION = 1; // erhöhen, wenn neue Dienste dazukommen: dann wird erneut gefragt
@@ -111,6 +124,30 @@
     gtag("set", { variante: variante });
     window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     loadScript("https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(CONFIG.gtmId));
+  }
+
+  // GoatCounter: Als Seite zählt der Pfad mit Variante bzw. Zielgruppe, also "/?v=a", "/?v=b",
+  // "/" (direkt, ohne Varianten-Link) oder "/?zielgruppe=patient". Alle anderen Angaben in der
+  // Adresse (utm_…, gtm_debug, fbclid) fallen aus dem Pfad weg; die Kampagne liest GoatCounter
+  // selbst aus utm_campaign. Die Schritte zur Anmeldung zählt countGoat() in assets/script.js.
+  function goatPath() {
+    var keep = [];
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var variant = params.get("v");
+      if (variant === "a" || variant === "b") keep.push("v=" + variant);
+      if (params.get("zielgruppe") === "patient") keep.push("zielgruppe=patient");
+    } catch (e) {
+      /* ohne URLSearchParams: nur der Pfad */
+    }
+    return window.location.pathname + (keep.length ? "?" + keep.join("&") : "");
+  }
+
+  function loadGoatCounter() {
+    if (!CONFIG.goatcounterEndpoint || document.querySelector("script[data-goatcounter]")) return;
+    window.goatcounter = window.goatcounter || {};
+    window.goatcounter.path = goatPath;
+    loadScript(scriptBase + "goatcounter.js", { "data-goatcounter": CONFIG.goatcounterEndpoint });
   }
 
   function loadUmami() {
@@ -261,6 +298,7 @@
   };
 
   function init() {
+    loadGoatCounter();
     var stored = readStored();
     if (stored) apply(stored);
     else {

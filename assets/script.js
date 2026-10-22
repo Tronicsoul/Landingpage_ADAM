@@ -15,6 +15,8 @@
 //     ("a", "b" oder "direkt").
 //   - Klicks und Anmeldungen als Ereignisse "cta_click" und "waitlist_submit" an Umami und
 //     an den Tag Manager, sobald diese in assets/consent.js aktiviert sind.
+//   - Klick, Beginn des Formulars und Anmeldung zusätzlich an GoatCounter (cookiefrei, ohne
+//     Einwilligung), z. B. als "form_start-b". Siehe countGoat().
 
 // Liefert "a" oder "b" nur, wenn die Seite über einen Varianten-Link geöffnet wurde. Alle
 // anderen Besuche der Ärzte-Ansicht sehen zwar Variante a, werden aber als "direkt" gezählt,
@@ -44,6 +46,32 @@ function track(eventName, data) {
   }
 }
 
+// GoatCounter (cookiefrei, läuft unabhängig vom Cookie-Banner, geladen in assets/consent.js):
+// zählt die drei Schritte zur Anmeldung, jeweils mit der Variante im Namen, z. B. "cta_click-a",
+// "form_start-b", "waitlist_submit-direkt". In der Patienten-Ansicht endet der Name auf
+// "-patient". Name, Mailadresse und Formularangaben gehen nie an GoatCounter.
+const GOAT_STEPS = {
+  cta_click: "Klick auf Anmelde-Button",
+  form_start: "Formular begonnen",
+  waitlist_submit: "Anmeldung abgeschickt",
+};
+
+function countGoat(step, data) {
+  try {
+    const counter = window.goatcounter;
+    if (!GOAT_STEPS[step] || !counter || typeof counter.count !== "function") return;
+    const audience = (data && data.zielgruppe) || getAudience();
+    const suffix = audience === "patient" ? "patient" : (data && data.variante) || getVariant();
+    counter.count({
+      path: step + "-" + suffix,
+      title: GOAT_STEPS[step] + " (" + suffix + ")",
+      event: true,
+    });
+  } catch (e) {
+    /* Zählung darf die Seite nie stören */
+  }
+}
+
 function eventData(extra) {
   const data = { zielgruppe: getAudience() };
   if (data.zielgruppe === "aerzte") data.variante = getVariant();
@@ -52,7 +80,9 @@ function eventData(extra) {
 
 document.querySelectorAll("[data-track]").forEach((link) => {
   link.addEventListener("click", () => {
-    track("cta_click", eventData({ position: link.dataset.track }));
+    const data = eventData({ position: link.dataset.track });
+    track("cta_click", data);
+    countGoat("cta_click", data);
   });
 });
 
@@ -224,6 +254,7 @@ function initWaitlistForm(form) {
       if (payload.beruf) submitData.beruf = payload.beruf;
       if (payload.problem) submitData.wunsch = payload.problem;
       track("waitlist_submit", submitData);
+      countGoat("waitlist_submit", submitData);
 
       // Die eingetragene Adresse in der Erfolgsmeldung nennen: so fällt ein Tippfehler auf.
       const leadEl = successEl.querySelector("[data-success-lead]");
@@ -1145,14 +1176,20 @@ function initScrollDepth() {
 initScrollDepth();
 
 // Beginn des Formulars: einmal pro Seitenaufruf, sobald jemand zum ersten Mal in ein Feld eines
-// Anmeldeformulars tippt oder es anwählt.
+// Anmeldeformulars tippt oder es anwählt. GoatCounter zählt das immer (cookiefrei), der Tag
+// Manager nur mit Zustimmung zu "Statistik".
 
 function initFormStart() {
   const forms = document.querySelectorAll(".waitlist-form");
   if (!forms.length) return;
+  let counted = false;
   let started = false;
 
   function start() {
+    if (!counted) {
+      counted = true;
+      countGoat("form_start", { zielgruppe: getAudience() });
+    }
     if (started || !trackingAllowed()) return;
     started = true;
     track("form_start", { zielgruppe: getAudience() });
