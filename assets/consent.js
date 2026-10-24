@@ -1,47 +1,24 @@
-// Einwilligung (Cookie-Banner) und Laden von Tag Manager und Webanalyse
-//
-// Diese Datei wird auf allen Seiten im <head> geladen. Sie
-//   1. setzt für Google-Dienste den Standard "alles abgelehnt" (Consent Mode v2),
-//   2. zeigt beim ersten Besuch den Banner und merkt sich die Auswahl im Browser,
-//   3. lädt den Google Tag Manager erst, nachdem Statistik oder Marketing erlaubt wurde.
-//
-// ZUM AKTIVIEREN die Werte in CONFIG eintragen. Solange gtmId leer ist, wird kein Tag Manager
-// geladen und es werden keine Daten an Dritte übertragen, egal was im Banner gewählt wird.
-// Welche Dienste dann tatsächlich laufen (z. B. Google Analytics, Google Ads, Meta Pixel),
-// wird im Tag Manager eingestellt. Jeder dort aktivierte Dienst muss in datenschutz.html stehen.
-// Im Tag Manager müssen die Tags an die Einwilligung gebunden sein (analytics_storage für
-// Statistik, ad_storage/ad_user_data/ad_personalization für Marketing).
-//
-// Ausnahme: GoatCounter zählt Seitenaufrufe und die Schritte zur Anmeldung ohne Cookies und
-// unabhängig von der Auswahl im Banner (siehe loadGoatCounter und datenschutz.html). So fehlen
-// in den Zahlen auch die Besuche nicht, die "Nur notwendige" wählen.
-
 (function () {
   "use strict";
 
   var CONFIG = {
-    // Google Tag Manager: Container-ID. Leer = wird nie geladen.
-    // Im Container läuft Google Analytics 4 (Mess-ID G-PD2604L3NF), siehe datenschutz.html.
     gtmId: "GTM-KSDQNDDV",
-    // Umami (cookiefreie Webanalyse): Adresse des Skripts und Website-ID. Leer = wird nicht geladen.
+
     umamiSrc: "",
     umamiWebsiteId: "",
-    // Umami setzt keine Cookies und läuft laut Datenschutzerklärung auf Basis des berechtigten
-    // Interesses. Auf true stellen, wenn es erst nach Zustimmung zu "Statistik" laden soll.
+
     umamiNeedsConsent: false,
-    // GoatCounter (cookiefreie Zählung, Konto adam-landingpage): Zieladresse. Leer = wird nicht
-    // geladen. Die Zahlen stehen unter https://adam-landingpage.goatcounter.com
+
     goatcounterEndpoint: "https://adam-landingpage.goatcounter.com/count",
   };
 
-  // Ordner dieser Datei, damit assets/goatcounter.js auf jeder Seite gefunden wird.
   var scriptBase = (function () {
     var current = document.currentScript;
     return current && current.src ? current.src.replace(/[^/]*$/, "") : "assets/";
   })();
 
   var STORAGE_KEY = "adam-consent";
-  var CONSENT_VERSION = 1; // erhöhen, wenn neue Dienste dazukommen: dann wird erneut gefragt
+  var CONSENT_VERSION = 1;
   var MAX_AGE_DAYS = 180;
 
   var gtmLoaded = false;
@@ -49,7 +26,6 @@
   var banner = null;
   var lastFocus = null;
 
-  // Google Consent Mode v2: Standard ist "abgelehnt", bis eine Auswahl vorliegt.
   window.dataLayer = window.dataLayer || [];
   function gtag() {
     window.dataLayer.push(arguments);
@@ -87,7 +63,6 @@
         })
       );
     } catch (e) {
-      /* Speicher nicht verfügbar (z. B. privates Fenster): Auswahl gilt nur für diesen Seitenaufruf */
     }
   }
 
@@ -101,14 +76,10 @@
     document.head.appendChild(script);
   }
 
-  // Variante des A/B-Tests ("a", "b" oder "direkt"). Der Wert kommt aus getVariant() in
-  // assets/script.js, damit ihn nur eine Stelle bestimmt. script.js steht am Ende von <body> und
-  // läuft damit vor init() (DOMContentLoaded). Fehlt die Funktion, gilt "direkt".
   function currentVariant() {
     try {
       if (typeof window.getVariant === "function") return window.getVariant();
     } catch (e) {
-      /* kein Zugriff: unten gilt "direkt" */
     }
     return "direkt";
   }
@@ -116,9 +87,7 @@
   function loadGtm() {
     if (gtmLoaded || !CONFIG.gtmId) return;
     gtmLoaded = true;
-    // Vor dem Laden gesetzt, damit die Variante an jedem Ereignis hängt, auch am page_view:
-    // einmal als Variable der Datenschicht (für den Tag Manager) und einmal als gtag-Einstellung
-    // (für Google Analytics, das sie dann an alle folgenden Ereignisse hängt).
+
     var variante = currentVariant();
     window.dataLayer.push({ variante: variante });
     gtag("set", { variante: variante });
@@ -126,19 +95,15 @@
     loadScript("https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(CONFIG.gtmId));
   }
 
-  // GoatCounter: Als Seite zählt der Pfad mit Variante bzw. Zielgruppe, also "/?v=a", "/?v=b",
-  // "/" (direkt, ohne Varianten-Link) oder "/?zielgruppe=patient". Alle anderen Angaben in der
-  // Adresse (utm_…, gtm_debug, fbclid) fallen aus dem Pfad weg; die Kampagne liest GoatCounter
-  // selbst aus utm_campaign. Die Schritte zur Anmeldung zählt countGoat() in assets/script.js.
   function goatPath() {
     var keep = [];
     try {
       var params = new URLSearchParams(window.location.search);
       var variant = params.get("v");
       if (variant === "a" || variant === "b") keep.push("v=" + variant);
-      if (params.get("zielgruppe") === "patient") keep.push("zielgruppe=patient");
+      var zg = params.get("zielgruppe");
+      if (zg === "patient" || zg === "aerzte") keep.push("zielgruppe=" + zg);
     } catch (e) {
-      /* ohne URLSearchParams: nur der Pfad */
     }
     return window.location.pathname + (keep.length ? "?" + keep.join("&") : "");
   }
@@ -166,8 +131,6 @@
     if (state.statistik || state.marketing) loadGtm();
     if (!CONFIG.umamiNeedsConsent || state.statistik) loadUmami();
   }
-
-  // Banner
 
   function el(tag, attributes, children) {
     var node = document.createElement(tag);
@@ -230,8 +193,7 @@
       store(state);
       apply(state);
       close();
-      // Wurde eine Zustimmung zurückgenommen, laufen bereits geladene Dienste bis zum nächsten
-      // Seitenaufruf weiter. Deshalb die Seite einmal neu laden.
+
       var withdrawn = before && ((before.statistik && !state.statistik) || (before.marketing && !state.marketing));
       if (withdrawn && gtmLoaded) window.location.reload();
     }
@@ -289,7 +251,6 @@
     lastFocus = null;
   }
 
-  // Für den Link "Cookie-Einstellungen" im Fußbereich (data-consent-open).
   window.adamConsent = {
     open: function () {
       open(true);

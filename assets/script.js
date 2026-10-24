@@ -1,26 +1,3 @@
-// A/B-Kampagne für Ärzt:innen
-//
-// Kampagnenlinks (je Anzeige ein Link, der Anzeigentext soll zur Überschrift der Variante passen):
-//   ?v=a   Effizienz: "Mehr Zeit für das ärztliche Gespräch"
-//   ?v=b   Effektivität: "Klare Angaben für ärztliche Entscheidungen"
-// Ohne Angabe öffnet sich ebenfalls die Ärzte-Ansicht: Sie zeigt Variante a, zählt aber nicht
-// zum Test. Die Ärzte-Ansicht hat keinen Zielgruppen-Umschalter.
-// Die Patienten-Ansicht mit Umschalter gibt es nur über ?zielgruppe=patient.
-// Zielgruppe und Variante setzt das Inline-Skript am Anfang von <body> in index.html,
-// die Varianten-Texte stehen dort im Hero (data-variant-content).
-// Button, Angebot und alles unterhalb des Heros sind in beiden Varianten gleich.
-//
-// Gemessen wird je Variante:
-//   - Anmeldungen: das Ärzte-Formular sendet das versteckte Feld "variante" mit
-//     ("a", "b" oder "direkt").
-//   - Klicks und Anmeldungen als Ereignisse "cta_click" und "waitlist_submit" an Umami und
-//     an den Tag Manager, sobald diese in assets/consent.js aktiviert sind.
-//   - Klick, Beginn des Formulars und Anmeldung zusätzlich an GoatCounter (cookiefrei, ohne
-//     Einwilligung), z. B. als "form_start-b". Siehe countGoat().
-
-// Liefert "a" oder "b" nur, wenn die Seite über einen Varianten-Link geöffnet wurde. Alle
-// anderen Besuche der Ärzte-Ansicht sehen zwar Variante a, werden aber als "direkt" gezählt,
-// damit sie das Ergebnis von A nicht verfälschen.
 function getVariant() {
   const body = document.body;
   return body.getAttribute("data-variant-source") === "link" ? body.getAttribute("data-variant") : "direkt";
@@ -32,24 +9,17 @@ function getAudience() {
 
 function track(eventName, data) {
   try {
-    // Umami (cookiefrei), falls eingebunden
     if (window.umami && typeof window.umami.track === "function") {
       window.umami.track(eventName, data);
     }
-    // Google Tag Manager: Die Ereignisse landen nur in der Liste dataLayer auf dieser Seite.
-    // Verschickt wird erst etwas, wenn der Tag Manager nach Zustimmung geladen wurde (consent.js).
+
     if (Array.isArray(window.dataLayer)) {
       window.dataLayer.push(Object.assign({ event: eventName }, data));
     }
   } catch (e) {
-    /* Analyse darf die Seite nie stören */
   }
 }
 
-// GoatCounter (cookiefrei, läuft unabhängig vom Cookie-Banner, geladen in assets/consent.js):
-// zählt die drei Schritte zur Anmeldung, jeweils mit der Variante im Namen, z. B. "cta_click-a",
-// "form_start-b", "waitlist_submit-direkt". In der Patienten-Ansicht endet der Name auf
-// "-patient". Name, Mailadresse und Formularangaben gehen nie an GoatCounter.
 const GOAT_STEPS = {
   cta_click: "Klick auf Anmelde-Button",
   form_start: "Formular begonnen",
@@ -68,7 +38,6 @@ function countGoat(step, data) {
       event: true,
     });
   } catch (e) {
-    /* Zählung darf die Seite nie stören */
   }
 }
 
@@ -90,11 +59,6 @@ document.querySelectorAll("[data-variant-field]").forEach((field) => {
   field.value = getVariant();
 });
 
-// Button in der Kopfleiste (Ärzte-Ansicht): Er ist immer sichtbar und wiederholt den Hero-Button.
-// Solange der Hero-Button im Bild ist, trägt <body> die Klasse "hero-cta-in-view" und das CSS
-// zeigt den Kopfleisten-Button nur als Umriss. Danach wird er gefüllt, sodass immer genau ein
-// gefüllter Haupt-Button zu sehen ist.
-
 function initHeaderCta() {
   const heroButtons = document.querySelectorAll('.hero [data-track="hero"]');
   if (!heroButtons.length || !("IntersectionObserver" in window)) {
@@ -112,7 +76,7 @@ function initHeaderCta() {
       });
       document.body.classList.toggle("hero-cta-in-view", inView.size > 0);
     },
-    // Unter der fixierten Kopfleiste gilt der Hero-Button als nicht mehr sichtbar.
+
     { rootMargin: `-${headerHeight}px 0px 0px 0px` }
   );
   heroButtons.forEach((button) => observer.observe(button));
@@ -120,21 +84,9 @@ function initHeaderCta() {
 
 initHeaderCta();
 
-// Warteliste: Client-seitige Validierung und Versand.
-//
-// Die Anmeldungen gehen an das Anmeldeformular "Warteliste" im Brevo-Konto des Teams
-// (Brevo: Marketing > Formulare). WAITLIST_ENDPOINT ist die Adresse dieses Formulars; sie ist
-// öffentlich und kein Schlüssel. Brevo legt den Kontakt an und verschickt die Bestätigungsmail
-// (Double-Opt-in). In der Liste steht der Kontakt erst, wenn der Link darin angeklickt wurde.
-// Die Feldnamen sind die Kontakt-Attribute in Brevo (Einstellungen > Kontakte > Attribute).
-// Wer dort ein Attribut umbenennt oder das Formular neu anlegt, muss es hier nachziehen.
-// Solange WAITLIST_ENDPOINT leer ist, wird nichts gespeichert.
 const WAITLIST_ENDPOINT =
   "https://0eee4b39.sibforms.com/serve/MUIFAMAV63XGUizP_lbC2z-7-SYASOjPZdoKuuKZN4fHZTaU1fJe3NR2cv3AD26OnwJ54QDOKg1OvNJ5D3XXCi05I930aNyGd1N_bD9YsLG6CMUMaU5rDIiqAzlYmR9K1HrcgTSpCJc2oRZCg2oLjhdhniFoWePJNU5AfeDDvQr_LM-mOfsBWMdnpEhoxohfiGQOP4Ws2Lw9mvHBDA==";
 
-// Formularfelder der Seite auf die Felder des Brevo-Formulars abbilden. Beruf, Problem und
-// Variante gehen mit denselben Kürzeln nach Brevo wie in die Webanalyse (z. B. "hausaerztin",
-// "effizienz", "a"), damit sich beides abgleichen lässt. Leere Felder werden weggelassen.
 function toBrevoFields(payload) {
   const fields = {
     EMAIL: (payload.email || "").trim(),
@@ -149,7 +101,7 @@ function toBrevoFields(payload) {
   Object.keys(fields).forEach((key) => {
     if (fields[key]) body.append(key, fields[key].slice(0, 200));
   });
-  // Von Brevo vorgegeben: leeres Feld gegen automatische Einträge, Sprache, Art der Einbettung.
+
   body.append("email_address_check", "");
   body.append("locale", "de");
   body.append("html_type", "simple");
@@ -182,24 +134,28 @@ function initWaitlistForm(form) {
     let hasError = false;
     let firstInvalid = null;
 
+    const du = getAudience() === "patient";
+
     form.querySelectorAll("[required]").forEach((field) => {
       const errorEl = form.querySelector(`[data-error-for="${field.name}"]`);
       let message = "";
 
       if (field.type === "checkbox") {
         if (!field.checked) {
-          message = field.dataset.errorMessage || "Bitte bestätigen Sie diesen Punkt.";
+          message = field.dataset.errorMessage || (du ? "Bitte bestätige diesen Punkt." : "Bitte bestätigen Sie diesen Punkt.");
         }
       } else if (field.tagName === "SELECT") {
         if (!field.value) {
-          message = field.dataset.errorMessage || "Bitte wählen Sie eine Option aus.";
+          message = field.dataset.errorMessage || (du ? "Bitte wähle eine Option aus." : "Bitte wählen Sie eine Option aus.");
         }
       } else if (field.type === "email") {
         if (!field.value.trim() || !isValidEmail(field.value.trim())) {
-          message = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+          message = du
+            ? "Bitte gib eine gültige E-Mail-Adresse ein."
+            : "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
         }
       } else if (!field.value.trim()) {
-        message = field.dataset.errorMessage || "Bitte füllen Sie dieses Feld aus.";
+        message = field.dataset.errorMessage || (du ? "Bitte füll dieses Feld aus." : "Bitte füllen Sie dieses Feld aus.");
       }
 
       setFieldError(field, errorEl, message);
@@ -225,7 +181,6 @@ function initWaitlistForm(form) {
 
     try {
       if (WAITLIST_ENDPOINT) {
-        // "isAjax=1": Brevo antwortet mit JSON statt mit einer eigenen Seite.
         const response = await fetch(WAITLIST_ENDPOINT + "?isAjax=1", {
           method: "POST",
           body: toBrevoFields(payload),
@@ -242,21 +197,18 @@ function initWaitlistForm(form) {
           throw failure;
         }
       } else {
-        // Siehe Hinweis bei WAITLIST_ENDPOINT: Es wird nichts gespeichert.
         console.warn("ADAM-Warteliste: WAITLIST_ENDPOINT ist leer, die Anmeldung wurde nicht gespeichert.");
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
       const submitData = { zielgruppe: submittedAudience };
       if (payload.variante) submitData.variante = payload.variante;
-      // Die beiden Auswahlfelder des Ärzte-Formulars gehen als Kategorie mit in die Messung.
-      // Name und Mailadresse werden nie an die Webanalyse gegeben.
+
       if (payload.beruf) submitData.beruf = payload.beruf;
       if (payload.problem) submitData.wunsch = payload.problem;
       track("waitlist_submit", submitData);
       countGoat("waitlist_submit", submitData);
 
-      // Die eingetragene Adresse in der Erfolgsmeldung nennen: so fällt ein Tippfehler auf.
       const leadEl = successEl.querySelector("[data-success-lead]");
       const sentTo = (payload.email || "").trim();
       if (leadEl && sentTo) {
@@ -269,8 +221,7 @@ function initWaitlistForm(form) {
       form.classList.add("is-submitted");
       successEl.classList.add("is-visible");
       successEl.setAttribute("role", "status");
-      // Die Karte wird durch das Ausblenden der Felder viel kürzer: Meldung in die Bildmitte
-      // holen, damit sie nicht unter der feststehenden Kopfleiste liegt.
+
       successEl.focus({ preventScroll: true });
       successEl.scrollIntoView({ block: "center" });
       form.reset();
@@ -278,20 +229,23 @@ function initWaitlistForm(form) {
     } catch (error) {
       submitBtn.disabled = false;
       submitBtn.textContent = originalLabel;
-      // Brevo hat die Mailadresse abgelehnt: am Feld melden statt allgemein.
+
       const emailField = form.querySelector('[name="email"]');
       if (error && error.emailRejected && emailField) {
         setFieldError(
           emailField,
           form.querySelector('[data-error-for="email"]'),
-          "Diese E-Mail-Adresse wurde nicht angenommen. Bitte prüfen Sie die Schreibweise."
+          du
+            ? "Diese E-Mail-Adresse wurde nicht angenommen. Bitte prüf die Schreibweise."
+            : "Diese E-Mail-Adresse wurde nicht angenommen. Bitte prüfen Sie die Schreibweise."
         );
         emailField.focus();
         return;
       }
       if (submitErrorEl) {
-        submitErrorEl.textContent =
-          "Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie uns eine Mail.";
+        submitErrorEl.textContent = du
+          ? "Das hat leider nicht geklappt. Bitte versuch es noch einmal oder schreib uns eine Mail."
+          : "Das hat leider nicht geklappt. Bitte versuchen Sie es noch einmal oder schreiben Sie uns eine Mail.";
       }
     }
   });
@@ -299,13 +253,8 @@ function initWaitlistForm(form) {
 
 document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
 
-// Zielgruppen-Umschalter (Patient:innen / Ärzt:innen & Fachpersonal)
-//
-// Steuert body[data-audience], damit CSS die passenden Inhalte je Abschnitt ein-/ausblendet.
-// Die Start-Zielgruppe setzt das Inline-Skript am Anfang von <body> aus ?zielgruppe= bzw. ?v=.
-
 const PAGE_TITLES = {
-  patient: "ADAM – Ihre Gesundheit einfach im Überblick",
+  patient: "ADAM – Deine Gesundheit einfach im Überblick",
   aerzte: "ADAM für Gesundheitsberufe – Patient:innen kommen vorbereitet zum Termin",
 };
 
@@ -313,9 +262,6 @@ function initAudienceTabs() {
   const tabs = document.querySelectorAll(".audience-tab");
   if (!tabs.length) return;
 
-  // Der Umschalter ist nur in der Patienten-Ansicht (?zielgruppe=patient) zu sehen. Er schreibt
-  // die Zielgruppe bewusst nicht in die Adresse: Wer hier nur umgeschaltet hat, sieht nach dem
-  // Neuladen wieder die Patienten-Ansicht mit Umschalter.
   function setAudience(audience) {
     document.body.setAttribute("data-audience", audience);
     document.title = PAGE_TITLES[audience] || PAGE_TITLES.patient;
@@ -333,8 +279,6 @@ function initAudienceTabs() {
 
 initAudienceTabs();
 
-// Mobile-Menü
-
 function initMobileMenu() {
   const toggle = document.getElementById("navToggle");
   const menu = document.getElementById("mobileMenu");
@@ -348,7 +292,7 @@ function initMobileMenu() {
     menu.classList.toggle("is-open", isOpen);
     toggle.setAttribute("aria-expanded", String(isOpen));
     iconPath.querySelector("path").setAttribute("d", isOpen ? closeIcon : openIcon);
-    // Verhindert Hintergrund-Scroll, solange das Menü als Overlay offen ist.
+
     document.documentElement.style.overflow = isOpen ? "hidden" : "";
   }
 
@@ -367,16 +311,12 @@ function initMobileMenu() {
     }
   });
 
-  // Beim Wechsel auf Desktop-Breite Overlay-Zustand zurücksetzen.
   window.matchMedia("(min-width: 860px)").addEventListener("change", (event) => {
     if (event.matches) setOpen(false);
   });
 }
 
 initMobileMenu();
-
-// Manueller Hell-/Dunkel-Modus-Umschalter. Die Seite startet immer dunkel; wer auf hell umstellt,
-// bekommt das per localStorage gemerkt (Schlüssel "adam-theme-v2", ältere Einträge zählen nicht mehr).
 
 function initThemeToggle() {
   const toggle = document.getElementById("themeToggle");
@@ -395,28 +335,26 @@ function initThemeToggle() {
     try {
       localStorage.setItem("adam-theme-v2", next);
     } catch (e) {
-      /* localStorage evtl. nicht verfügbar (z. B. privates Fenster) – Umschalten funktioniert trotzdem für die Sitzung */
     }
   });
 }
 
 initThemeToggle();
 
-// Formularfrage zum A/B-Test ("Welches Problem wiegt für Sie schwerer?"): Die Reihenfolge der beiden
-// Antworten wird je Seitenaufruf zufällig getauscht, damit nicht immer die obere bevorzugt wird.
-
 function initAnswerOrder() {
-  const select = document.getElementById("problem-aerzte");
-  if (!select) return;
-  const first = select.querySelector('option[value="effektivitaet"]');
-  const second = select.querySelector('option[value="effizienz"]');
-  if (first && second && Math.random() < 0.5) select.insertBefore(second, first);
+  [
+    ["problem-aerzte", "effektivitaet", "effizienz"],
+    ["nutzen-patient", "gehoer", "verstehen"],
+  ].forEach(([id, a, b]) => {
+    const select = document.getElementById(id);
+    if (!select) return;
+    const first = select.querySelector('option[value="' + a + '"]');
+    const second = select.querySelector('option[value="' + b + '"]');
+    if (first && second && Math.random() < 0.5) select.insertBefore(second, first);
+  });
 }
 
 initAnswerOrder();
-
-// Leistungen der Ärzte-Ansicht: die drei Kästchen beim Scrollen einmalig sanft einblenden.
-// Ohne JavaScript, ohne IntersectionObserver oder bei "Bewegung reduzieren" ist alles sofort sichtbar.
 
 function initReveal() {
   const items = document.querySelectorAll(".service");
@@ -438,18 +376,6 @@ function initReveal() {
 }
 
 initReveal();
-
-// Abschnitt "Wie Patient:innen ADAM anwenden": links der aktuelle Schritt (Anzeige "Schritt N von
-// 4", Titel, Text), daneben das Handy mit der passenden App-Ansicht. Es wechselt nichts von
-// selbst. Zwei Pfeile blättern zurück und weiter (auch mit den Pfeiltasten, solange einer der
-// beiden den Fokus hat): Anzeige, Titel, Text und App-Ansicht wechseln gemeinsam. Am ersten
-// Schritt ist "zurück", am letzten "weiter" außer Funktion (aria-disabled, der Knopf behält den
-// Fokus). Blättert jemand zu Schritt 2 oder 3, läuft dort einmal ein kurzer Ablauf im Handy
-// (Klasse "is-run" an der Ansicht, siehe styles.css): bei Schritt 2 ein Medikament erfassen und
-// einen Arztbrief als PDF hochladen, bei Schritt 3 der Tipp auf "Erklären lassen" und die
-// Erklärung. Bei "Bewegung reduzieren" steht sofort das Ergebnis. Ohne JavaScript bleiben alle
-// vier Texte sichtbar. Schmal (unter 900 px) ordnet styles.css dieselben Elemente anders an:
-// Titel, Handy, darunter die Pfeile mit der Anzeige, dann der Text.
 
 function initHowto() {
   const box = document.querySelector(".howto");
@@ -481,9 +407,7 @@ function initHowto() {
     }
     prev.setAttribute("aria-disabled", step === 1 ? "true" : "false");
     next.setAttribute("aria-disabled", step === panels.length ? "true" : "false");
-    // Abläufe im Handy: nur nach einem Blättern, nie beim Laden der Seite.
-    // Die verlassene Ansicht behält ihren Ablauf-Zustand, bis sie ganz ausgeblendet ist. Sonst
-    // würde sie beim Überblenden kurz ins Ruhebild springen (bei Schritt 2 sähe man den Arztbrief).
+
     const scene = scenes[step - 1];
     scenes.forEach((other, index) => {
       if (other === scene) return;
@@ -494,19 +418,19 @@ function initHowto() {
       clearTimeout(resetTimers[step - 1]);
       scene.classList.remove("is-run");
       if (byUser && !reduce) {
-        void scene.offsetWidth; // Ablauf bei jedem Erreichen des Schritts von vorn
+        void scene.offsetWidth;
         scene.classList.add("is-run");
       }
     }
-    // Ansage für Bildschirmleser: Anzeige, Titel und Text des neuen Schritts
+
     if (byUser && live) {
       const panel = panels[step - 1];
       const title = panel.querySelector(".howto__title");
       const desc = panel.querySelector(".howto__desc");
+      const sichtbar = (el) => (el ? (el.innerText || el.textContent || "").trim() : "");
       live.textContent =
         "Schritt " + step + " von " + panels.length + ": " +
-        (title ? title.textContent.trim() : "") + ". " +
-        (desc ? desc.textContent.trim() : "");
+        sichtbar(title) + ". " + sichtbar(desc);
     }
   }
 
@@ -529,8 +453,6 @@ function initHowto() {
 
   box.classList.add("is-interactive");
 
-  // Schmal: Das Handy-Bild füllt die Inhaltsbreite. Seine Teile sind für 260 px gezeichnet und
-  // werden entsprechend vergrößert (zoom); am Desktop gilt der feste Wert aus der Stilvorlage.
   const phone = box.querySelector(".demo-phone");
   function fitPhone() {
     if (!phone) return;
@@ -549,12 +471,6 @@ function initHowto() {
 
 initHowto();
 
-// Vergleich "Derselbe Termin, zwei Ausgangslagen": Der Regler stellt --p an der Karte von 0
-// (ohne ADAM) bis 1 (mit ADAM), die Darstellung dazu steht in styles.css. Ein Klick auf
-// "Ohne ADAM" oder "Mit ADAM" fährt dorthin. Kommt die Karte ins Bild, wird der Wechsel einmal
-// vorgeführt, solange niemand den Regler berührt hat (nicht bei "Bewegung reduzieren"). Am Handy
-// steht der Regler über der Karte; dort wartet die Vorführung, bis der Regler zu sehen ist.
-
 function initCompare() {
   const box = document.querySelector(".cmp");
   const range = box ? box.querySelector(".cmp__range") : null;
@@ -563,10 +479,6 @@ function initCompare() {
   const reduce =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Vorführung: kurz "Ohne ADAM" zeigen, zu "Mit ADAM" laufen, dort stehen bleiben und wieder
-  // zurück. Danach steht der Regler und gehört den Besucher:innen. Die Vorführung läuft einmal,
-  // wenn der Vergleich ins Bild kommt, und jedes Mal neu, wenn jemand im Menü auf "Vergleich"
-  // klickt. Wer den Regler selbst bedient, beendet sie sofort.
   const START_MS = 600;
   const FORWARD_MS = 2400;
   const HOLD_ON_MS = 3000;
@@ -642,8 +554,6 @@ function initCompare() {
     });
   });
 
-  // Klick auf "Vergleich" im Menü: von vorn. Die Seite scrollt erst zum Abschnitt, deshalb
-  // beginnt die Vorführung etwas später als beim Hineinscrollen.
   document.querySelectorAll('a[href$="#vergleich"]').forEach((link) => {
     link.addEventListener("click", () => play(inView ? START_MS : 1100));
   });
@@ -653,10 +563,6 @@ function initCompare() {
     const phone = window.matchMedia("(max-width: 599px)");
     let observer = null;
 
-    // Am Handy steht der Regler über der Karte. Die Vorführung beginnt dort, sobald der Regler
-    // ganz zu sehen ist und darunter Platz für den Anfang der Karte bleibt (er steht also in den
-    // oberen zwei Dritteln unter der Kopfleiste). So sieht man den Griff laufen und die Zeilen
-    // darunter umschlagen. Ab 600 px gilt wie bisher: sobald 60 % des Vergleichs im Bild sind.
     function watch() {
       if (observer) observer.disconnect();
       if (phone.matches && control) {
@@ -691,11 +597,6 @@ function initCompare() {
 }
 
 initCompare();
-
-// Die drei Schritte über dem Formular (Ärzte-Ansicht): Am Handy (unter 760 px, wo sie untereinander
-// stehen) zeigt jeder Kasten nur Nummer und Titel; ein Tipp klappt den Text auf und wieder zu. Der
-// Titel wird dafür zu einem Knopf (aria-expanded). Wird das Fenster breiter, steht wieder der
-// einfache Titel mit Text. Ohne JavaScript ist der Text immer sichtbar.
 
 function initStepToggles() {
   const list = document.querySelector(".steps");
@@ -742,11 +643,6 @@ function initStepToggles() {
 
 initStepToggles();
 
-// Ansicht beim Wechsel zwischen Startseite, Impressum und Datenschutz beibehalten: Wer über einen
-// Kampagnenlink (?v=a, ?v=b) oder über ?zielgruppe=patient kam, behält diese Angabe in den Links
-// zwischen den drei Seiten. So führt "Zurück zur Startseite" wieder in dieselbe Ansicht und, bei
-// Kampagnenlinks, in dieselbe Variante. Andere Angaben in der Adresse werden nicht weitergegeben.
-
 function initKeepView() {
   let query = "";
   try {
@@ -771,11 +667,6 @@ function initKeepView() {
 
 initKeepView();
 
-// Bewegung: Einblenden beim Scrollen, Parallax (Elemente mit data-parallax laufen gegen oder mit der
-// Scrollrichtung, je nach Vorzeichen) und gezeichnete Linien bei den Zierzeichnungen. Bei "Bewegung
-// reduzieren" bleibt alles still. Ohne diese Funktion ist die Seite vollständig sichtbar, weil die
-// Verstecken-Regeln erst an der Klasse js-motion hängen.
-
 function initMotion() {
   const reduce =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -783,17 +674,12 @@ function initMotion() {
 
   document.documentElement.classList.add("js-motion");
 
-  // Beim Scrollen schweben ein: die umrahmten Karten (Leistungen, Vertrauen, Schritte) und der
-  // Vergleichs-Block "Derselbe Termin, zwei Ausgangslagen". Ganze Abschnitte, der Ablauf mit dem
-  // Handy und das Formular bleiben ruhig stehen.
   const scrollTimeline = !!(window.CSS && CSS.supports && CSS.supports("animation-timeline: view()"));
-  // Das Handy im Ablauf übernimmt der Browser (CSS); ohne diese Funktion schwebt es per Skript ein.
+
   const revealSelector =
     ".service, .step, .trust-card, .problem .section-header, .problem .cmp" +
     (scrollTimeline ? "" : ", .howto__demo");
-  // Nur die Blöcke selbst bewegen sich, nicht der Abschnitt darum: Enthält ein Element Karten
-  // (Schritte, Vertrauen, Leistungen), wird es durch seine Kinder ersetzt, bis die Karten selbst
-  // an der Reihe sind. So steigt jede umrahmte Karte einzeln auf, mit kleinem Versatz.
+
   const cardSelector = ".step, .trust-card, .service";
   function expand(el) {
     if (!el.matches(cardSelector) && el.querySelector(cardSelector)) {
@@ -805,8 +691,6 @@ function initMotion() {
     new Set(Array.from(document.querySelectorAll(revealSelector)).flatMap(expand))
   );
 
-  // Beim Start wird nichts "ausgeblendet": Die Übergänge sind kurz abgeschaltet, damit nicht
-  // schon sichtbare Blöcke beim Laden verschwinden und neu einblenden.
   const root = document.documentElement;
   root.classList.add("no-reveal-transition");
   targets.forEach((el) => {
@@ -829,8 +713,7 @@ function initMotion() {
   targets.forEach((el) => io.observe(el));
   void root.offsetWidth;
   window.requestAnimationFrame(() => root.classList.remove("no-reveal-transition"));
-  // Die Herzschlag-Linie im Footer zeichnet sich bei jedem Hinscrollen neu: Sie wird zurückgesetzt,
-  // sobald sie aus dem Bild ist, und läuft wieder von links nach rechts, wenn sie erscheint.
+
   const pulseObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => entry.target.classList.toggle("is-in", entry.isIntersecting));
@@ -839,8 +722,6 @@ function initMotion() {
   );
   document.querySelectorAll(".footer-pulse").forEach((el) => pulseObserver.observe(el));
 
-  // Parallax: Die Lage jedes Abschnitts wird nur beim Laden und bei Größenänderung gemessen. Beim
-  // Scrollen wird dann nichts gelesen, nur je Bild ein transform gesetzt (flüssig, ohne Layout).
   const items = Array.from(document.querySelectorAll("[data-parallax]")).map((el) => ({
     el,
     speed: parseFloat(el.getAttribute("data-parallax")) || 0,
@@ -882,7 +763,6 @@ function initMotion() {
       });
     }
     if (photo && !cssScroll && y < vh * 1.5) {
-      // Am Handy bleibt das Foto stehen (sticky), nur am Desktop wandert es mit.
       photo.style.transform = "translate3d(0," + (wide ? (y * 0.12).toFixed(1) : 0) + "px,0) scale(" + photoScale + ")";
     }
     if (heroEl && !wide) {
@@ -892,7 +772,6 @@ function initMotion() {
   }
 
   function onScroll() {
-    // Am Desktop erledigt der Browser die Bewegung allein; das Skript ist dort nicht nötig.
     if (cssScroll && window.innerWidth >= 1100) return;
     if (ticking) return;
     ticking = true;
@@ -902,13 +781,12 @@ function initMotion() {
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", measure);
   window.addEventListener("load", measure);
-  setTimeout(measure, 1200); // nach Schriften und Bildern noch einmal
+  setTimeout(measure, 1200);
   measure();
 }
 
 initMotion();
 
-// Ladeanzeige: nach dem Laden (mindestens kurz sichtbar) blendet sie aus und wird entfernt.
 (function initLoader() {
   const root = document.documentElement;
   if (!root.classList.contains("js-loading")) return;
@@ -926,12 +804,6 @@ initMotion();
   if (document.readyState === "complete") finish();
   else window.addEventListener("load", finish);
 })();
-
-// Auswahlfelder im Formular: Statt der Liste des Browsers (deren Breite und Aussehen die Seite nicht
-// bestimmt) steht ein eigenes Auswahlfeld mit einer Liste genau in Feldbreite. Das echte <select>
-// bleibt im Formular (unsichtbar): Es liefert den Wert, wird beim Absenden geprüft und beim
-// Zurücksetzen mitgeführt. Bedienung wie bei einem Auswahlfeld: Klick, Pfeiltasten, Enter,
-// Leertaste, Escape, Tippen des ersten Buchstabens, Tab. Ohne JavaScript bleibt das normale Feld.
 
 function initCustomSelects() {
   document.querySelectorAll(".form-field select").forEach((select) => {
@@ -1034,7 +906,6 @@ function initCustomSelects() {
       if (!item) return;
       select.value = item.dataset.value;
       if (select.value && select.getAttribute("aria-invalid")) {
-        // Eine gewählte Antwort nimmt die Fehlermeldung zum Feld zurück.
         select.removeAttribute("aria-invalid");
         const error = select.closest(".form-field").querySelector(".form-error");
         if (error) error.textContent = "";
@@ -1092,7 +963,7 @@ function initCustomSelects() {
       }
     });
 
-    list.addEventListener("mousedown", (event) => event.preventDefault()); // Fokus bleibt am Feld
+    list.addEventListener("mousedown", (event) => event.preventDefault());
     list.addEventListener("click", (event) => {
       const item = event.target.closest(".cs__option");
       if (item) choose(items.indexOf(item));
@@ -1112,8 +983,6 @@ function initCustomSelects() {
       if (!wrap.contains(document.activeElement)) close();
     }, 0));
 
-    // Die Beschriftung und die Fehlerprüfung der Seite sprechen das echte Feld an: Fokus und
-    // Fehlerzustand werden an das sichtbare Feld weitergegeben.
     select.addEventListener("focus", () => button.focus());
     new MutationObserver(sync).observe(select, { attributes: true, attributeFilter: ["aria-invalid"] });
     const form = select.closest("form");
@@ -1125,13 +994,6 @@ function initCustomSelects() {
 
 initCustomSelects();
 
-// Weitere Messpunkte: Scrolltiefe, Beginn des Formulars und gesehene Abschnitte.
-//
-// Gesendet wird nur, wenn im Cookie-Banner "Statistik" erlaubt wurde (assets/consent.js, geprüft
-// über window.adamConsent.get()). Wird die Zustimmung erst später erteilt, gehen nur noch die
-// danach erreichten Marken mit. Die Variante hängt an diesen Ereignissen über die globale
-// Einstellung in assets/consent.js, sie steht deshalb nicht noch einmal in den Angaben.
-
 function trackingAllowed() {
   try {
     const state = window.adamConsent && window.adamConsent.get();
@@ -1140,9 +1002,6 @@ function trackingAllowed() {
     return false;
   }
 }
-
-// Scrolltiefe: 25, 50, 75 und 90 Prozent, je einmal pro Seitenaufruf. Gezählt wird, wie weit der
-// untere Fensterrand gekommen ist. Auf Seiten ohne Bildlauf wird nichts gesendet.
 
 function initScrollDepth() {
   const marks = [25, 50, 75, 90];
@@ -1175,10 +1034,6 @@ function initScrollDepth() {
 
 initScrollDepth();
 
-// Beginn des Formulars: einmal pro Seitenaufruf, sobald jemand zum ersten Mal in ein Feld eines
-// Anmeldeformulars tippt oder es anwählt. GoatCounter zählt das immer (cookiefrei), der Tag
-// Manager nur mit Zustimmung zu "Statistik".
-
 function initFormStart() {
   const forms = document.querySelectorAll(".waitlist-form");
   if (!forms.length) return;
@@ -1202,10 +1057,6 @@ function initFormStart() {
 }
 
 initFormStart();
-
-// Gesehene Abschnitte: einmal je Abschnitt, sobald er zur Hälfte sichtbar ist. Abschnitte, die
-// höher sind als das Fenster, können nie zur Hälfte sichtbar sein; bei ihnen zählt, dass sie das
-// halbe Fenster füllen.
 
 function initSectionView() {
   if (!("IntersectionObserver" in window)) return;
