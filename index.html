@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ADAM – Deine Gesundheit einfach im Überblick</title>
-  <meta name="description" content="ADAM bündelt Medikamente, Symptome, Diagnosen und Arztbriefe übersichtlich an einem Ort, nutzbar für Patient:innen und medizinisches Fachpersonal. Jetzt unverbindlich eintragen." />
+  <title>ADAM – Beschwerden festhalten, Arztbriefe verstehen</title>
+  <meta name="description" content="Halte fest, wie sich deine Beschwerden entwickeln, versteh die Begriffe in deinen Befunden und geh vorbereitet in den nächsten Termin. Kostenlos auf die Warteliste." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ADAM – Beschwerden festhalten, Arztbriefe verstehen" />
+  <meta property="og:description" content="Halte fest, wie sich deine Beschwerden entwickeln, versteh die Begriffe in deinen Befunden und geh vorbereitet in den nächsten Termin. Kostenlos auf die Warteliste." />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <script>
 
@@ -66,7 +69,7 @@
       <nav aria-label="Hauptnavigation">
 
         <ul class="nav-links">
-          <li><a href="#vergleich">Vergleich</a></li>
+          <li data-hide-for="patient"><a href="#vergleich">Vergleich</a></li>
           <li>
             <a href="#leistungen">
 Leistungen
@@ -98,7 +101,7 @@ Leistungen
     <div class="mobile-menu" id="mobileMenu">
       <div class="container">
         <ul>
-          <li><a href="#vergleich">Vergleich</a></li>
+          <li data-hide-for="patient"><a href="#vergleich">Vergleich</a></li>
           <li>
             <a href="#leistungen">
 Leistungen
@@ -137,7 +140,7 @@ Leistungen
       <div class="container hero__inner">
         <div>
           <div data-audience-content="patient">
-            <p class="kicker">Für alle, die bei ihrer Gesundheit mitreden wollen</p>
+            <p class="kicker">ADAM · Die Gesundheits-App für dein Arztgespräch</p>
           </div>
           <div data-audience-content="aerzte">
             <p class="kicker">Für Vorreiter:innen in Medizin, Pflege und Therapie</p>
@@ -145,8 +148,8 @@ Leistungen
 
           <h1 id="hero-heading">
             <span data-audience-content="patient">
-              <span data-variant-content="a">Deine Beschwerden sind echt. Jetzt müssen sie nur noch bei deiner Ärzt:in ankommen.</span>
-              <span data-variant-content="b">Dein Arztbrief erklärt dir alles. Nur nicht so, dass du es verstehst.</span>
+              <span data-variant-content="a">Seit Monaten Beschwerden. Und beim Arzt heißt es: alles unauffällig?</span>
+              <span data-variant-content="b">Eine schwere Diagnose. Und vom Arztgespräch bleibt kaum etwas hängen?</span>
             </span>
             <span data-audience-content="aerzte">
               <span data-variant-content="a">Sie wollten zuhören. Stattdessen suchen Sie.</span>
@@ -157,13 +160,18 @@ Leistungen
           <div data-audience-content="patient">
 
             <div class="hero__story" data-variant-content="a">
-              <p>Seit wann, wie oft, wie stark? Du antwortest aus dem Gedächtnis. Und zu Hause fällt dir ein, was wirklich wichtig gewesen wäre.</p>
-              <p>Was bleibt, ist das Gefühl, nicht ernst genommen worden zu sein.</p>
+              <p class="hero__relief">Du verdienst es, mit deinen Beschwerden gehört zu werden.</p>
+              <p>ADAM hält den Verlauf deiner Beschwerden schwarz auf weiß fest. So gehst du sicher in den Termin – und zeigst, was war, statt dich zu rechtfertigen.</p>
             </div>
             <div class="hero__story" data-variant-content="b">
-              <p>Du willst wissen, was deine Diagnose konkret für dich bedeutet. Doch online klingt plötzlich alles komplizierter, als es sein sollte.</p>
-              <p>Was bleibt, sind Fragen – und niemand, der sie dir in Ruhe beantwortet.</p>
+              <p class="hero__relief">Das liegt nicht an dir: Unter Schock schaltet dein Kopf auf Notbetrieb und nimmt kaum Neues auf.</p>
+              <p>ADAM erklärt deinen Arztbrief in klarer Sprache – in Ruhe, wenn du wieder klar denken kannst. So gehst du mit Fragen statt mit Angst in den nächsten Termin.</p>
             </div>
+
+            <div class="hero__actions hero__actions--tight">
+              <a class="btn btn-primary btn-lg" href="#warteliste" data-track="hero">Kostenlos auf die Warteliste</a>
+            </div>
+            <p class="hero__trust-note">Studienprojekt der FH Vorarlberg · keine Installation · Daten nur in der EU/EWR</p>
           </div>
 
           <div data-audience-content="aerzte">
@@ -181,19 +189,27 @@ Leistungen
 
       </div>
 
-      <div class="hero__band" data-audience-content="patient">
-        <div class="container hero__band-inner">
+      <div class="hero__band proof" data-audience-content="patient">
+        <div class="container">
           <div data-variant-content="a">
-            <p class="hero__band-turn">Deine Beschwerden. Deine Worte.</p>
-            <div class="hero__band-answer">
-              <p class="hero__answer">ADAM hilft dir, sie <em class="hero__mark">klar auszudrücken</em>. Denn wer seinen Körper kennt, wird auch gehört.</p>
-            </div>
+            <p class="proof__title">Du bist damit nicht allein.</p>
+            <ul class="proof__stats">
+              <li class="proof__stat"><span class="proof__num">44&nbsp;%</span><span class="proof__text">der Frauen in Österreich fühlen sich mit Symptomen nicht ernst genommen (Männer: 23&nbsp;%)</span></li>
+              <li class="proof__stat"><span class="proof__num">11&nbsp;Sek.</span><span class="proof__text">dauert es im Schnitt bis zur ersten Unterbrechung im Arzttermin (US-Studie)</span></li>
+              <li class="proof__stat"><span class="proof__num">39&nbsp;%</span><span class="proof__text">der Frauen in Deutschland meiden Arztbesuche aus Angst, nicht ernst genommen zu werden (Männer: 23&nbsp;%)</span></li>
+            </ul>
+            <p class="proof__claim">Werte zeigen einen Moment. <em class="hero__mark">ADAM zeigt den Verlauf.</em></p>
+            <p class="proof__sources">Quellen: Austrian Health Report 2026 · Singh Ospina u.&nbsp;a. 2018 · YouGov für Doctolib 2025</p>
           </div>
           <div data-variant-content="b">
-            <p class="hero__band-turn">Deine Diagnose sollte kein Rätsel sein.</p>
-            <div class="hero__band-answer">
-              <p class="hero__answer">Mit ADAM wird aus dem Arztbrief eine Erklärung, die du <em class="hero__mark">verstehst</em>. In deiner Sprache.</p>
-            </div>
+            <p class="proof__title">So geht es den meisten.</p>
+            <ul class="proof__stats">
+              <li class="proof__stat"><span class="proof__num">40–80&nbsp;%</span><span class="proof__text">von dem, was Ärzt:innen erklären, sind sofort wieder vergessen</span></li>
+              <li class="proof__stat"><span class="proof__num">Fast 50&nbsp;%</span><span class="proof__text">von dem, was hängen bleibt, ist falsch erinnert</span></li>
+              <li class="proof__stat"><span class="proof__num">Über 50&nbsp;%</span><span class="proof__text">der Menschen in Deutschland finden die Begriffe von Ärzt:innen schwer verständlich</span></li>
+            </ul>
+            <p class="proof__claim">Der Arztbrief erklärt die Diagnose. <em class="hero__mark">ADAM erklärt den Arztbrief.</em></p>
+            <p class="proof__sources">Quellen: Kessels 2003 · Health Literacy Survey Germany (HLS-GER 2)</p>
           </div>
         </div>
       </div>
@@ -215,7 +231,8 @@ Leistungen
       </div>
     </section>
 
-    <section class="has-deco problem" id="vergleich" aria-labelledby="problem-heading">
+    <!-- Vergleich: für Patient:innen ausgeblendet (zu erklärungsbedürftig), Ärzt:innen behalten ihn -->
+    <section class="has-deco problem" id="vergleich" aria-labelledby="problem-heading" data-hide-for="patient">
       <div class="deco" aria-hidden="true">
         <div class="deco__item" data-parallax="-0.2" data-side="l" style="--speed: -0.2; --size: 1.3; top: 30%; --rot: 8deg"><svg viewBox="0 0 64 64"><rect x="10" y="14" width="44" height="40" rx="5"/><path d="M10 26h44M22 8v10M42 8v10M22 36h6M36 36h6M22 45h6"/></svg></div>
       </div>
@@ -224,7 +241,7 @@ Leistungen
           <span class="eyebrow">Vergleich</span>
           <h2 class="section-title" id="problem-heading">Derselbe Termin, zwei Ausgangslagen</h2>
           <p class="section-intro">
-            <span data-audience-content="patient">Schieb den Regler: was du heute zum Termin mitbringst, und was mit ADAM.</span>
+            <span data-audience-content="patient">Schieb den Regler: was du heute zum Termin mitbringst – und was mit ADAM.</span>
             <span data-audience-content="aerzte">Schieben Sie den Regler: was Ihre Patient:innen zum Termin mitbringen, ohne und mit ADAM.</span>
           </p>
         </div>
@@ -245,16 +262,16 @@ Leistungen
                 <span class="cmp__icon" aria-hidden="true"><span class="cmp__q">?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
                 <span class="cmp__label">Vorbefund</span>
                 <span class="cmp__values">
-                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span>„Der Brief liegt noch zu Hause“</span>
-                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span>Arztbrief hochgeladen</span>
+                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span><span class="is-inline" data-audience-content="patient">„Im Brief stand irgendwas mit ‚idiopathisch‘.“</span><span class="is-inline" data-audience-content="aerzte">„Der Brief liegt noch zu Hause“</span></span>
+                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span><span class="is-inline" data-audience-content="patient">„idiopathisch“ heißt: ohne bekannte Ursache</span><span class="is-inline" data-audience-content="aerzte">Arztbrief hochgeladen</span></span>
                 </span>
               </li>
               <li class="cmp__row cmp__row--3">
                 <span class="cmp__icon" aria-hidden="true"><span class="cmp__q">?</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
                 <span class="cmp__label">Symptome</span>
                 <span class="cmp__values">
-                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span>„Kopfweh, seit wann genau, weiß ich nicht“</span>
-                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span>Kopfschmerzen, leicht, seit gestern</span>
+                  <span class="cmp__before"><span class="cmp__tag">Ohne ADAM: </span><span class="is-inline" data-audience-content="patient">„Kopfweh … seit ein paar Wochen? Oder schon Monaten?“</span><span class="is-inline" data-audience-content="aerzte">„Kopfweh, seit wann genau, weiß ich nicht“</span></span>
+                  <span class="cmp__after"><span class="cmp__tag">Mit ADAM: </span><span class="is-inline" data-audience-content="patient">Kopfschmerzen seit 6 Wochen, 3× pro Woche, Stärke 6/10</span><span class="is-inline" data-audience-content="aerzte">Kopfschmerzen, leicht, seit gestern</span></span>
                 </span>
               </li>
               <li class="cmp__row cmp__row--4">
@@ -286,39 +303,40 @@ Leistungen
         <div class="overview" data-audience-content="patient">
           <div class="overview__header">
             <span class="eyebrow">Leistungen</span>
-            <h2 class="section-title">Drei Gründe für ADAM</h2>
-            <p class="section-intro">ADAM ist deine Gesundheits-App. Sie bündelt Medikamente, Symptome und Befunde, erklärt dir Diagnosen verständlich und macht daraus eine Übersicht für deinen nächsten Termin.</p>
+            <h2 class="section-title">Was sich mit ADAM ändert</h2>
+            <p class="section-intro">Mit ADAM hältst du fest, wie sich deine Beschwerden entwickeln, und verstehst die medizinischen Begriffe in deinen Befunden. So zeigst du im nächsten Arztgespräch, was seit dem letzten Termin passiert ist, und fragst gezielt nach.</p>
           </div>
 
           <ul class="services">
             <li class="service">
               <h3 class="kicker"><span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg></span>Für deine Beschwerden</h3>
-              <p class="service__claim">Alles an einem Ort.</p>
+              <p class="service__claim">Zeigen statt rechtfertigen.</p>
               <ul class="service__list">
-                <li>Medikamente, Symptome und Vorerkrankungen</li>
+                <li>Symptome mit Stärke und Dauer, Medikamente, Vorerkrankungen</li>
                 <li>Arztbriefe als Foto oder PDF</li>
                 <li>Jederzeit ergänzbar, auch zwischen zwei Terminen</li>
               </ul>
             </li>
             <li class="service">
               <h3 class="kicker"><span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 10h8M8 13h5"/></svg></span>Für dein Gespräch</h3>
-              <p class="service__claim">Vorbereitet in den Termin.</p>
+              <p class="service__claim">Sicher statt nervös.</p>
               <ul class="service__list">
                 <li>Digitaler Checkup auf einer Seite</li>
                 <li>Geordnet nach Diagnosen, Medikamenten und Symptomen</li>
-                <li>Schon fertig, bevor du das Wartezimmer betrittst</li>
+                <li>Fertig, bevor du das Wartezimmer betrittst</li>
               </ul>
             </li>
             <li class="service">
               <h3 class="kicker"><span class="service__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 17v-5M12 8h.01"/></svg></span>Für dein Verständnis</h3>
-              <p class="service__claim">Diagnosen in klarer Sprache.</p>
+              <p class="service__claim">Verstehen statt nicken.</p>
               <ul class="service__list">
-                <li>Erklärungen im Sprachniveau, das du selbst wählst</li>
+                <li>Erklärungen in dem Sprachniveau, das du wählst</li>
                 <li>Hinweise auf mögliche Wechselwirkungen</li>
                 <li>Damit du gezielt nachfragen kannst</li>
               </ul>
             </li>
           </ul>
+          <p class="services__proof">Wer vorbereitet ins Gespräch geht, stellt nachweislich mehr Fragen (Cochrane-Review, 33 Studien).</p>
 
         </div>
 
@@ -380,7 +398,7 @@ Leistungen
                 <span data-audience-content="aerzte">Wie Patient:innen ADAM anwenden</span>
               </h2>
               <p class="howto__sub">
-                <span data-audience-content="patient">Vier Schritte zu einem besseren Termin</span>
+                <span data-audience-content="patient">In vier Schritten vorbereitet in den Termin</span>
                 <span data-audience-content="aerzte">Vier Schritte zu besser vorbereiteten Terminen</span>
               </p>
             </div>
@@ -391,19 +409,19 @@ Leistungen
             <div class="howto__panels">
               <div class="howto__panel is-active">
                 <h3 class="howto__title">Sprachniveau wählen</h3>
-                <p class="howto__desc"><span data-audience-content="patient">Du wählst, wie einfach oder fachlich ADAM erklärt. So verstehst du, was in deinen Unterlagen steht.</span><span data-audience-content="aerzte">Ihre Patient:innen wählen, wie einfach oder fachlich ADAM erklärt. Verstandene Erklärungen können Ihnen im Termin das Erklären von Grundlagen ersparen.</span></p>
+                <p class="howto__desc"><span data-audience-content="patient">Du entscheidest, wie einfach oder fachlich ADAM dir alles erklärt.</span><span data-audience-content="aerzte">Ihre Patient:innen wählen, wie einfach oder fachlich ADAM erklärt. Verstandene Erklärungen können Ihnen im Termin das Erklären von Grundlagen ersparen.</span></p>
               </div>
               <div class="howto__panel">
-                <h3 class="howto__title">Angaben erfassen und Arztbrief hochladen</h3>
-                <p class="howto__desc"><span data-audience-content="patient">Du erfasst Symptome und Medikamente und lädst Arztbriefe als Bild oder PDF hoch. Dann liegt alles gebündelt an einem Ort, statt verstreut in Zetteln und Erinnerungen.</span><span data-audience-content="aerzte">Ihre Patient:innen erfassen Symptome und Medikamente und laden Arztbriefe als Bild oder PDF hoch. So können Ihnen die Angaben zum Termin gebündelt vorliegen, statt dass Sie sie einzeln erfragen.</span></p>
+                <h3 class="howto__title"><span class="is-inline" data-audience-content="patient">Beschwerden erfassen, Arztbrief hochladen</span><span class="is-inline" data-audience-content="aerzte">Angaben erfassen und Arztbrief hochladen</span></h3>
+                <p class="howto__desc"><span data-audience-content="patient">Symptome, Medikamente und Arztbriefe als Bild oder PDF: alles an einem Ort statt auf Zetteln und im Kopf.</span><span data-audience-content="aerzte">Ihre Patient:innen erfassen Symptome und Medikamente und laden Arztbriefe als Bild oder PDF hoch. So können Ihnen die Angaben zum Termin gebündelt vorliegen, statt dass Sie sie einzeln erfragen.</span></p>
               </div>
               <div class="howto__panel">
                 <h3 class="howto__title">Diagnosen erklären lassen</h3>
-                <p class="howto__desc"><span data-audience-content="patient">ADAM erklärt dir Diagnosen aus dem Arztbrief im gewählten Sprachniveau. Damit du im Termin gezielt nachfragen kannst.</span><span data-audience-content="aerzte">ADAM erklärt Diagnosen aus dem Arztbrief im gewählten Sprachniveau. Das kann zu klareren Angaben und gezielteren Fragen in Ihrem Gespräch führen.</span></p>
+                <p class="howto__desc"><span data-audience-content="patient">ADAM erklärt die Diagnosen aus deinem Arztbrief in deinem Sprachniveau.</span><span data-audience-content="aerzte">ADAM erklärt Diagnosen aus dem Arztbrief im gewählten Sprachniveau. Das kann zu klareren Angaben und gezielteren Fragen in Ihrem Gespräch führen.</span></p>
               </div>
               <div class="howto__panel">
-                <h3 class="howto__title">Checkup zusammenfassen</h3>
-                <p class="howto__desc"><span data-audience-content="patient">Der digitale Checkup führt Diagnosen, Medikamente und Symptome auf einer Seite zusammen. Die nimmst du mit zum Termin.</span><span data-audience-content="aerzte">Der digitale Checkup führt Diagnosen, Medikamente und Symptome auf einer Seite zusammen. Die Übersicht gibt Ihnen schnell Orientierung und kann Nachfragen im Termin ersparen.</span></p>
+                <h3 class="howto__title"><span class="is-inline" data-audience-content="patient">Checkup mitnehmen</span><span class="is-inline" data-audience-content="aerzte">Checkup zusammenfassen</span></h3>
+                <p class="howto__desc"><span data-audience-content="patient">Diagnosen, Medikamente und Symptome auf einer Seite. Die zeigst du im Termin.</span><span data-audience-content="aerzte">Der digitale Checkup führt Diagnosen, Medikamente und Symptome auf einer Seite zusammen. Die Übersicht gibt Ihnen schnell Orientierung und kann Nachfragen im Termin ersparen.</span></p>
               </div>
             </div>
             </div>
@@ -423,12 +441,12 @@ Leistungen
                 <div class="demo-scene demo-scene--1">
                   <div class="demo-head">
                     <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Kommunikationstool</span>
-                    <span class="demo-head__sub">Stellen Sie Ihr persönliches Level ein</span>
+                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Stell dein persönliches Level ein</span><span class="is-inline" data-audience-content="aerzte">Stellen Sie Ihr persönliches Level ein</span></span>
                   </div>
                   <div class="demo-body">
                     <div class="demo-card">
-                      <p class="demo-question">Wie sicher fühlen Sie sich mit medizinischen Fachbegriffen?</p>
-                      <p class="demo-radio"><i><b></b></i><span>Bitte erklären Sie es mir wie einem Laien.</span></p>
+                      <p class="demo-question"><span class="is-inline" data-audience-content="patient">Wie sicher fühlst du dich mit medizinischen Fachbegriffen?</span><span class="is-inline" data-audience-content="aerzte">Wie sicher fühlen Sie sich mit medizinischen Fachbegriffen?</span></p>
+                      <p class="demo-radio"><i><b></b></i><span><span class="is-inline" data-audience-content="patient">Erklär es mir bitte wie einem Laien.</span><span class="is-inline" data-audience-content="aerzte">Bitte erklären Sie es mir wie einem Laien.</span></span></p>
                       <p class="demo-radio"><i></i><span>Ich kenne die Grundlagen ganz gut.</span></p>
                       <p class="demo-radio"><i></i><span>Ich habe beruflich mit Medizin zu tun.</span></p>
                     </div>
@@ -445,7 +463,7 @@ Leistungen
                   <div class="demo-sub demo-sub--med">
                   <div class="demo-head">
                     <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Aktuelle Medikamente</span>
-                    <span class="demo-head__sub">Verwalten Sie Ihre medizinischen Daten</span>
+                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Verwalte deine medizinischen Daten</span><span class="is-inline" data-audience-content="aerzte">Verwalten Sie Ihre medizinischen Daten</span></span>
                   </div>
                   <div class="demo-body">
                     <div class="demo-btn">+ Eintrag hinzufügen<em class="demo-tap" style="--tap: 0.15s"></em></div>
@@ -473,7 +491,7 @@ Leistungen
                   <div class="demo-sub demo-sub--doc">
                   <div class="demo-head">
                     <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
-                    <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
+                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Deine eingetragenen Diagnosen</span><span class="is-inline" data-audience-content="aerzte">Ihre eingetragenen Diagnosen</span></span>
                   </div>
                   <div class="demo-body">
                     <div class="demo-btn">+ Manuell hinzufügen</div>
@@ -509,7 +527,7 @@ Leistungen
                 <div class="demo-scene demo-scene--3">
                   <div class="demo-head">
                     <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Diagnosen</span>
-                    <span class="demo-head__sub">Ihre eingetragenen Diagnosen</span>
+                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Deine eingetragenen Diagnosen</span><span class="is-inline" data-audience-content="aerzte">Ihre eingetragenen Diagnosen</span></span>
                   </div>
                   <div class="demo-body">
                     <div class="demo-card">
@@ -531,7 +549,7 @@ Leistungen
                 <div class="demo-scene demo-scene--4">
                   <div class="demo-head">
                     <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Digitaler Checkup</span>
-                    <span class="demo-head__sub">Zusammenfassung Ihrer Gesundheitsdaten</span>
+                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Zusammenfassung deiner Gesundheitsdaten</span><span class="is-inline" data-audience-content="aerzte">Zusammenfassung Ihrer Gesundheitsdaten</span></span>
                   </div>
                   <div class="demo-body">
                     <div class="demo-dates">
@@ -549,7 +567,7 @@ Leistungen
                     </div>
                     <div class="demo-group">
                       <p class="demo-section">Symptome (1)</p>
-                      <p class="demo-mini"><strong>Kopfschmerzen</strong><small>Intensität 4/10 · 2 Tage</small></p>
+                      <p class="demo-mini"><strong>Kopfschmerzen</strong><small><span class="is-inline" data-audience-content="patient">Stärke 6/10 · seit 6 Wochen</span><span class="is-inline" data-audience-content="aerzte">Intensität 4/10 · 2 Tage</span></small></p>
                     </div>
                   </div>
                 </div>
@@ -575,7 +593,7 @@ Leistungen
           </h2>
 
           <p class="section-intro" data-audience-content="patient">
-            Gerade bei Gesundheitsdaten ist Vertrauen entscheidend. Deshalb legen wir offen, wie ADAM
+            Bei Gesundheitsdaten zählt Vertrauen. Deshalb sagen wir offen, wie ADAM
             mit deinen Daten umgeht.
           </p>
           <p class="section-intro" data-audience-content="aerzte">
@@ -597,7 +615,7 @@ Leistungen
               </h3>
               <p data-audience-content="patient">
                 ADAM folgt den Grundsätzen der DSGVO. Deine Daten werden ausschließlich
-                innerhalb der EU/EWR verarbeitet.
+                in der EU/EWR verarbeitet.
               </p>
               <p data-audience-content="aerzte">
                 ADAM folgt den Grundsätzen der DSGVO. Die Daten werden ausschließlich
@@ -627,8 +645,8 @@ Leistungen
               <h3>Unterstützung, kein Ersatz</h3>
               <p>
                 <span data-audience-content="patient">ADAM ist kein Medizinprodukt und ersetzt keine
-                ärztliche Untersuchung, Diagnose oder Beratung. Wende dich bei gesundheitlichen
-                Fragen bitte an eine Ärzt:in.</span>
+                ärztliche Untersuchung, Diagnose oder Beratung. Bei gesundheitlichen Fragen
+                wende dich bitte an eine Ärzt:in.</span>
                 <span data-audience-content="aerzte">ADAM ist kein Medizinprodukt und stellt keine
                 Diagnosen. Die fachliche Beurteilung bleibt bei Ihnen.</span>
               </p>
@@ -656,6 +674,37 @@ Leistungen
       </div>
     </section>
 
+    <section class="faq" id="fragen" data-audience-content="patient" aria-labelledby="faq-heading">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">Fragen</span>
+          <h2 class="section-title" id="faq-heading">Häufige Fragen</h2>
+        </div>
+        <div class="faq__list">
+          <details class="faq__item">
+            <summary>Was kostet die Anmeldung?</summary>
+            <p>Nichts. Die Warteliste ist kostenlos und unverbindlich.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Muss ich etwas installieren?</summary>
+            <p>Nein, du brauchst keine Installation.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Wann geht es los?</summary>
+            <p>Wir melden uns per E-Mail, sobald ADAM startet. Vorher bekommst du keine Post von uns.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Ersetzt ADAM meine Ärzt:in?</summary>
+            <p>Nein. ADAM ist kein Medizinprodukt und stellt keine Diagnosen. Es hilft dir, dich auf das Gespräch vorzubereiten.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Kann ich ADAM für Angehörige nutzen?</summary>
+            <p>Bei der Anmeldung kannst du angeben, ob du ADAM für dich, für Angehörige oder für beides nutzen möchtest.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <section class="has-deco waitlist" id="warteliste" aria-label="Anmeldung">
       <div class="deco" aria-hidden="true">
         <div class="deco__item" data-parallax="0.2" data-side="r" style="--speed: 0.2; --size: 1.2; top: 18%; --rot: 8deg"><svg viewBox="0 0 64 64"><rect x="8" y="14" width="48" height="36" rx="5"/><path d="m8 18 24 18 24-18"/></svg></div>
@@ -663,9 +712,9 @@ Leistungen
       <div class="container">
         <div data-audience-content="patient">
           <span class="eyebrow">Warteliste</span>
-          <h2 class="section-title" id="warteliste-heading-patient">Sei von Anfang an dabei</h2>
+          <h2 class="section-title" id="warteliste-heading-patient">Vorbereitet in deinen nächsten Termin</h2>
           <p class="section-intro">
-            Trag dich unverbindlich ein. Du erfährst als Erste:r, sobald ADAM verfügbar ist.
+            Trag dich kostenlos und unverbindlich ein. Du erfährst als Erste:r, wenn ADAM startet.
           </p>
 
           <ol class="steps">
@@ -677,12 +726,12 @@ Leistungen
             <li class="step">
               <span class="step__number" aria-hidden="true">2</span>
               <h3>Bescheid bekommen</h3>
-              <p>Wir melden uns bei dir, sobald ADAM startet. Vorher bekommst du keine Post von uns.</p>
+              <p>Wir melden uns, sobald ADAM startet. Vorher bekommst du keine Post von uns.</p>
             </li>
             <li class="step">
               <span class="step__number" aria-hidden="true">3</span>
               <h3>Loslegen</h3>
-              <p>Du trägst deine Angaben zu Hause ein und nimmst die Übersicht zum nächsten Termin mit.</p>
+              <p>Du trägst deine Beschwerden zu Hause ein und nimmst die Übersicht zum nächsten Termin mit.</p>
             </li>
           </ol>
 
@@ -762,11 +811,11 @@ Leistungen
 
               <div class="form-field">
                 <label for="rolle-patient">Ich nutze ADAM …</label>
-                <select id="rolle-patient" name="beruf" required data-error-message="Bitte wähle aus, was auf dich zutrifft.">
+                <select id="rolle-patient" name="beruf" required data-error-message="Bitte wähle aus, wie du ADAM nutzen möchtest.">
                   <option value="" disabled selected>Bitte auswählen</option>
-                  <option value="betroffene">selbst</option>
-                  <option value="angehoerige">für Angehörige</option>
-                  <option value="beides">selbst und für Angehörige</option>
+                  <option value="selbst">Selbst</option>
+                  <option value="angehoerige">Für Angehörige</option>
+                  <option value="beides">Selbst und für Angehörige</option>
                 </select>
                 <p class="form-error" data-error-for="beruf" aria-live="polite"></p>
               </div>
@@ -789,20 +838,25 @@ Leistungen
                 <p class="form-error" data-error-for="consent" aria-live="polite"></p>
               </div>
               <p class="form-error" data-submit-error aria-live="polite"></p>
-              <button class="btn btn-primary" type="submit">Jetzt eintragen</button>
-              <p class="form-fineprint">Kostenlos und unverbindlich. Du erhältst eine Bestätigung per E-Mail.</p>
+              <button class="btn btn-primary" type="submit">Jetzt kostenlos eintragen</button>
+              <p class="form-fineprint">Du erhältst eine Bestätigung per E-Mail.</p>
             </div>
 
             <div class="form-success" tabindex="-1">
               <span class="form-success__icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>
               </span>
-              <p class="form-success__title">Vielen Dank für deine Anmeldung</p>
+              <p class="form-success__title">Danke, du bist dabei!</p>
               <p class="form-success__text">
                 <span data-success-lead>Wir haben dir eine E-Mail geschickt.</span>
                 Darin steht, wie es weitergeht.
               </p>
               <p class="form-success__hint">Keine E-Mail erhalten? <span>Sieh bitte im Spam-Ordner nach.</span></p>
+              <!-- Teilen-Hinweis: erst nach der Testwoche einschalten (SHARE_ENABLED in assets/script.js) -->
+              <div class="form-success__share" data-share hidden>
+                <p>Kennst du jemanden, dem ADAM helfen könnte?</p>
+                <a class="btn btn-ghost" data-share-link href="#" target="_blank" rel="noopener">Per WhatsApp teilen</a>
+              </div>
             </div>
           </form>
 
@@ -891,7 +945,8 @@ Leistungen
             <img src="assets/logo.svg" alt="ADAM Logo" width="26" height="26" />
             <span>ADAM</span>
           </div>
-          <p>Ihr persönlicher Begleiter für Medikamente, Symptome und Arztbriefe: einfach, sicher, verständlich. Für Patient:innen und medizinisches Fachpersonal.</p>
+          <p data-audience-content="patient">Dein persönlicher Begleiter für Medikamente, Symptome und Arztbriefe: einfach, sicher, verständlich. Für Patient:innen und medizinisches Fachpersonal.</p>
+          <p data-audience-content="aerzte">Ihr persönlicher Begleiter für Medikamente, Symptome und Arztbriefe: einfach, sicher, verständlich. Für Patient:innen und medizinisches Fachpersonal.</p>
         </div>
 
         <nav class="footer-cols" aria-label="Fußzeile">
@@ -915,10 +970,13 @@ Leistungen
       <div class="footer-bottom">
         <div class="footer-disclaimer">
         <strong>Wichtiger Hinweis:</strong> ADAM befindet sich in Entwicklung und ist kein
-        zugelassenes Medizinprodukt. Die Inhalte dienen ausschließlich der allgemeinen
+        zugelassenes Medizinprodukt. <span class="is-inline" data-audience-content="patient">Die Inhalte dienen ausschließlich der allgemeinen
+        Information und Unterstützung im Alltag und ersetzen keine ärztliche Diagnose,
+        Beratung oder Behandlung. Bei gesundheitlichen Notfällen wähl bitte den
+        Notruf 144 (Rettung) oder 112.</span><span class="is-inline" data-audience-content="aerzte">Die Inhalte dienen ausschließlich der allgemeinen
         Information und Unterstützung im Alltag. Sie ersetzen keine ärztliche Diagnose,
         Beratung oder Behandlung. Bei gesundheitlichen Notfällen wählen Sie bitte den
-        Notruf 144 (Rettung) oder 112.
+        Notruf 144 (Rettung) oder 112.</span>
       </div>
         <p class="footer-note">
         © 2026 ADAM, ein Studienprojekt der Fachhochschule Vorarlberg GmbH. ADAM ist ein

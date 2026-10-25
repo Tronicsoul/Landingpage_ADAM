@@ -1,3 +1,21 @@
+// A/B-Kampagnen
+//
+// Kampagnenlinks (der Anzeigen- bzw. Mailtext soll zur Überschrift der Variante passen):
+//   Patient:innen  ?v=a                 Beschwerden klar ausdrücken, gehört werden
+//                  ?v=b                 Arztbrief und Diagnose verstehen
+//   Ärzt:innen     ?zielgruppe=aerzte&v=a
+//                  ?zielgruppe=aerzte&v=b
+// Ohne v= zeigt die Seite Variante a, zählt aber als "direkt" und nicht zum Test.
+// utm_source / utm_medium / utm_campaign dürfen angehängt werden; GoatCounter und GA4 lesen
+// die Kampagne daraus selbst.
+//
+// Gemessen wird je Zielgruppe und Variante:
+//   - Brevo: das Formular sendet ADAM_ZIELGRUPPE (patient/aerzte) und ADAM_VARIANTE (a/b/direkt).
+//   - GoatCounter (cookiefrei): Seitenpfad "/?v=a&zielgruppe=patient" usw. (consent.js) und die
+//     Schritte als Ereignis, z. B. "waitlist_submit-patient-b". Ärzt:innen behalten die Namen
+//     aus der ersten Kampagne ("waitlist_submit-b"), damit die Zahlen vergleichbar bleiben.
+//   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis.
+
 function getVariant() {
   const body = document.body;
   return body.getAttribute("data-variant-source") === "link" ? body.getAttribute("data-variant") : "direkt";
@@ -31,7 +49,8 @@ function countGoat(step, data) {
     const counter = window.goatcounter;
     if (!GOAT_STEPS[step] || !counter || typeof counter.count !== "function") return;
     const audience = (data && data.zielgruppe) || getAudience();
-    const suffix = audience === "patient" ? "patient" : (data && data.variante) || getVariant();
+    const variant = (data && data.variante) || getVariant();
+    const suffix = audience === "patient" ? "patient-" + variant : variant;
     counter.count({
       path: step + "-" + suffix,
       title: GOAT_STEPS[step] + " (" + suffix + ")",
@@ -42,8 +61,7 @@ function countGoat(step, data) {
 }
 
 function eventData(extra) {
-  const data = { zielgruppe: getAudience() };
-  if (data.zielgruppe === "aerzte") data.variante = getVariant();
+  const data = { zielgruppe: getAudience(), variante: getVariant() };
   return Object.assign(data, extra || {});
 }
 
@@ -84,8 +102,15 @@ function initHeaderCta() {
 
 initHeaderCta();
 
-const WAITLIST_ENDPOINT =
-  "https://0eee4b39.sibforms.com/serve/MUIFAMAV63XGUizP_lbC2z-7-SYASOjPZdoKuuKZN4fHZTaU1fJe3NR2cv3AD26OnwJ54QDOKg1OvNJ5D3XXCi05I930aNyGd1N_bD9YsLG6CMUMaU5rDIiqAzlYmR9K1HrcgTSpCJc2oRZCg2oLjhdhniFoWePJNU5AfeDDvQr_LM-mOfsBWMdnpEhoxohfiGQOP4Ws2Lw9mvHBDA==";
+// Brevo-Formulare je Zielgruppe: eigene Liste und eigene Bestätigungsmail.
+//   patient: "ADAM Patientinnen Rückmeldungen" (Kampagne 2)
+//   aerzte:  "ADAM Ärzte Rückmeldungen" (Kampagne 1)
+const WAITLIST_ENDPOINTS = {
+  patient:
+    "https://0eee4b39.sibforms.com/serve/MUIFAC3FbafVx0LnMshMgCP5WCk0WIkRB4wa0Rk9WdSBROKX0KjY0OAfY25L6FJTwqJ9QOaZkwSXhKNN6Hbh-EAVtk9f-KAGscLmpXU_9VIIH8dS0oa0TRwJ5lSTQofbfjRNXr3oqC3ff8y7aBAtYTG2EF4HzHZRA23HBtF9U9cbdD9cYA-LXA54zOA0lmVvBUCrN3FjvEnK9TJrnw==",
+  aerzte:
+    "https://0eee4b39.sibforms.com/serve/MUIFAMAV63XGUizP_lbC2z-7-SYASOjPZdoKuuKZN4fHZTaU1fJe3NR2cv3AD26OnwJ54QDOKg1OvNJ5D3XXCi05I930aNyGd1N_bD9YsLG6CMUMaU5rDIiqAzlYmR9K1HrcgTSpCJc2oRZCg2oLjhdhniFoWePJNU5AfeDDvQr_LM-mOfsBWMdnpEhoxohfiGQOP4Ws2Lw9mvHBDA==",
+};
 
 function toBrevoFields(payload) {
   const fields = {
@@ -178,10 +203,11 @@ function initWaitlistForm(form) {
     if (variantField) variantField.value = getVariant();
     const payload = Object.fromEntries(new FormData(form).entries());
     const submittedAudience = payload.zielgruppe || getAudience();
+    const endpoint = WAITLIST_ENDPOINTS[submittedAudience];
 
     try {
-      if (WAITLIST_ENDPOINT) {
-        const response = await fetch(WAITLIST_ENDPOINT + "?isAjax=1", {
+      if (endpoint) {
+        const response = await fetch(endpoint + "?isAjax=1", {
           method: "POST",
           body: toBrevoFields(payload),
         });
@@ -197,7 +223,7 @@ function initWaitlistForm(form) {
           throw failure;
         }
       } else {
-        console.warn("ADAM-Warteliste: WAITLIST_ENDPOINT ist leer, die Anmeldung wurde nicht gespeichert.");
+        console.warn("ADAM-Warteliste: kein Brevo-Formular für \"" + submittedAudience + "\", die Anmeldung wurde nicht gespeichert.");
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
@@ -253,8 +279,31 @@ function initWaitlistForm(form) {
 
 document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
 
+// Teilen-Hinweis nach der Anmeldung (Patient:innen). Erst nach der Testwoche auf true setzen,
+// sonst landen Empfehlungen in den A/B-Zahlen von Brevo. Der Link behält die gesehene Variante
+// und kennzeichnet die Quelle als utm_source=empfehlung.
+const SHARE_ENABLED = false;
+
+function initShare() {
+  const box = document.querySelector("[data-share]");
+  const link = box && box.querySelector("[data-share-link]");
+  if (!box || !link || !SHARE_ENABLED) return;
+  const variant = document.body.getAttribute("data-variant") === "b" ? "b" : "a";
+  const url =
+    window.location.origin +
+    window.location.pathname +
+    "?v=" + variant +
+    "&utm_source=empfehlung&utm_medium=organic&utm_campaign=adam_kampagne2_patientinnen_organisch&utm_content=" +
+    variant.toUpperCase();
+  const text = "Schau mal, ADAM hilft, Beschwerden festzuhalten und Arztbriefe zu verstehen: ";
+  link.href = "https://wa.me/?text=" + encodeURIComponent(text + url);
+  box.hidden = false;
+}
+
+initShare();
+
 const PAGE_TITLES = {
-  patient: "ADAM – Deine Gesundheit einfach im Überblick",
+  patient: "ADAM – Beschwerden festhalten, Arztbriefe verstehen",
   aerzte: "ADAM für Gesundheitsberufe – Patient:innen kommen vorbereitet zum Termin",
 };
 
@@ -1042,11 +1091,11 @@ function initFormStart() {
   function start() {
     if (!counted) {
       counted = true;
-      countGoat("form_start", { zielgruppe: getAudience() });
+      countGoat("form_start", eventData());
     }
     if (started || !trackingAllowed()) return;
     started = true;
-    track("form_start", { zielgruppe: getAudience() });
+    track("form_start", eventData());
   }
 
   forms.forEach((form) => {
