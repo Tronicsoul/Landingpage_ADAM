@@ -1,3 +1,21 @@
+// A/B-Kampagnen
+//
+// Kampagnenlinks (der Anzeigen- bzw. Mailtext soll zur Überschrift der Variante passen):
+//   Patient:innen  ?v=a                 Beschwerden klar ausdrücken, gehört werden
+//                  ?v=b                 Arztbrief und Diagnose verstehen
+//   Ärzt:innen     ?zielgruppe=aerzte&v=a
+//                  ?zielgruppe=aerzte&v=b
+// Ohne v= zeigt die Seite Variante a, zählt aber als "direkt" und nicht zum Test.
+// utm_source / utm_medium / utm_campaign dürfen angehängt werden; GoatCounter und GA4 lesen
+// die Kampagne daraus selbst.
+//
+// Gemessen wird je Zielgruppe und Variante:
+//   - Brevo: das Formular sendet ADAM_ZIELGRUPPE (patient/aerzte) und ADAM_VARIANTE (a/b/direkt).
+//   - GoatCounter (cookiefrei): Seitenpfad "/?v=a&zielgruppe=patient" usw. (consent.js) und die
+//     Schritte als Ereignis, z. B. "waitlist_submit-patient-b". Ärzt:innen behalten die Namen
+//     aus der ersten Kampagne ("waitlist_submit-b"), damit die Zahlen vergleichbar bleiben.
+//   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis.
+
 function getVariant() {
   const body = document.body;
   return body.getAttribute("data-variant-source") === "link" ? body.getAttribute("data-variant") : "direkt";
@@ -31,7 +49,8 @@ function countGoat(step, data) {
     const counter = window.goatcounter;
     if (!GOAT_STEPS[step] || !counter || typeof counter.count !== "function") return;
     const audience = (data && data.zielgruppe) || getAudience();
-    const suffix = audience === "patient" ? "patient" : (data && data.variante) || getVariant();
+    const variant = (data && data.variante) || getVariant();
+    const suffix = audience === "patient" ? "patient-" + variant : variant;
     counter.count({
       path: step + "-" + suffix,
       title: GOAT_STEPS[step] + " (" + suffix + ")",
@@ -42,8 +61,7 @@ function countGoat(step, data) {
 }
 
 function eventData(extra) {
-  const data = { zielgruppe: getAudience() };
-  if (data.zielgruppe === "aerzte") data.variante = getVariant();
+  const data = { zielgruppe: getAudience(), variante: getVariant() };
   return Object.assign(data, extra || {});
 }
 
@@ -1043,11 +1061,11 @@ function initFormStart() {
   function start() {
     if (!counted) {
       counted = true;
-      countGoat("form_start", { zielgruppe: getAudience() });
+      countGoat("form_start", eventData());
     }
     if (started || !trackingAllowed()) return;
     started = true;
-    track("form_start", { zielgruppe: getAudience() });
+    track("form_start", eventData());
   }
 
   forms.forEach((form) => {

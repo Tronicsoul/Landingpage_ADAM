@@ -84,13 +84,28 @@
     return "direkt";
   }
 
+  // Zielgruppe der Startansicht ("patient" oder "aerzte"). Auf Impressum und Datenschutz gibt
+  // es keine Ansicht, dort zählt nur ?zielgruppe= aus der Adresse.
+  function currentAudience() {
+    try {
+      var fromPage = document.body && document.body.getAttribute("data-audience");
+      if (fromPage === "patient" || fromPage === "aerzte") return fromPage;
+      var fromLink = new URLSearchParams(window.location.search).get("zielgruppe");
+      if (fromLink === "patient" || fromLink === "aerzte") return fromLink;
+    } catch (e) {
+    }
+    return "";
+  }
+
   function loadGtm() {
     if (gtmLoaded || !CONFIG.gtmId) return;
     gtmLoaded = true;
 
-    var variante = currentVariant();
-    window.dataLayer.push({ variante: variante });
-    gtag("set", { variante: variante });
+    var context = { variante: currentVariant() };
+    var zielgruppe = currentAudience();
+    if (zielgruppe) context.zielgruppe = zielgruppe;
+    window.dataLayer.push(context);
+    gtag("set", context);
     window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     loadScript("https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(CONFIG.gtmId));
   }
@@ -99,10 +114,11 @@
     var keep = [];
     try {
       var params = new URLSearchParams(window.location.search);
-      var variant = params.get("v");
+      var variant = (params.get("v") || "").toLowerCase();
       if (variant === "a" || variant === "b") keep.push("v=" + variant);
-      var zg = params.get("zielgruppe");
-      if (zg === "patient" || zg === "aerzte") keep.push("zielgruppe=" + zg);
+      // Zielgruppe immer mitzählen: "/?v=a" allein gehört zur ersten Kampagne (Ärzt:innen).
+      var zg = currentAudience();
+      if (zg) keep.push("zielgruppe=" + zg);
     } catch (e) {
     }
     return window.location.pathname + (keep.length ? "?" + keep.join("&") : "");
