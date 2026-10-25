@@ -4736,6 +4736,10 @@ main section:not(.hero) > .container {
 }
 
 @media (min-width: 1100px) {
+  .hero__photo[data-audience-content="patient"] {
+    height: max(560px, calc(100vh - var(--nav-height) - 1px));
+  }
+
   .hero__photo[data-audience-content="patient"] img {
     object-position: 55% 50%;
     transform-origin: 65% 50%;
