@@ -308,6 +308,8 @@ const PAGE_TITLES = {
 };
 
 function initAudienceTabs() {
+  // Nur auf der Startseite: Impressum und Datenschutz behalten ihren eigenen Titel.
+  if (!document.querySelector("[data-audience-content]")) return;
   const tabs = document.querySelectorAll(".audience-tab");
 
   function setAudience(audience) {
