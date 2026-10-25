@@ -514,7 +514,7 @@ body[data-audience="aerzte"].hero-cta-in-view .nav-cta:hover {
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 350px) {
   .brand__name {
     display: none;
   }
@@ -4717,63 +4717,7 @@ main section:not(.hero) > .container {
   }
 }
 
-.audience-tabs--nav {
-  flex: none;
-  padding: 3px;
-  gap: 2px;
-}
-
-.audience-tabs--nav .audience-tab {
-  min-height: 34px;
-  padding: 0 10px;
-  font-size: 14px;
-  gap: 6px;
-}
-
-.audience-tabs--nav .audience-tab svg {
-  width: 16px;
-  height: 16px;
-}
-
-.audience-tab__label {
-  display: none;
-}
-
-@media (min-width: 1400px) {
-  .audience-tabs--nav .audience-tab {
-    padding: 0 var(--space-4);
-  }
-
-  .audience-tab__label {
-    display: inline;
-  }
-}
-
-@media (max-width: 859px) {
-  .theme-toggle {
-    display: none;
-  }
-}
-
 @media (max-width: 480px) {
-  .nav-actions {
-    gap: var(--space-2);
-  }
-
-  .audience-tabs--nav {
-    padding: 2px;
-  }
-
-  .audience-tabs--nav .audience-tab {
-    min-height: 32px;
-    padding: 0 8px;
-  }
-
-  .audience-tabs--nav .audience-tab svg {
-    width: 15px;
-    height: 15px;
-  }
-
   body[data-campaign] .nav-cta {
     font-size: 14px;
     padding-inline: var(--space-3);

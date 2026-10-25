@@ -260,7 +260,6 @@ const PAGE_TITLES = {
 
 function initAudienceTabs() {
   const tabs = document.querySelectorAll(".audience-tab");
-  if (!tabs.length) return;
 
   function setAudience(audience) {
     document.body.setAttribute("data-audience", audience);
