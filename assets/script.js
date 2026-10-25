@@ -102,8 +102,15 @@ function initHeaderCta() {
 
 initHeaderCta();
 
-const WAITLIST_ENDPOINT =
-  "https://0eee4b39.sibforms.com/serve/MUIFAMAV63XGUizP_lbC2z-7-SYASOjPZdoKuuKZN4fHZTaU1fJe3NR2cv3AD26OnwJ54QDOKg1OvNJ5D3XXCi05I930aNyGd1N_bD9YsLG6CMUMaU5rDIiqAzlYmR9K1HrcgTSpCJc2oRZCg2oLjhdhniFoWePJNU5AfeDDvQr_LM-mOfsBWMdnpEhoxohfiGQOP4Ws2Lw9mvHBDA==";
+// Brevo-Formulare je Zielgruppe: eigene Liste und eigene Bestätigungsmail.
+//   patient: "ADAM Patientinnen Rückmeldungen" (Kampagne 2)
+//   aerzte:  "ADAM Ärzte Rückmeldungen" (Kampagne 1)
+const WAITLIST_ENDPOINTS = {
+  patient:
+    "https://0eee4b39.sibforms.com/serve/MUIFAC3FbafVx0LnMshMgCP5WCk0WIkRB4wa0Rk9WdSBROKX0KjY0OAfY25L6FJTwqJ9QOaZkwSXhKNN6Hbh-EAVtk9f-KAGscLmpXU_9VIIH8dS0oa0TRwJ5lSTQofbfjRNXr3oqC3ff8y7aBAtYTG2EF4HzHZRA23HBtF9U9cbdD9cYA-LXA54zOA0lmVvBUCrN3FjvEnK9TJrnw==",
+  aerzte:
+    "https://0eee4b39.sibforms.com/serve/MUIFAMAV63XGUizP_lbC2z-7-SYASOjPZdoKuuKZN4fHZTaU1fJe3NR2cv3AD26OnwJ54QDOKg1OvNJ5D3XXCi05I930aNyGd1N_bD9YsLG6CMUMaU5rDIiqAzlYmR9K1HrcgTSpCJc2oRZCg2oLjhdhniFoWePJNU5AfeDDvQr_LM-mOfsBWMdnpEhoxohfiGQOP4Ws2Lw9mvHBDA==",
+};
 
 function toBrevoFields(payload) {
   const fields = {
@@ -196,10 +203,11 @@ function initWaitlistForm(form) {
     if (variantField) variantField.value = getVariant();
     const payload = Object.fromEntries(new FormData(form).entries());
     const submittedAudience = payload.zielgruppe || getAudience();
+    const endpoint = WAITLIST_ENDPOINTS[submittedAudience];
 
     try {
-      if (WAITLIST_ENDPOINT) {
-        const response = await fetch(WAITLIST_ENDPOINT + "?isAjax=1", {
+      if (endpoint) {
+        const response = await fetch(endpoint + "?isAjax=1", {
           method: "POST",
           body: toBrevoFields(payload),
         });
@@ -215,7 +223,7 @@ function initWaitlistForm(form) {
           throw failure;
         }
       } else {
-        console.warn("ADAM-Warteliste: WAITLIST_ENDPOINT ist leer, die Anmeldung wurde nicht gespeichert.");
+        console.warn("ADAM-Warteliste: kein Brevo-Formular für \"" + submittedAudience + "\", die Anmeldung wurde nicht gespeichert.");
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
