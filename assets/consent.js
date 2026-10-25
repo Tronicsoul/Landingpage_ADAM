@@ -173,17 +173,21 @@
   }
 
   function buildBanner() {
+    // Patient:innen werden auf der Seite geduzt, Ärzt:innen gesiezt.
+    var du = !(document.body && document.body.getAttribute("data-audience") === "aerzte");
     var text = el("p", { id: "consent-text" });
     text.appendChild(
       document.createTextNode(
-        "Mit Ihrer Zustimmung nutzen wir Dienste für Statistik und Marketing. Sie können ablehnen und Ihre Auswahl jederzeit ändern. Mehr in der "
+        du
+          ? "Mit deiner Zustimmung nutzen wir Dienste für Statistik und Marketing. Du kannst ablehnen und deine Auswahl jederzeit ändern. Mehr in der "
+          : "Mit Ihrer Zustimmung nutzen wir Dienste für Statistik und Marketing. Sie können ablehnen und Ihre Auswahl jederzeit ändern. Mehr in der "
       )
     );
     text.appendChild(el("a", { href: "datenschutz.html", text: "Datenschutzerklärung" }));
     text.appendChild(document.createTextNode("."));
 
     var options = el("div", { class: "consent__options", hidden: "" }, [
-      option("notwendig", "Notwendig", "Speichert nur Ihre Auswahl hier und das Farbschema.", true),
+      option("notwendig", "Notwendig", du ? "Speichert nur deine Auswahl hier und das Farbschema." : "Speichert nur Ihre Auswahl hier und das Farbschema.", true),
       option("statistik", "Statistik", "Zeigt uns, wie die Seite genutzt wird."),
       option("marketing", "Marketing", "Zeigt uns, ob unsere Anzeigen zu Anmeldungen führen."),
     ]);

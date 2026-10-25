@@ -279,8 +279,31 @@ function initWaitlistForm(form) {
 
 document.querySelectorAll(".waitlist-form").forEach(initWaitlistForm);
 
+// Teilen-Hinweis nach der Anmeldung (Patient:innen). Erst nach der Testwoche auf true setzen,
+// sonst landen Empfehlungen in den A/B-Zahlen von Brevo. Der Link behält die gesehene Variante
+// und kennzeichnet die Quelle als utm_source=empfehlung.
+const SHARE_ENABLED = false;
+
+function initShare() {
+  const box = document.querySelector("[data-share]");
+  const link = box && box.querySelector("[data-share-link]");
+  if (!box || !link || !SHARE_ENABLED) return;
+  const variant = document.body.getAttribute("data-variant") === "b" ? "b" : "a";
+  const url =
+    window.location.origin +
+    window.location.pathname +
+    "?v=" + variant +
+    "&utm_source=empfehlung&utm_medium=organic&utm_campaign=adam_kampagne2_patientinnen_organisch&utm_content=" +
+    variant.toUpperCase();
+  const text = "Schau mal, ADAM hilft, Beschwerden festzuhalten und Arztbriefe zu verstehen: ";
+  link.href = "https://wa.me/?text=" + encodeURIComponent(text + url);
+  box.hidden = false;
+}
+
+initShare();
+
 const PAGE_TITLES = {
-  patient: "ADAM – Deine Gesundheit einfach im Überblick",
+  patient: "ADAM – Beschwerden festhalten, Arztbriefe verstehen",
   aerzte: "ADAM für Gesundheitsberufe – Patient:innen kommen vorbereitet zum Termin",
 };
 
