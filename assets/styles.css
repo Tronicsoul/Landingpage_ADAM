@@ -4781,6 +4781,13 @@ body[data-audience="aerzte"] [data-audience-content="aerzte"].is-inline {
   }
 }
 
+/* Patient:innen, Handy/Tablet: Hero-Button im ersten Bildschirm (Foto oben etwas knapper) */
+@media (max-width: 1099px) {
+  body[data-audience="patient"] .hero__inner {
+    padding-top: max(96px, calc(var(--hero-h) - 520px));
+  }
+}
+
 /* Belegleiste unter dem Hero */
 .proof {
   padding-block: var(--space-10);

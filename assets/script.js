@@ -1108,7 +1108,7 @@ initFormStart();
 
 function initSectionView() {
   if (!("IntersectionObserver" in window)) return;
-  const sections = ["vergleich", "leistungen", "ablauf", "sicherheit", "warteliste"]
+  const sections = ["vergleich", "leistungen", "ablauf", "sicherheit", "fragen", "warteliste"]
     .map((id) => document.getElementById(id))
     .filter(Boolean);
   if (!sections.length) return;
