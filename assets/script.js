@@ -14,6 +14,9 @@
 //   - GoatCounter (cookiefrei): Seitenpfad "/?v=a&zielgruppe=patient" usw. (consent.js) und die
 //     Schritte als Ereignis, z. B. "waitlist_submit-patient-b". Ärzt:innen behalten die Namen
 //     aus der ersten Kampagne ("waitlist_submit-b"), damit die Zahlen vergleichbar bleiben.
+//     Seit Kampagne 3 zusätzlich, um Abbrüche zu verstehen: Scrolltiefe (scroll_25 … scroll_90),
+//     Anmeldebereich angezeigt (waitlist_seen), fehlendes Pflichtfeld (form_error_<feld>, ohne
+//     Inhalt) und fehlgeschlagenes Absenden (submit_error). Formularinhalte gehen nie an GoatCounter.
 //   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis.
 
 function getVariant() {
@@ -42,6 +45,16 @@ const GOAT_STEPS = {
   cta_click: "Klick auf Anmelde-Button",
   form_start: "Formular begonnen",
   waitlist_submit: "Anmeldung abgeschickt",
+  scroll_25: "Scrolltiefe 25 %",
+  scroll_50: "Scrolltiefe 50 %",
+  scroll_75: "Scrolltiefe 75 %",
+  scroll_90: "Scrolltiefe 90 %",
+  waitlist_seen: "Anmeldebereich angezeigt",
+  form_error_name: "Pflichtfeld fehlt: Name",
+  form_error_email: "Pflichtfeld fehlt: E-Mail",
+  form_error_beruf: "Pflichtfeld fehlt: Nutzung bzw. Beruf",
+  form_error_consent: "Pflichtfeld fehlt: Einwilligung",
+  submit_error: "Absenden fehlgeschlagen",
 };
 
 function countGoat(step, data) {
@@ -152,6 +165,7 @@ function initWaitlistForm(form) {
   const submitBtn = form.querySelector('button[type="submit"]');
   const submitErrorEl = form.querySelector("[data-submit-error]");
   const originalLabel = submitBtn.textContent;
+  const countedErrors = new Set();
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -187,6 +201,11 @@ function initWaitlistForm(form) {
       if (message) {
         hasError = true;
         if (!firstInvalid) firstInvalid = field;
+        // Nur welches Pflichtfeld fehlte, nie den Inhalt; jedes Feld einmal pro Seitenaufruf.
+        if (!countedErrors.has(field.name)) {
+          countedErrors.add(field.name);
+          countGoat("form_error_" + field.name, eventData());
+        }
       }
     });
 
@@ -255,6 +274,7 @@ function initWaitlistForm(form) {
     } catch (error) {
       submitBtn.disabled = false;
       submitBtn.textContent = originalLabel;
+      countGoat("submit_error", eventData());
 
       const emailField = form.querySelector('[name="email"]');
       if (error && error.emailRejected && emailField) {
@@ -1056,16 +1076,23 @@ function trackingAllowed() {
 function initScrollDepth() {
   const marks = [25, 50, 75, 90];
   const sent = [];
+  const goatSent = [];
   let ticking = false;
 
   function check() {
     ticking = false;
-    if (sent.length === marks.length) return;
+    if (sent.length === marks.length && goatSent.length === marks.length) return;
     const full = document.documentElement.scrollHeight;
     if (full <= window.innerHeight) return;
     const depth = ((window.scrollY + window.innerHeight) / full) * 100;
     marks.forEach((mark) => {
-      if (depth < mark || sent.indexOf(mark) !== -1 || !trackingAllowed()) return;
+      if (depth < mark) return;
+      // GoatCounter zählt cookiefrei und unabhängig vom Banner, GA4 nur mit Zustimmung.
+      if (goatSent.indexOf(mark) === -1) {
+        goatSent.push(mark);
+        countGoat("scroll_" + mark, eventData());
+      }
+      if (sent.indexOf(mark) !== -1 || !trackingAllowed()) return;
       sent.push(mark);
       track("scroll_depth", { tiefe: mark });
     });
@@ -1083,6 +1110,25 @@ function initScrollDepth() {
 }
 
 initScrollDepth();
+
+// Cookiefrei: Ist das Anmeldeformular überhaupt ins Bild gekommen? Einmal pro Seitenaufruf.
+function initWaitlistSeen() {
+  const card = document.querySelector(".waitlist-card");
+  if (!card || !("IntersectionObserver" in window)) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
+        observer.disconnect();
+        countGoat("waitlist_seen", eventData());
+      });
+    },
+    { threshold: [0, 0.3, 0.6] }
+  );
+  observer.observe(card);
+}
+
+initWaitlistSeen();
 
 function initFormStart() {
   const forms = document.querySelectorAll(".waitlist-form");
