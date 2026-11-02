@@ -4928,3 +4928,68 @@ body[data-audience="aerzte"] [data-audience-content="aerzte"].is-inline {
 .form-success__share[hidden] {
   display: none;
 }
+
+/* ---------- Mobil-Feinschliff Patient:innen-Ansicht ----------
+   Kontrast nach WCAG 2.2 AA (Text mind. 4,5:1) und Tippflächen
+   mind. 44 x 44 px (Apple HIG; WCAG 2.5.8 verlangt mind. 24 px).
+   Ärzt:innen-Ansicht bewusst unverändert. */
+
+/* Hauptbuttons (auch im Hero, der immer dunkel ist): Weiß auf #047857 = 5,3:1
+   (vorher #059669 = 3,6:1), Hover #036c4e = 6,2:1 (vorher heller, unter 3:1).
+   Entspricht dem Button-Grün des hellen Modus. */
+:root body[data-audience="patient"] .btn-primary {
+  background: #047857;
+}
+
+:root body[data-audience="patient"] .btn-primary:hover {
+  background: #036c4e;
+}
+
+/* Heller Modus: graue Hinweistexte, Platzhalter und Fußzeile
+   auf mind. 4,5:1 abdunkeln (vorher 3,1 bis 4,0:1) */
+:root[data-theme="light"] body[data-audience="patient"] {
+  --muted: #4d7568;
+}
+
+:root[data-theme="light"] body[data-audience="patient"] .site-footer {
+  --footer-muted: #4a6f62;
+}
+
+:root[data-theme="light"] body[data-audience="patient"] .footer-note {
+  opacity: 1;
+}
+
+/* Kopfzeilen-Button und Logo-Link mobil mind. 44 px */
+@media (max-width: 859px) {
+  body[data-audience="patient"][data-campaign] .nav-cta {
+    min-height: 44px;
+  }
+}
+
+body[data-audience="patient"] .brand {
+  min-width: 44px;
+}
+
+/* Fußzeile: Links und Cookie-Button mit 44 px Tippfläche, linksbündig */
+body[data-audience="patient"] .site-footer ul a,
+body[data-audience="patient"] .site-footer ul .footer-link-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: 0;
+  text-align: left;
+}
+
+body[data-audience="patient"] .site-footer a.footer-top {
+  width: 44px;
+  height: 44px;
+}
+
+/* Schmale Handys: Kontakt und Rechtliches untereinander,
+   damit Mailadresse und Links nicht mitten im Wort umbrechen */
+@media (max-width: 559px) {
+  body[data-audience="patient"] .footer-cols {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+}
