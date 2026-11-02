@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ADAM – Beschwerden festhalten, Arztbriefe verstehen</title>
-  <meta name="description" content="Halte fest, wie sich deine Beschwerden entwickeln, versteh die Begriffe in deinen Befunden und geh vorbereitet in den nächsten Termin. Kostenlos auf die Warteliste." />
+  <meta name="description" content="Halte fest, wie sich deine Beschwerden entwickeln, versteh die Begriffe in deinen Befunden und geh vorbereitet in den nächsten Termin. Jetzt kostenlos frühen Zugang sichern." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ADAM – Beschwerden festhalten, Arztbriefe verstehen" />
-  <meta property="og:description" content="Halte fest, wie sich deine Beschwerden entwickeln, versteh die Begriffe in deinen Befunden und geh vorbereitet in den nächsten Termin. Kostenlos auf die Warteliste." />
+  <meta property="og:description" content="Halte fest, wie sich deine Beschwerden entwickeln, versteh die Begriffe in deinen Befunden und geh vorbereitet in den nächsten Termin. Jetzt kostenlos frühen Zugang sichern." />
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <script>
 
@@ -88,7 +88,7 @@ Leistungen
         </button>
 
         <a class="btn btn-primary nav-cta" href="#warteliste" data-track="header">
-          <span data-audience-content="patient">Warteliste</span>
+          <span data-audience-content="patient"><span class="nav-cta__long">Frühen Zugang sichern</span><span class="nav-cta__short">Früher Zugang</span></span>
           <span data-audience-content="aerzte"><span class="nav-cta__long">Mit 10 Patient:innen kostenlos testen</span><span class="nav-cta__short">Kostenlos testen</span></span>
         </a>
         <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu">
@@ -111,7 +111,7 @@ Leistungen
           <li><a href="#sicherheit">Sicherheit</a></li>
         </ul>
         <a class="btn btn-primary btn-block" href="#warteliste" data-track="mobile-menu">
-          <span data-audience-content="patient">Zur Warteliste</span>
+          <span data-audience-content="patient">Frühen Zugang sichern</span>
           <span data-audience-content="aerzte"><span class="nav-cta__long">Mit 10 Patient:innen kostenlos testen</span><span class="nav-cta__short">Kostenlos testen</span></span>
         </a>
       </div>
@@ -169,7 +169,7 @@ Leistungen
             </div>
 
             <div class="hero__actions hero__actions--tight">
-              <a class="btn btn-primary btn-lg" href="#warteliste" data-track="hero">Kostenlos auf die Warteliste</a>
+              <a class="btn btn-primary btn-lg" href="#warteliste" data-track="hero">Frühen Zugang sichern</a>
             </div>
             <p class="hero__trust-note">Studienprojekt der FH Vorarlberg · Daten nur in der EU/EWR</p>
           </div>
@@ -687,7 +687,7 @@ Leistungen
           </details>
           <details class="faq__item">
             <summary>Was kostet die Anmeldung?</summary>
-            <p>Nichts. Die Warteliste ist kostenlos und unverbindlich.</p>
+            <p>Nichts. Der frühe Zugang ist kostenlos und unverbindlich.</p>
           </details>
           <details class="faq__item">
             <summary>Wann geht es los?</summary>
@@ -711,10 +711,10 @@ Leistungen
       </div>
       <div class="container">
         <div data-audience-content="patient">
-          <span class="eyebrow">Warteliste</span>
+          <span class="eyebrow">Früher Zugang</span>
           <h2 class="section-title" id="warteliste-heading-patient">Vorbereitet in deinen nächsten Termin</h2>
           <p class="section-intro">
-            Trag dich kostenlos und unverbindlich ein. Du erfährst als Erste:r, wenn ADAM startet.
+            Sichere dir kostenlos und unverbindlich frühen Zugang. Du erfährst als Erste:r, wenn ADAM startet.
           </p>
 
           <ol class="steps">
@@ -816,13 +816,16 @@ Leistungen
                 <p class="form-error" data-error-for="beruf" aria-live="polite"></p>
               </div>
               <div class="form-field">
-                <label for="nutzen-patient">Was wäre dir am wichtigsten? <span class="form-label-optional">(optional)</span></label>
+                <label for="nutzen-patient">Um welche Beschwerden geht es dir vor allem? <span class="form-label-optional">(optional)</span></label>
                 <select id="nutzen-patient" name="problem">
                   <option value="" selected>Bitte auswählen</option>
-
-                  <option value="gehoer">Im Arztgespräch gehört werden</option>
-                  <option value="verstehen">Diagnosen und Arztbriefe verstehen</option>
-                  <option value="beides">Beides trifft zu</option>
+                  <option value="zyklus">Beschwerden rund um den Zyklus (z. B. Regelschmerzen, PMS)</option>
+                  <option value="wechseljahre">Beschwerden in den Wechseljahren</option>
+                  <option value="migraene">Migräne oder starke Kopfschmerzen</option>
+                  <option value="schmerzen">Wiederkehrende Schmerzen (z. B. Bauch-, Rückenschmerzen)</option>
+                  <option value="chronisch">Chronische Beschwerden oder Erkrankungen</option>
+                  <option value="erschoepfung">Erschöpfung oder Schlafprobleme</option>
+                  <option value="anderes">Etwas anderes</option>
                 </select>
                 <p class="form-error" data-error-for="problem" aria-live="polite"></p>
               </div>
@@ -834,7 +837,7 @@ Leistungen
                 <p class="form-error" data-error-for="consent" aria-live="polite"></p>
               </div>
               <p class="form-error" data-submit-error aria-live="polite"></p>
-              <button class="btn btn-primary" type="submit">Jetzt kostenlos eintragen</button>
+              <button class="btn btn-primary" type="submit">Frühen Zugang sichern</button>
               <p class="form-fineprint">Du erhältst eine Bestätigung per E-Mail.</p>
             </div>
 
