@@ -463,28 +463,29 @@ Leistungen
                 <div class="demo-scene demo-scene--2">
                   <div class="demo-sub demo-sub--med">
                   <div class="demo-head">
-                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Aktuelle Medikamente</span>
-                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Verwalte deine medizinischen Daten</span><span class="is-inline" data-audience-content="aerzte">Verwalten Sie Ihre medizinischen Daten</span></span>
+                    <span class="demo-head__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="is-inline" data-audience-content="patient">Symptomtagebuch</span><span class="is-inline" data-audience-content="aerzte">Aktuelle Medikamente</span></span>
+                    <span class="demo-head__sub"><span class="is-inline" data-audience-content="patient">Halte deine Beschwerden fest</span><span class="is-inline" data-audience-content="aerzte">Verwalten Sie Ihre medizinischen Daten</span></span>
                   </div>
                   <div class="demo-body">
                     <div class="demo-btn">+ Eintrag hinzufügen<em class="demo-tap" style="--tap: 0.15s"></em></div>
                     <p class="demo-section">Einträge</p>
                     <div class="demo-slot">
-                      <p class="demo-empty demo-med__empty">Keine Medikamente vorhanden.</p>
+                      <p class="demo-empty demo-med__empty"><span class="is-inline" data-audience-content="patient">Keine Einträge vorhanden.</span><span class="is-inline" data-audience-content="aerzte">Keine Medikamente vorhanden.</span></p>
                       <div class="demo-card demo-med__form">
-                        <p class="demo-card__title">Neues Medikament</p>
-                        <p class="demo-input"><small>Medikamentenname</small><span><b class="demo-med__v1">Ramipril</b></span></p>
+                        <p class="demo-card__title"><span class="is-inline" data-audience-content="patient">Neue Beschwerde</span><span class="is-inline" data-audience-content="aerzte">Neues Medikament</span></p>
+                        <p class="demo-input"><small><span class="is-inline" data-audience-content="patient">Beschwerde</span><span class="is-inline" data-audience-content="aerzte">Medikamentenname</span></small><span><b class="demo-med__v1"><span class="is-inline" data-audience-content="patient">Migräne</span><span class="is-inline" data-audience-content="aerzte">Ramipril</span></b></span></p>
                         <div class="demo-input-row">
-                          <p class="demo-input"><small>Dosierung</small><span><b class="demo-med__v2">5</b></span></p>
-                          <p class="demo-input"><small>Einheit</small><span><b class="demo-med__v2">mg</b></span></p>
+                          <p class="demo-input"><small><span class="is-inline" data-audience-content="patient">Datum</span><span class="is-inline" data-audience-content="aerzte">Dosierung</span></small><span><b class="demo-med__v2"><span class="is-inline" data-audience-content="patient">28.09.2026</span><span class="is-inline" data-audience-content="aerzte">5</span></b></span></p>
+                          <p class="demo-input"><small><span class="is-inline" data-audience-content="patient">Stärke</span><span class="is-inline" data-audience-content="aerzte">Einheit</span></small><span><b class="demo-med__v2"><span class="is-inline" data-audience-content="patient">6/10</span><span class="is-inline" data-audience-content="aerzte">mg</span></b></span></p>
                         </div>
-                        <p class="demo-input"><small>Einnahmehäufigkeit</small><span><b class="demo-med__v3">1x täglich</b></span></p>
+                        <p class="demo-input"><small><span class="is-inline" data-audience-content="patient">Zyklustag</span><span class="is-inline" data-audience-content="aerzte">Einnahmehäufigkeit</span></small><span><b class="demo-med__v3"><span class="is-inline" data-audience-content="patient">Tag 27 von 28</span><span class="is-inline" data-audience-content="aerzte">1x täglich</span></b></span></p>
                         <div class="demo-btn">Speichern<em class="demo-tap" style="--tap: 1.5s"></em></div>
                       </div>
                       <div class="demo-card demo-med__card">
-                        <p class="demo-card__title">Ramipril</p>
-                        <p class="demo-field"><small>Wirkung/Dosierung:</small>5 mg</p>
-                        <p class="demo-field"><small>Einnahmehäufigkeit:</small>1x täglich</p>
+                        <p class="demo-card__title"><span class="is-inline" data-audience-content="patient">Migräne</span><span class="is-inline" data-audience-content="aerzte">Ramipril</span></p>
+                        <p class="demo-field"><small><span class="is-inline" data-audience-content="patient">Datum:</span><span class="is-inline" data-audience-content="aerzte">Wirkung/Dosierung:</span></small><span class="is-inline" data-audience-content="patient">28.09.2026</span><span class="is-inline" data-audience-content="aerzte">5 mg</span></p>
+                        <p class="demo-field"><small><span class="is-inline" data-audience-content="patient">Stärke:</span><span class="is-inline" data-audience-content="aerzte">Einnahmehäufigkeit:</span></small><span class="is-inline" data-audience-content="patient">6/10</span><span class="is-inline" data-audience-content="aerzte">1x täglich</span></p>
+                        <p class="demo-field" data-audience-content="patient"><small>Zyklustag:</small>Tag 27 von 28</p>
                       </div>
                     </div>
                   </div>
