@@ -5156,3 +5156,115 @@ body[data-audience="patient"] .hero__patient {
     margin-bottom: var(--space-6);
   }
 }
+
+/* ---------------------------------------------------------------
+   Kampagne 4: Anmeldebereich unten (nur Patient:innen)
+   Eigener grüner Block statt dunkler Kästen, helle Formularkarte,
+   damit die Anmeldung sich klar von den Infokästen abhebt.
+   --------------------------------------------------------------- */
+body[data-audience="patient"] .waitlist {
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.9);
+  --border: rgba(255, 255, 255, 0.5);
+  --card-bg: transparent;
+  --surface: rgba(255, 255, 255, 0.14);
+  position: relative;
+  overflow: hidden;
+  padding-block: 56px 64px;
+  color: var(--text);
+  background:
+    radial-gradient(110% 70% at 50% 0%, rgba(16, 185, 129, 0.5) 0%, transparent 62%),
+    linear-gradient(165deg, #047857 0%, #065f46 55%, #064e3b 100%);
+}
+
+@media (min-width: 960px) {
+  body[data-audience="patient"] .waitlist {
+    padding-block: 88px 104px;
+  }
+}
+
+body[data-audience="patient"] .waitlist .deco {
+  display: none;
+}
+
+body[data-audience="patient"] .waitlist .eyebrow,
+:root:root body[data-audience="patient"] .waitlist .eyebrow {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+}
+
+body[data-audience="patient"] .waitlist__title {
+  max-width: 20ch;
+  margin-inline: auto;
+  font-size: clamp(32px, 5.4vw, 54px);
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+body[data-audience="patient"] .waitlist .section-intro {
+  max-width: 40em;
+  margin: var(--space-4) auto var(--space-6);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+body[data-audience="patient"] .waitlist .benefit-chips {
+  margin-bottom: var(--space-8);
+}
+
+body[data-audience="patient"] .waitlist .benefit-chip {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+}
+
+/* Helle Karte in beiden Farbschemata; die Variablen gelten nur innerhalb der Karte. */
+:root:root:root body[data-audience="patient"] .waitlist .waitlist-card {
+  --background: #f9fafb;
+  --surface: #d1fae5;
+  --surface-strong: #a7f3d0;
+  --text: #064e3b;
+  --text-muted: #0f5c48;
+  --text-on-primary: #f9fafb;
+  --primary: #059669;
+  --button-bg: #047857;
+  --button-bg-hover: #036c4e;
+  --muted: #6b8f80;
+  --border: #6ee7b7;
+  --card-bg: #ffffff;
+  --link: #047857;
+  --error: #dc2626;
+  --error-bg: #fee2e2;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-8) var(--space-6);
+  color: var(--text);
+  background: #ffffff;
+  border: 0;
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35), 0 0 0 6px rgba(255, 255, 255, 0.14);
+}
+
+:root:root:root body[data-audience="patient"] .waitlist .waitlist-card .btn-primary {
+  min-height: 58px;
+  font-size: 18px;
+}
+
+@media (max-width: 759px) {
+  :root:root:root body[data-audience="patient"] .waitlist .waitlist-card {
+    margin-top: 0;
+    padding: var(--space-6) var(--space-5) var(--space-5);
+    border-radius: var(--radius-xl);
+  }
+
+  :root:root:root body[data-audience="patient"] .waitlist .waitlist-card .waitlist-form__fields .btn-primary {
+    margin-top: var(--space-5);
+  }
+}
+
+body[data-audience="patient"] .waitlist .benefit-chip svg {
+  color: #ffffff;
+  stroke: #ffffff;
+}
