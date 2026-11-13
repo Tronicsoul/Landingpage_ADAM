@@ -1388,3 +1388,15 @@ function initSectionView() {
 }
 
 initSectionView();
+
+// Hero-Foto so hoch wie der Hero-Inhalt (CSS: --hero-inner-h), damit es wie in Kampagne 3
+// bis an den Abschnitt "Du bist damit nicht allein." reicht.
+(function syncHeroPhotoHeight() {
+  const hero = document.querySelector(".hero");
+  const inner = hero ? hero.querySelector(".hero__inner") : null;
+  if (!hero || !inner) return;
+  const set = () => hero.style.setProperty("--hero-inner-h", inner.offsetHeight + "px");
+  set();
+  if ("ResizeObserver" in window) new ResizeObserver(set).observe(inner);
+  else window.addEventListener("resize", set);
+})();

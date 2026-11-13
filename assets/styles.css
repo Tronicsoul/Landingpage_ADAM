@@ -5942,3 +5942,11 @@ body[data-audience="patient"] .trust--kompakt .trust-card p {
   outline: 2px solid #ffffff;
   outline-offset: 2px;
 }
+
+/* Hero-Foto (ab 1100 px) reicht wie in Kampagne 3 bis an "Du bist damit nicht allein.",
+   auch wenn der Hero mit Formular höher als ein Bildschirm ist (--hero-inner-h setzt script.js). */
+@media (min-width: 1100px) {
+  .hero__photo[data-audience-content="patient"] {
+    height: max(560px, calc(100vh - var(--nav-height) - 1px), var(--hero-inner-h, 0px));
+  }
+}
