@@ -5783,3 +5783,162 @@ body[data-audience="patient"] .trust--kompakt .trust-card p {
   font-size: 13.5px;
   line-height: 1.5;
 }
+
+/* ---------------------------------------------------------------
+   Anmeldeleiste: eigener grüner Look wie der Anmeldebereich unten,
+   weißes Eingabefeld, gelber Button; in hellem und dunklem Farbschema gleich.
+   --------------------------------------------------------------- */
+.sticky-signup .waitlist-form--sticky,
+:root:root .sticky-signup .waitlist-form--sticky {
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.9);
+  --error: #fde68a;
+  --button-bg: #fbbf24;
+  max-width: 760px;
+  padding: 10px;
+  color: #ffffff;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(52, 211, 153, 0.45) 0%, transparent 55%),
+    linear-gradient(135deg, #059669 0%, #047857 45%, #065f46 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 22px;
+  box-shadow:
+    0 18px 48px rgba(2, 44, 34, 0.5),
+    0 4px 14px rgba(2, 44, 34, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.sticky-signup__row {
+  align-items: center;
+}
+
+.sticky-signup__brand {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  .sticky-signup__brand {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0 var(--space-2) 0 var(--space-1);
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .sticky-signup__close {
+    right: calc(50% - 380px + 6px);
+  }
+}
+
+.sticky-signup__heart {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #059669;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.sticky-signup__heart svg {
+  width: 18px;
+  height: 18px;
+}
+
+:root:root .sticky-signup .waitlist-form--sticky .form-field input[type="email"] {
+  min-height: 50px;
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #064e3b;
+  box-shadow: inset 0 1px 2px rgba(6, 78, 59, 0.12);
+}
+
+:root:root .sticky-signup .waitlist-form--sticky .form-field input[type="email"]::placeholder {
+  color: #5b7f71;
+}
+
+:root:root .sticky-signup .waitlist-form--sticky .form-field input[type="email"]:focus {
+  outline: none;
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4);
+}
+
+:root:root .sticky-signup .waitlist-form--sticky .form-field input[type="email"][aria-invalid="true"] {
+  border-color: #fde68a;
+}
+
+:root:root .sticky-signup .waitlist-form__fields .btn-primary {
+  min-height: 50px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: 14px;
+  background: #fbbf24;
+  color: #10231c;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(120, 72, 0, 0.28);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+:root:root .sticky-signup .waitlist-form__fields .btn-primary:hover {
+  background: #f59e0b;
+  color: #10231c;
+  transform: translateY(-1px);
+}
+
+:root:root .sticky-signup .waitlist-form__fields .btn-primary:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.sticky-signup .checkbox-label,
+:root .sticky-signup .form-field .checkbox-label {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:root .sticky-signup .checkbox-label a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.sticky-signup .checkbox-label input[type="checkbox"] {
+  accent-color: #fbbf24;
+}
+
+.sticky-signup__consent {
+  padding: 0 var(--space-1);
+}
+
+:root .sticky-signup .form-error {
+  padding: 0 var(--space-1);
+  color: #fde68a;
+}
+
+.sticky-signup .form-success .form-success__title,
+.sticky-signup .form-success .form-success__text {
+  color: #ffffff;
+}
+
+.sticky-signup__close,
+:root .sticky-signup__close {
+  top: 17px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sticky-signup__close:hover,
+:root .sticky-signup__close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.sticky-signup__close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
