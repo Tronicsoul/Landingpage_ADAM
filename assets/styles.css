@@ -4993,3 +4993,166 @@ body[data-audience="patient"] .site-footer a.footer-top {
     gap: var(--space-5);
   }
 }
+
+/* ---------------------------------------------------------------
+   Kampagne 4: Kurzanmeldung im Hero (nur Patient:innen)
+   Mailadresse + Einwilligung direkt im ersten Bildschirm.
+   --------------------------------------------------------------- */
+.waitlist-form--hero {
+  max-width: 34rem;
+  margin: var(--space-5) 0 var(--space-3);
+  gap: 0;
+}
+
+.waitlist-form--hero .waitlist-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.waitlist-form--hero .form-field {
+  gap: var(--space-1);
+}
+
+.waitlist-form--hero .form-error:empty {
+  min-height: 0;
+}
+
+.waitlist-form--hero .form-field input[type="email"] {
+  font-size: 17px;
+}
+
+.waitlist-form--hero .checkbox-label,
+.waitlist-form--hero .form-field .checkbox-label {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.waitlist-form--hero .checkbox-label input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+}
+
+.waitlist-form--hero .waitlist-form__fields .btn-primary,
+.waitlist-form--hero .waitlist-form__fields .btn-primary:only-child {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+.waitlist-form--hero .form-success {
+  text-align: left;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+  border: 1px solid var(--border);
+}
+
+.waitlist-form--hero .form-success .form-success__title {
+  margin-top: 0;
+}
+
+.form-hint {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+@media (min-width: 600px) {
+  .waitlist-form--hero .waitlist-form__fields .btn-primary {
+    width: auto;
+    align-self: flex-start;
+  }
+}
+
+/* Reihenfolge im Hero: Handy = Kernsatz, Formular, Erklärung; ab 1100 px = Kernsatz, Erklärung, Formular. */
+body[data-audience="patient"] .hero__patient {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero__patient .hero__story--lead { order: 1; margin: var(--space-2) 0 0; }
+.hero__patient .waitlist-form--hero { order: 2; }
+.hero__patient .hero__story--more { order: 3; margin: 0 0 var(--space-3); }
+.hero__patient .hero__trust-note { order: 4; }
+
+.hero__patient .hero__story p {
+  margin-bottom: 0;
+}
+
+@media (min-width: 1100px) {
+  .hero__patient .hero__story--lead { margin: var(--space-4) 0 var(--space-5); }
+  .hero__patient .hero__story--more { order: 2; margin: 0; }
+  .hero__patient .waitlist-form--hero { order: 3; }
+}
+
+@media (max-width: 1099px) {
+  /* Weniger Foto über dem Text, damit das Formular im ersten Bildschirm liegt. */
+  body[data-audience="patient"] .hero__inner {
+    padding-top: max(20px, calc(var(--hero-h) - 640px));
+  }
+
+  body[data-audience="patient"] .hero .kicker {
+    margin-bottom: var(--space-3);
+  }
+
+  body[data-audience="patient"] .hero h1 {
+    margin-bottom: var(--space-3);
+  }
+
+  body[data-audience="patient"] .hero__story p {
+    font-size: 17px;
+    line-height: 1.5;
+  }
+}
+
+/* Cookie-Banner auf dem Handy kompakter, damit er den Einstieg nicht verdeckt. */
+@media (max-width: 640px) {
+  .consent {
+    padding: 6px;
+  }
+
+  .consent__inner {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-2);
+  }
+
+  .consent__copy h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .consent__copy p {
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+
+  .consent__btn {
+    min-height: 44px;
+    font-size: 14.5px;
+  }
+
+  .consent__link {
+    min-height: 32px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 1099px) {
+  /* Text steht jetzt weiter oben auf dem Foto: Foto von Anfang an abdunkeln, damit alles lesbar bleibt. */
+  body[data-audience="patient"] .hero__photo::before {
+    opacity: max(0.62, var(--hero-dim, 0.78));
+  }
+}
+
+@media (min-width: 900px) {
+  body[data-audience="patient"] .hero h1 {
+    margin-bottom: var(--space-6);
+  }
+}

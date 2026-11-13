@@ -157,21 +157,55 @@ Leistungen
             </span>
           </h1>
 
-          <div data-audience-content="patient">
+          <div class="hero__patient" data-audience-content="patient">
 
-            <div class="hero__story" data-variant-content="a">
+            <div class="hero__story hero__story--lead" data-variant-content="a">
               <p class="hero__relief">Du verdienst es, mit deinen Beschwerden gehört zu werden.</p>
+            </div>
+            <div class="hero__story hero__story--lead" data-variant-content="b">
+              <p class="hero__relief">Du willst wissen, was das konkret für dich bedeutet?</p>
+            </div>
+            <!-- Auf dem Handy steht dieser Satz unter dem Formular, ab 1100 px wie bisher darüber (CSS order). -->
+            <div class="hero__story hero__story--more" data-variant-content="a">
               <p>Mit ADAM zeigst du deiner Ärzt:in, wie es dir wirklich geht: seit wann, wie oft, wie stark.</p>
             </div>
-            <div class="hero__story" data-variant-content="b">
-              <p class="hero__relief">Du willst wissen, was das konkret für dich bedeutet?</p>
+            <div class="hero__story hero__story--more" data-variant-content="b">
               <p>ADAM übersetzt deinen Arztbrief in einfache Worte und schafft Klarheit.</p>
             </div>
 
-            <div class="hero__actions hero__actions--tight">
-              <a class="btn btn-primary btn-lg" href="#warteliste" data-track="hero">Frühen Zugang sichern</a>
-            </div>
-            <p class="hero__trust-note">Studienprojekt der FH Vorarlberg · Daten nur in der EU/EWR</p>
+            <!-- Kampagne 4: Kurzanmeldung direkt im ersten Bildschirm (nur Mailadresse + Einwilligung).
+                 Gleiches Brevo-Formular und gleiche Ereignisse wie unten; GoatCounter zählt zusätzlich
+                 hero_form_start und hero_submit, damit man sieht, wie viele das Formular oben nutzen. -->
+            <form class="waitlist-form waitlist-form--hero" id="waitlist-form-hero" data-position="hero" novalidate>
+              <div class="waitlist-form__fields">
+                <input type="hidden" name="zielgruppe" value="patient" />
+                <input type="hidden" name="variante" value="direkt" data-variant-field />
+                <div class="form-field">
+                  <label for="email-hero" class="visually-hidden">Mailadresse</label>
+                  <input type="email" id="email-hero" name="email" autocomplete="email" inputmode="email" placeholder="Deine Mailadresse" required />
+                  <p class="form-error" data-error-for="email" aria-live="polite"></p>
+                </div>
+                <div class="form-field form-field--checkbox">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="consent" required data-error-message="Bitte stimme der Datenschutzerklärung zu, um dir den frühen Zugang zu sichern." />
+                    <span>Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten einverstanden, um mir den frühen Zugang zu sichern.</span>
+                  </label>
+                  <p class="form-error" data-error-for="consent" aria-live="polite"></p>
+                </div>
+                <p class="form-error" data-submit-error aria-live="polite"></p>
+                <button class="btn btn-primary btn-lg" type="submit">Frühen Zugang sichern</button>
+              </div>
+
+              <div class="form-success" tabindex="-1">
+                <p class="form-success__title">Danke, du bist dabei!</p>
+                <p class="form-success__text">
+                  <span data-success-lead>Wir haben dir eine E-Mail geschickt.</span>
+                  Darin steht, wie es weitergeht.
+                </p>
+                <p class="form-success__hint">Keine E-Mail erhalten? <span>Sieh bitte im Spam-Ordner nach.</span></p>
+              </div>
+            </form>
+            <p class="hero__trust-note">Kostenlos und unverbindlich · Studienprojekt der FH Vorarlberg · Daten nur in der EU/EWR</p>
           </div>
 
           <div data-audience-content="aerzte">
@@ -727,7 +761,7 @@ Leistungen
             <li class="step">
               <span class="step__number" aria-hidden="true">1</span>
               <h3>Eintragen</h3>
-              <p>Name und Mailadresse genügen.</p>
+              <p>Deine Mailadresse genügt.</p>
             </li>
             <li class="step">
               <span class="step__number" aria-hidden="true">2</span>
@@ -801,8 +835,8 @@ Leistungen
               <input type="hidden" name="zielgruppe" value="patient" />
               <input type="hidden" name="variante" value="direkt" data-variant-field />
               <div class="form-field">
-                <label for="name-patient">Name</label>
-                <input type="text" id="name-patient" name="name" autocomplete="name" required data-error-message="Bitte gib deinen Namen ein." />
+                <label for="name-patient">Name <span class="form-label-optional">(optional)</span></label>
+                <input type="text" id="name-patient" name="name" autocomplete="name" />
                 <p class="form-error" data-error-for="name" aria-live="polite"></p>
               </div>
               <div class="form-field">
@@ -823,7 +857,8 @@ Leistungen
               </div>
               <div class="form-field">
                 <label for="nutzen-patient">Um welche Beschwerden geht es dir vor allem? <span class="form-label-optional">(optional)</span></label>
-                <select id="nutzen-patient" name="problem">
+                <p class="form-hint" id="nutzen-patient-hint">Deine Antwort hilft uns zu entscheiden, was wir zuerst bauen.</p>
+                <select id="nutzen-patient" name="problem" aria-describedby="nutzen-patient-hint">
                   <option value="" selected>Bitte auswählen</option>
                   <option value="zyklus">Beschwerden rund um den Zyklus (z. B. Regelschmerzen, PMS)</option>
                   <option value="wechseljahre">Beschwerden in den Wechseljahren</option>

@@ -17,7 +17,11 @@
 //     Seit Kampagne 3 zusätzlich, um Abbrüche zu verstehen: Scrolltiefe (scroll_25 … scroll_90),
 //     Anmeldebereich angezeigt (waitlist_seen), fehlendes Pflichtfeld (form_error_<feld>, ohne
 //     Inhalt) und fehlgeschlagenes Absenden (submit_error). Formularinhalte gehen nie an GoatCounter.
-//   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis.
+//     Seit Kampagne 4 gibt es oben im Hero eine Kurzanmeldung (nur Mailadresse + Einwilligung).
+//     form_start und waitlist_submit zählen beide Formulare wie bisher (vergleichbar mit Kampagne 3);
+//     hero_form_start und hero_submit zählen zusätzlich nur das Formular oben.
+//   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis,
+//     an waitlist_submit zusätzlich position = hero/unten.
 
 function getVariant() {
   const body = document.body;
@@ -55,6 +59,8 @@ const GOAT_STEPS = {
   form_error_beruf: "Pflichtfeld fehlt: Nutzung bzw. Beruf",
   form_error_consent: "Pflichtfeld fehlt: Einwilligung",
   submit_error: "Absenden fehlgeschlagen",
+  hero_form_start: "Formular oben begonnen",
+  hero_submit: "Anmeldung über Formular oben",
 };
 
 function countGoat(step, data) {
@@ -251,8 +257,10 @@ function initWaitlistForm(form) {
 
       if (payload.beruf) submitData.beruf = payload.beruf;
       if (payload.problem) submitData.wunsch = payload.problem;
-      track("waitlist_submit", submitData);
+      const position = form.dataset.position || "unten";
+      track("waitlist_submit", Object.assign({ position: position }, submitData));
       countGoat("waitlist_submit", submitData);
+      if (position === "hero") countGoat("hero_submit", submitData);
 
       const leadEl = successEl.querySelector("[data-success-lead]");
       const sentTo = (payload.email || "").trim();
@@ -1146,9 +1154,20 @@ function initFormStart() {
     track("form_start", eventData());
   }
 
+  let heroCounted = false;
+  function startHero() {
+    if (heroCounted) return;
+    heroCounted = true;
+    countGoat("hero_form_start", eventData());
+  }
+
   forms.forEach((form) => {
     form.addEventListener("focusin", start);
     form.addEventListener("input", start);
+    if (form.dataset.position === "hero") {
+      form.addEventListener("focusin", startHero);
+      form.addEventListener("input", startHero);
+    }
   });
 }
 
