@@ -440,6 +440,14 @@ Leistungen
 
             <p class="visually-hidden" aria-live="polite" aria-atomic="true" data-howto-live></p>
             <div class="howto__step">
+            <!-- Film: die vier Schritte laufen automatisch nacheinander ab (assets/script.js, initHowto). -->
+            <div class="howto__film-controls" hidden>
+              <div class="howto__film-bar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <button type="button" class="howto__film-toggle" aria-label="Film anhalten">
+                <svg class="howto__icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+                <svg class="howto__icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+              </button>
+            </div>
             <p class="howto__count">Schritt <span data-howto-current>1</span> von 4</p>
             <div class="howto__panels">
               <div class="howto__panel is-active">

@@ -475,7 +475,7 @@ function initHowto() {
   let step = 1;
   const resetTimers = [];
 
-  function show(target, byUser) {
+  function show(target, byUser, announce = byUser) {
     step = Math.max(1, Math.min(panels.length, target));
     box.setAttribute("data-step", String(step));
     panels.forEach((panel, index) => panel.classList.toggle("is-active", index === step - 1));
@@ -505,7 +505,7 @@ function initHowto() {
       }
     }
 
-    if (byUser && live) {
+    if (announce && live) {
       const panel = panels[step - 1];
       const title = panel.querySelector(".howto__title");
       const desc = panel.querySelector(".howto__desc");
@@ -535,20 +535,122 @@ function initHowto() {
 
   box.classList.add("is-interactive");
 
+  // Film: nur das Handy, die Schritte laufen automatisch durch (Schleife), darüber steht der Schritt.
+  // Startet, sobald der Abschnitt im Bild ist, und hält an, wenn er aus dem Bild scrollt.
+  // Mit dem Knopf kann man anhalten; bei "Bewegung reduzieren" startet er erst auf Knopfdruck.
+  const filmControls = box.querySelector(".howto__film-controls");
+  const filmToggle = box.querySelector(".howto__film-toggle");
+  const filmBars = Array.from(box.querySelectorAll(".howto__film-bar i"));
+  const FILM_MS = [4500, 9500, 6500, 5000];
+  const film = Boolean(filmControls && filmToggle && filmBars.length === panels.length);
+
   const phone = box.querySelector(".demo-phone");
   function fitPhone() {
     if (!phone) return;
-    if (window.innerWidth < 900) {
+    if (film) {
+      phone.style.zoom = "";
+      const natural = phone.offsetHeight || 443;
+      const byWidth = box.clientWidth / 260;
+      const byHeight = (window.innerHeight - (window.innerWidth < 900 ? 220 : 320)) / natural;
+      const zoom = Math.max(0.8, Math.min(1.4, byWidth, byHeight));
+      phone.style.zoom = zoom.toFixed(3);
+    } else if (window.innerWidth < 900) {
       const zoom = Math.min(1.7, box.clientWidth / 260);
       phone.style.zoom = zoom.toFixed(3);
     } else {
       phone.style.zoom = "";
     }
   }
+
+  if (!film) {
+    fitPhone();
+    window.addEventListener("resize", fitPhone);
+    show(1, false);
+    return;
+  }
+
+  box.classList.add("is-film");
+  filmControls.hidden = false;
+
+  let timer = null;
+  let stepStarted = 0;
+  let remaining = 0;
+  let userPaused = reduce;
+  let inView = false;
+  let started = false;
+
+  function markBars() {
+    filmBars.forEach((bar, index) => {
+      bar.classList.toggle("is-done", index < step - 1);
+      bar.classList.remove("is-current");
+    });
+    const bar = filmBars[step - 1];
+    void bar.offsetWidth;
+    bar.classList.add("is-current");
+  }
+
+  function playStep(target) {
+    clearTimeout(timer);
+    show(target, !reduce, false);
+    box.style.setProperty("--film-ms", FILM_MS[step - 1] + "ms");
+    markBars();
+    remaining = FILM_MS[step - 1];
+    stepStarted = Date.now();
+    timer = setTimeout(() => playStep((step % panels.length) + 1), remaining);
+  }
+
+  function pause() {
+    if (!timer) return;
+    clearTimeout(timer);
+    timer = null;
+    remaining = Math.max(300, remaining - (Date.now() - stepStarted));
+    box.classList.add("is-paused");
+  }
+
+  function resume() {
+    if (timer) return;
+    box.classList.remove("is-paused");
+    if (!started) {
+      started = true;
+      playStep(1);
+      return;
+    }
+    stepStarted = Date.now();
+    timer = setTimeout(() => playStep((step % panels.length) + 1), remaining);
+  }
+
+  function sync() {
+    if (inView && !userPaused) resume();
+    else pause();
+    filmToggle.setAttribute("aria-label", userPaused ? "Film abspielen" : "Film anhalten");
+    box.classList.toggle("is-stopped", userPaused);
+  }
+
+  filmToggle.addEventListener("click", () => {
+    userPaused = !userPaused;
+    sync();
+  });
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          inView = entry.isIntersecting;
+        });
+        sync();
+      },
+      { threshold: 0.35 }
+    ).observe(box);
+  } else {
+    inView = true;
+  }
+
   fitPhone();
   window.addEventListener("resize", fitPhone);
-
   show(1, false);
+  box.style.setProperty("--film-ms", FILM_MS[0] + "ms");
+  if (reduce) box.classList.add("is-paused");
+  sync();
 }
 
 initHowto();
