@@ -541,7 +541,8 @@ function initHowto() {
   const filmControls = box.querySelector(".howto__film-controls");
   const filmToggle = box.querySelector(".howto__film-toggle");
   const filmBars = Array.from(box.querySelectorAll(".howto__film-bar i"));
-  const FILM_MS = [4500, 9500, 6500, 5000];
+  // Gesamtdauer unter 10 Sekunden (Wunsch Team, 13.11.).
+  const FILM_MS = [1800, 3600, 2400, 1700];
   const film = Boolean(filmControls && filmToggle && filmBars.length === panels.length);
 
   const phone = box.querySelector(".demo-phone");
