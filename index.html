@@ -751,22 +751,7 @@ Leistungen
       </div>
       <div class="container">
         <div class="waitlist__head" data-audience-content="patient">
-          <span class="eyebrow">Früher Zugang · kostenlos</span>
           <h2 class="section-title waitlist__title" id="warteliste-heading-patient">Sichere dir jetzt deinen frühen Zugang zu ADAM</h2>
-          <p class="section-intro">
-            Geh vorbereitet in deinen nächsten Termin. Deine Mailadresse genügt: Du erfährst als Erste:r, wenn ADAM startet. Vorher bekommst du keine Post von uns.
-          </p>
-
-          <div class="benefit-chips">
-            <span class="benefit-chip">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-              Kostenlos und unverbindlich
-            </span>
-            <span class="benefit-chip">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-              Mitsprache bei der Weiterentwicklung
-            </span>
-          </div>
         </div>
         <div data-audience-content="aerzte">
           <span class="eyebrow">Für Vorreiter:innen</span>
@@ -827,16 +812,6 @@ Leistungen
                 <p class="form-error" data-error-for="email" aria-live="polite"></p>
               </div>
 
-              <div class="form-field">
-                <label for="rolle-patient">Ich möchte ADAM nutzen …</label>
-                <select id="rolle-patient" name="beruf" required data-error-message="Bitte wähle aus, für wen du ADAM nutzen möchtest.">
-                  <option value="" disabled selected>Bitte auswählen</option>
-                  <option value="selbst">für mich selbst</option>
-                  <option value="angehoerige">für meine Angehörigen</option>
-                  <option value="beides">für mich und meine Angehörigen</option>
-                </select>
-                <p class="form-error" data-error-for="beruf" aria-live="polite"></p>
-              </div>
               <div class="form-field">
                 <label for="nutzen-patient">Um welche Beschwerden geht es dir vor allem? <span class="form-label-optional">(optional)</span></label>
                 <p class="form-hint" id="nutzen-patient-hint">Deine Antwort hilft uns zu entscheiden, was wir zuerst bauen.</p>
@@ -954,6 +929,40 @@ Leistungen
     </section>
 
   </main>
+
+  <!-- Anmeldeleiste: läuft unten mit, sobald das Formular oben aus dem Bild ist; verschwindet beim
+       Anmeldebereich unten, nach einer Anmeldung und wenn man sie schließt (nur Patient:innen). -->
+  <aside class="sticky-signup" id="sticky-signup" data-audience-content="patient" aria-label="Frühen Zugang sichern">
+    <form class="waitlist-form waitlist-form--sticky" id="waitlist-form-sticky" data-position="leiste" novalidate>
+      <div class="waitlist-form__fields">
+        <input type="hidden" name="zielgruppe" value="patient" />
+        <input type="hidden" name="variante" value="direkt" data-variant-field />
+        <div class="sticky-signup__row">
+          <div class="form-field sticky-signup__email">
+            <label for="email-sticky" class="visually-hidden">Mailadresse</label>
+            <input type="email" id="email-sticky" name="email" autocomplete="email" inputmode="email" placeholder="Mailadresse" required />
+          </div>
+          <button class="btn btn-primary" type="submit">Zugang sichern</button>
+        </div>
+        <p class="form-error" data-error-for="email" aria-live="polite"></p>
+        <div class="form-field form-field--checkbox sticky-signup__consent">
+          <label class="checkbox-label">
+            <input type="checkbox" name="consent" required data-error-message="Bitte stimme der Datenschutzerklärung zu, um dir den frühen Zugang zu sichern." />
+            <span>Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten einverstanden, um mir den frühen Zugang zu sichern.</span>
+          </label>
+          <p class="form-error" data-error-for="consent" aria-live="polite"></p>
+        </div>
+        <p class="form-error" data-submit-error aria-live="polite"></p>
+      </div>
+      <div class="form-success" tabindex="-1">
+        <p class="form-success__title">Danke, du bist dabei!</p>
+        <p class="form-success__text"><span data-success-lead>Wir haben dir eine E-Mail geschickt.</span></p>
+      </div>
+    </form>
+    <button type="button" class="sticky-signup__close" aria-label="Anmeldeleiste schließen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </aside>
 
   <footer class="site-footer">
     <div class="container">

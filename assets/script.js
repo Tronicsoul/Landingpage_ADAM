@@ -19,9 +19,10 @@
 //     Inhalt) und fehlgeschlagenes Absenden (submit_error). Formularinhalte gehen nie an GoatCounter.
 //     Seit Kampagne 4 gibt es oben im Hero eine Kurzanmeldung (nur Mailadresse + Einwilligung).
 //     form_start und waitlist_submit zählen beide Formulare wie bisher (vergleichbar mit Kampagne 3);
-//     hero_form_start und hero_submit zählen zusätzlich nur das Formular oben.
+//     hero_form_start und hero_submit zählen zusätzlich nur das Formular oben,
+//     leiste_form_start und leiste_submit nur die mitlaufende Anmeldeleiste unten am Bildschirm.
 //   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis,
-//     an waitlist_submit zusätzlich position = hero/unten.
+//     an waitlist_submit zusätzlich position = hero/leiste/unten.
 
 function getVariant() {
   const body = document.body;
@@ -61,6 +62,8 @@ const GOAT_STEPS = {
   submit_error: "Absenden fehlgeschlagen",
   hero_form_start: "Formular oben begonnen",
   hero_submit: "Anmeldung über Formular oben",
+  leiste_form_start: "Anmeldeleiste begonnen",
+  leiste_submit: "Anmeldung über Anmeldeleiste",
 };
 
 function countGoat(step, data) {
@@ -260,7 +263,8 @@ function initWaitlistForm(form) {
       const position = form.dataset.position || "unten";
       track("waitlist_submit", Object.assign({ position: position }, submitData));
       countGoat("waitlist_submit", submitData);
-      if (position === "hero") countGoat("hero_submit", submitData);
+      if (position !== "unten") countGoat(position + "_submit", submitData);
+      document.dispatchEvent(new CustomEvent("adam:angemeldet", { detail: { position: position } }));
 
       const leadEl = successEl.querySelector("[data-success-lead]");
       const sentTo = (payload.email || "").trim();
@@ -276,7 +280,7 @@ function initWaitlistForm(form) {
       successEl.setAttribute("role", "status");
 
       successEl.focus({ preventScroll: true });
-      successEl.scrollIntoView({ block: "center" });
+      if (position !== "leiste") successEl.scrollIntoView({ block: "center" });
       form.reset();
       if (variantField) variantField.value = getVariant();
     } catch (error) {
@@ -1154,24 +1158,105 @@ function initFormStart() {
     track("form_start", eventData());
   }
 
-  let heroCounted = false;
-  function startHero() {
-    if (heroCounted) return;
-    heroCounted = true;
-    countGoat("hero_form_start", eventData());
+  // Zusätzlich je Formular oben (hero) und Anmeldeleiste (leiste) einmal pro Seitenaufruf.
+  const positionCounted = new Set();
+  function startPosition(position) {
+    if (positionCounted.has(position)) return;
+    positionCounted.add(position);
+    countGoat(position + "_form_start", eventData());
   }
 
   forms.forEach((form) => {
     form.addEventListener("focusin", start);
     form.addEventListener("input", start);
-    if (form.dataset.position === "hero") {
-      form.addEventListener("focusin", startHero);
-      form.addEventListener("input", startHero);
+    const position = form.dataset.position;
+    if (position === "hero" || position === "leiste") {
+      form.addEventListener("focusin", () => startPosition(position));
+      form.addEventListener("input", () => startPosition(position));
     }
   });
 }
 
 initFormStart();
+
+// Anmeldeleiste unten am Bildschirm (nur Patient:innen).
+// Sichtbar, sobald das Formular oben aus dem Bild ist und bevor der Anmeldebereich unten erscheint.
+// Ausgeblendet, solange der Cookie-Banner offen ist, nach einer Anmeldung und nach "Schließen"
+// (für diesen Besuch). Die Einwilligung klappt auf, sobald man in die Leiste tippt.
+function initStickySignup() {
+  const bar = document.getElementById("sticky-signup");
+  if (!bar || getAudience() !== "patient") return;
+  const form = bar.querySelector("form");
+  const hero = document.getElementById("waitlist-form-hero");
+  const bottom = document.getElementById("warteliste");
+  const closeBtn = bar.querySelector(".sticky-signup__close");
+  const STORE_KEY = "adam-leiste-geschlossen";
+
+  let dismissed = false;
+  try {
+    dismissed = window.sessionStorage.getItem(STORE_KEY) === "1";
+  } catch (e) {}
+  let done = false;
+  let ticking = false;
+
+  function update() {
+    ticking = false;
+    const vh = window.innerHeight;
+    const heroGone = !hero || hero.getBoundingClientRect().bottom < 0;
+    const beforeBottom = !bottom || bottom.getBoundingClientRect().top > vh;
+    const consentOpen = Boolean(document.querySelector(".consent"));
+    const active = bar.classList.contains("is-open") && !done;
+    const thanks = bar.classList.contains("is-thanks");
+    const show = thanks || (!dismissed && !done && !consentOpen && ((heroGone && beforeBottom) || active));
+    bar.classList.toggle("is-visible", show);
+    document.body.classList.toggle("has-sticky-signup", show);
+  }
+
+  function schedule() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(update);
+  }
+
+  function open() {
+    if (done) return;
+    bar.classList.add("is-open");
+  }
+
+  form.addEventListener("focusin", open);
+  form.addEventListener("submit", open, true);
+  closeBtn.addEventListener("click", () => {
+    dismissed = true;
+    bar.classList.remove("is-open");
+    try {
+      window.sessionStorage.setItem(STORE_KEY, "1");
+    } catch (e) {}
+    update();
+  });
+
+  document.addEventListener("adam:angemeldet", (event) => {
+    const fromBar = event.detail && event.detail.position === "leiste";
+    done = true;
+    if (fromBar) {
+      // Danke-Meldung kurz in der Leiste zeigen, dann ausblenden.
+      bar.classList.add("is-thanks");
+      window.setTimeout(() => {
+        bar.classList.remove("is-open", "is-thanks");
+        update();
+      }, 5000);
+    } else {
+      update();
+    }
+  });
+
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  // Cookie-Banner wird beim Schließen aus dem Dokument entfernt.
+  new MutationObserver(schedule).observe(document.body, { childList: true });
+  update();
+}
+
+initStickySignup();
 
 function initSectionView() {
   if (!("IntersectionObserver" in window)) return;

@@ -5268,3 +5268,183 @@ body[data-audience="patient"] .waitlist .benefit-chip svg {
   color: #ffffff;
   stroke: #ffffff;
 }
+
+body[data-audience="patient"] .waitlist__title {
+  margin-bottom: var(--space-8);
+}
+
+@media (min-width: 960px) {
+  body[data-audience="patient"] .waitlist__title {
+    margin-bottom: var(--space-10);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Anmeldeleiste: läuft unten am Bildschirm mit (nur Patient:innen)
+   Eingeklappt: Mailadresse + Button. Beim Antippen klappt die Einwilligung auf.
+   --------------------------------------------------------------- */
+.sticky-signup {
+  display: none;
+}
+
+body[data-audience="patient"] .sticky-signup {
+  display: block;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 250;
+  padding: 0 var(--space-3) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  transform: translateY(calc(100% + 24px));
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+body[data-audience="patient"] .sticky-signup.is-visible {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s;
+}
+
+.sticky-signup .waitlist-form--sticky {
+  pointer-events: auto;
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-3);
+  gap: 0;
+  background: var(--card-bg);
+  border: 1.5px solid var(--button-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.28);
+}
+
+.sticky-signup .waitlist-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sticky-signup__row {
+  display: flex;
+  gap: var(--space-2);
+  padding-right: 34px;
+}
+
+.sticky-signup__email {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sticky-signup .form-field input[type="email"] {
+  min-height: 48px;
+  padding: var(--space-2) var(--space-3);
+  font-size: 16px;
+}
+
+.sticky-signup .waitlist-form__fields .btn-primary,
+:root .sticky-signup .waitlist-form__fields .btn-primary {
+  flex: none;
+  width: auto;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 var(--space-4);
+  font-size: 15.5px;
+  white-space: nowrap;
+}
+
+.sticky-signup .form-error:empty {
+  display: none;
+}
+
+.sticky-signup .form-error {
+  min-height: 0;
+  font-size: 14px;
+}
+
+.sticky-signup__consent {
+  display: none;
+}
+
+.sticky-signup.is-open .sticky-signup__consent {
+  display: flex;
+}
+
+.sticky-signup .checkbox-label,
+.sticky-signup .form-field .checkbox-label {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.sticky-signup .checkbox-label input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+}
+
+.sticky-signup .form-success {
+  padding: var(--space-2) 34px var(--space-2) var(--space-2);
+  text-align: left;
+}
+
+.sticky-signup .form-success .form-success__title {
+  margin: 0;
+  font-size: 17px;
+}
+
+.sticky-signup .form-success .form-success__text {
+  margin: var(--space-1) 0 0;
+  font-size: 14.5px;
+}
+
+.sticky-signup__close {
+  pointer-events: auto;
+  position: absolute;
+  top: 18px;
+  right: calc(var(--space-3) + 4px);
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+@media (min-width: 672px) {
+  .sticky-signup__close {
+    right: calc(50% - 320px + 4px);
+  }
+}
+
+.sticky-signup__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sticky-signup__close:hover {
+  color: var(--text);
+}
+
+.sticky-signup.is-thanks .sticky-signup__close {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  body[data-audience="patient"] .sticky-signup {
+    padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-audience="patient"] .sticky-signup,
+  body[data-audience="patient"] .sticky-signup.is-visible {
+    transition: none;
+  }
+}
