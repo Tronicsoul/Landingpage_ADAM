@@ -5714,3 +5714,72 @@ body[data-audience="patient"] .sticky-signup.is-visible {
 .howto.is-film[data-step="4"] .demo-scene--4 {
   transition: opacity 0.35s ease-in-out 0.05s;
 }
+
+/* ---------------------------------------------------------------
+   "Darauf kannst du dich verlassen": klein und ganz unten (nach der Anmeldung)
+   --------------------------------------------------------------- */
+body[data-audience="patient"] .trust--kompakt {
+  padding-block: var(--space-8) var(--space-10);
+  background: transparent;
+}
+
+body[data-audience="patient"] .trust--kompakt .deco,
+body[data-audience="patient"] .trust--kompakt .eyebrow,
+body[data-audience="patient"] .trust--kompakt .section-intro {
+  display: none;
+}
+
+body[data-audience="patient"] .trust--kompakt .section-header {
+  margin-bottom: var(--space-4);
+}
+
+body[data-audience="patient"] .trust--kompakt .section-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+body[data-audience="patient"] .trust--kompakt .trust-grid {
+  max-width: 980px;
+  margin-inline: auto;
+  gap: var(--space-3) var(--space-6);
+}
+
+@media (min-width: 900px) {
+  body[data-audience="patient"] .trust--kompakt .trust-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+body[data-audience="patient"] .trust--kompakt .trust-card,
+:root:root body[data-audience="patient"] .trust--kompakt .trust-card {
+  padding: 0;
+  gap: var(--space-3);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body[data-audience="patient"] .trust--kompakt .trust-card__icon,
+:root:root body[data-audience="patient"] .trust--kompakt .trust-card__icon {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+}
+
+body[data-audience="patient"] .trust--kompakt .trust-card__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+body[data-audience="patient"] .trust--kompakt .trust-card h3 {
+  margin: 2px 0 var(--space-1);
+  font-size: 14.5px;
+  line-height: 1.35;
+}
+
+body[data-audience="patient"] .trust--kompakt .trust-card p {
+  font-size: 13.5px;
+  line-height: 1.5;
+}
