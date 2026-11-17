@@ -176,13 +176,14 @@ Leistungen
             <!-- Kampagne 4: Kurzanmeldung direkt im ersten Bildschirm (nur Mailadresse + Einwilligung).
                  Gleiches Brevo-Formular und gleiche Ereignisse wie unten; GoatCounter zählt zusätzlich
                  hero_form_start und hero_submit, damit man sieht, wie viele das Formular oben nutzen. -->
-            <form class="waitlist-form waitlist-form--hero" id="waitlist-form-hero" data-position="hero" novalidate>
+            <form class="waitlist-form waitlist-form--hero" id="waitlist-form-hero" data-position="hero" aria-labelledby="hero-signup-title" novalidate>
               <div class="waitlist-form__fields">
                 <input type="hidden" name="zielgruppe" value="patient" />
                 <input type="hidden" name="variante" value="direkt" data-variant-field />
+                <p class="hero-signup__title" id="hero-signup-title">Sichere dir jetzt deinen frühen Zugang zu ADAM</p>
                 <div class="form-field">
-                  <label for="email-hero" class="visually-hidden">Mailadresse</label>
-                  <input type="email" id="email-hero" name="email" autocomplete="email" inputmode="email" placeholder="Deine Mailadresse" required />
+                  <label for="email-hero" class="visually-hidden">Deine Mailadresse</label>
+                  <input type="email" id="email-hero" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="z.&#8239;B. maria.muster@gmail.com" required />
                   <p class="form-error" data-error-for="email" aria-live="polite"></p>
                 </div>
                 <div class="form-field form-field--checkbox">
@@ -197,12 +198,31 @@ Leistungen
               </div>
 
               <div class="form-success" tabindex="-1">
-                <p class="form-success__title">Danke, du bist dabei!</p>
+                <p class="form-success__title"><span class="form-success__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Danke, du bist dabei!</p>
                 <p class="form-success__text">
                   <span data-success-lead>Wir haben dir eine E-Mail geschickt.</span>
                   Darin steht, wie es weitergeht.
                 </p>
                 <p class="form-success__hint">Keine E-Mail erhalten? <span>Sieh bitte im Spam-Ordner nach.</span></p>
+
+                <!-- Zusatzfrage nach der Anmeldung oben (optional, ein Tipp genügt).
+                     Schickt EMAIL + ADAM_PROBLEM noch einmal an Brevo; Brevo ergänzt den bestehenden Kontakt.
+                     Zählt in GoatCounter als followup_answer bzw. followup_skip, nicht als zweite Anmeldung. -->
+                <div class="followup" data-followup hidden>
+                  <p class="followup__lead">Mit einer weiteren Angabe hilfst du uns, ADAM weiter zu optimieren.</p>
+                  <p class="followup__q" id="followup-q">Um welche Beschwerden geht es dir vor allem?</p>
+                  <div class="followup__chips" role="group" aria-labelledby="followup-q">
+                    <button type="button" class="followup__chip" data-value="zyklus">Zyklus, z.&nbsp;B. PMS</button>
+                    <button type="button" class="followup__chip" data-value="wechseljahre">Wechseljahre</button>
+                    <button type="button" class="followup__chip" data-value="migraene">Migräne, Kopfschmerzen</button>
+                    <button type="button" class="followup__chip" data-value="schmerzen">Wiederkehrende Schmerzen</button>
+                    <button type="button" class="followup__chip" data-value="chronisch">Chronische Beschwerden</button>
+                    <button type="button" class="followup__chip" data-value="erschoepfung">Erschöpfung, Schlaf</button>
+                    <button type="button" class="followup__chip" data-value="anderes">Etwas anderes</button>
+                  </div>
+                  <button type="button" class="followup__skip" data-followup-skip>Überspringen</button>
+                  <p class="followup__done" data-followup-done hidden>Danke, das hilft uns sehr!</p>
+                </div>
               </div>
             </form>
             <p class="hero__trust-note">Kostenlos und unverbindlich · Studienprojekt der FH Vorarlberg · Daten nur in der EU/EWR</p>
@@ -371,6 +391,7 @@ Leistungen
               </ul>
             </li>
           </ul>
+          <div class="services__dots" aria-hidden="true"><i class="is-active"></i><i></i><i></i></div>
           <p class="services__proof">Wer vorbereitet ins Arztgespräch geht, stellt nachweislich mehr Fragen (Cochrane-Review, 33 Studien). Wer fragt, redet mit.</p>
 
         </div>
@@ -624,48 +645,19 @@ Leistungen
       </div>
     </section>
 
-    <section class="faq" id="fragen" data-audience-content="patient" aria-labelledby="faq-heading">
-      <div class="container">
-        <div class="section-header">
-          <span class="eyebrow">Fragen</span>
-          <h2 class="section-title" id="faq-heading">Häufige Fragen</h2>
-        </div>
-        <div class="faq__list">
-          <details class="faq__item">
-            <summary>Meine Ärzt:in meldet mir unauffällige Werte, mir geht es trotzdem schlecht. Wie passt das zusammen?</summary>
-            <p>Laborwerte können im Normbereich liegen, auch wenn Beschwerden bestehen. Für eine fundierte Beurteilung betrachten Ärzt:innen sie deshalb gemeinsam mit Symptomen, Vorgeschichte und Untersuchungsbefunden. Mit ADAM hast du genau das griffbereit: einheitlich dokumentiert, im Verlauf vergleichbar und immer aktuell. (Quelle: MedlinePlus, US-Nationalbibliothek für Medizin)</p>
-          </details>
-          <details class="faq__item">
-            <summary>Können meine Beschwerden mit Hormonen zusammenhängen?</summary>
-            <p>Manchmal ja. Migräne zum Beispiel haben Frauen mehr als doppelt so häufig wie Männer (15&nbsp;% gegenüber 6&nbsp;% in Deutschland), und bei etwa jeder fünften Frau mit Migräne hängen die Attacken mit der Periode zusammen. Auch in den Wechseljahren verändern sich Beschwerden oft. Ob es einen Zusammenhang gibt, zeigt sich meist erst über mehrere Wochen oder Zyklen. Mit ADAM hältst du das fest, die Einschätzung trifft deine Ärzt:in. (Quellen: RKI 2020, Vetvik u.&nbsp;a. 2010)</p>
-          </details>
-          <details class="faq__item">
-            <summary>Was kostet die Anmeldung?</summary>
-            <p>Der frühe Zugang ist kostenlos und unverbindlich, und du kannst dich jederzeit wieder abmelden.</p>
-          </details>
-          <details class="faq__item">
-            <summary>Wann geht es los?</summary>
-            <p>Wir melden uns per E-Mail, sobald ADAM startet. Vorher bekommst du keine Post von uns.</p>
-          </details>
-          <details class="faq__item">
-            <summary>Ersetzt ADAM meine Ärzt:in?</summary>
-            <p>Nein. ADAM ist kein Medizinprodukt und stellt keine Diagnosen. Es hilft dir aber, dich gezielter auf Arzttermine vorzubereiten und alle wichtigen Infos für deine Ärzt:in im Termin greifbar zu haben.</p>
-          </details>
-          <details class="faq__item">
-            <summary>Kann ich ADAM für Angehörige nutzen?</summary>
-            <p>Bei der Anmeldung kannst du angeben, ob du ADAM für dich, für Angehörige oder für beides nutzen möchtest.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
     <section class="has-deco waitlist" id="warteliste" aria-label="Anmeldung">
       <div class="deco" aria-hidden="true">
         <div class="deco__item" data-parallax="0.2" data-side="r" style="--speed: 0.2; --size: 1.2; top: 18%; --rot: 8deg"><svg viewBox="0 0 64 64"><rect x="8" y="14" width="48" height="36" rx="5"/><path d="m8 18 24 18 24-18"/></svg></div>
       </div>
       <div class="container">
         <div class="waitlist__head" data-audience-content="patient">
+          <svg class="footer-pulse waitlist__pulse" viewBox="0 0 240 40" aria-hidden="true"><path pathLength="1" d="M0 24H86l7-1 6-10 9 20 6-14 5 5H240"/></svg>
           <h2 class="section-title waitlist__title" id="warteliste-heading-patient">Sichere dir jetzt deinen frühen Zugang zu ADAM</h2>
+          <ul class="waitlist__perks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Kostenlos</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Unverbindlich</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Jederzeit abmeldbar</li>
+          </ul>
         </div>
         <div data-audience-content="aerzte">
           <span class="eyebrow">Für Vorreiter:innen</span>
@@ -716,13 +708,8 @@ Leistungen
               <input type="hidden" name="zielgruppe" value="patient" />
               <input type="hidden" name="variante" value="direkt" data-variant-field />
               <div class="form-field">
-                <label for="name-patient">Name <span class="form-label-optional">(optional)</span></label>
-                <input type="text" id="name-patient" name="name" autocomplete="name" />
-                <p class="form-error" data-error-for="name" aria-live="polite"></p>
-              </div>
-              <div class="form-field">
-                <label for="email-patient">Mailadresse</label>
-                <input type="email" id="email-patient" name="email" autocomplete="email" required />
+                <label for="email-patient">Deine Mailadresse</label>
+                <input type="email" id="email-patient" name="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="z.&#8239;B. maria.muster@gmail.com" required />
                 <p class="form-error" data-error-for="email" aria-live="polite"></p>
               </div>
 
@@ -838,6 +825,41 @@ Leistungen
             </div>
           </form>
 
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="fragen" data-audience-content="patient" aria-labelledby="faq-heading">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">Fragen</span>
+          <h2 class="section-title" id="faq-heading">Häufige Fragen</h2>
+        </div>
+        <div class="faq__list">
+          <details class="faq__item">
+            <summary>Unauffällige Werte, aber mir geht es schlecht. Wie passt das zusammen?</summary>
+            <p>Laborwerte können im Normbereich liegen, auch wenn Beschwerden bestehen. Für eine fundierte Beurteilung betrachten Ärzt:innen sie deshalb gemeinsam mit Symptomen, Vorgeschichte und Untersuchungsbefunden. Mit ADAM hast du genau das griffbereit: einheitlich dokumentiert, im Verlauf vergleichbar und immer aktuell. (Quelle: MedlinePlus, US-Nationalbibliothek für Medizin)</p>
+          </details>
+          <details class="faq__item">
+            <summary>Können meine Beschwerden mit Hormonen zusammenhängen?</summary>
+            <p>Manchmal ja. Migräne zum Beispiel haben Frauen mehr als doppelt so häufig wie Männer (15&nbsp;% gegenüber 6&nbsp;% in Deutschland), und bei etwa jeder fünften Frau mit Migräne hängen die Attacken mit der Periode zusammen. Auch in den Wechseljahren verändern sich Beschwerden oft. Ob es einen Zusammenhang gibt, zeigt sich meist erst über mehrere Wochen oder Zyklen. Mit ADAM hältst du das fest, die Einschätzung trifft deine Ärzt:in. (Quellen: RKI 2020, Vetvik u.&nbsp;a. 2010)</p>
+          </details>
+          <details class="faq__item">
+            <summary>Was kostet die Anmeldung?</summary>
+            <p>Der frühe Zugang ist kostenlos und unverbindlich, und du kannst dich jederzeit wieder abmelden.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Wann geht es los?</summary>
+            <p>Wir melden uns per E-Mail, sobald ADAM startet. Vorher bekommst du keine Post von uns.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Ersetzt ADAM meine Ärzt:in?</summary>
+            <p>Nein. ADAM ist kein Medizinprodukt und stellt keine Diagnosen. Es hilft dir aber, dich gezielter auf Arzttermine vorzubereiten und alle wichtigen Infos für deine Ärzt:in im Termin greifbar zu haben.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Kann ich ADAM für Angehörige nutzen?</summary>
+            <p>Ja, ADAM ist auch für Angehörige gedacht, zum Beispiel wenn du jemanden zu Arztterminen begleitest. Für den frühen Zugang reicht deine Mailadresse.</p>
+          </details>
         </div>
       </div>
     </section>

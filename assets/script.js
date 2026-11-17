@@ -21,6 +21,8 @@
 //     form_start und waitlist_submit zählen beide Formulare wie bisher (vergleichbar mit Kampagne 3);
 //     hero_form_start und hero_submit zählen zusätzlich nur das Formular oben,
 //     leiste_form_start und leiste_submit nur die mitlaufende Anmeldeleiste unten am Bildschirm.
+//     Seit 17.11.: Zusatzfrage nach der Anmeldung oben (Beschwerden) als followup_answer bzw.
+//     followup_skip; die Antwort geht als ADAM_PROBLEM an denselben Brevo-Kontakt.
 //   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis,
 //     an waitlist_submit zusätzlich position = hero/leiste/unten.
 
@@ -64,6 +66,9 @@ const GOAT_STEPS = {
   hero_submit: "Anmeldung über Formular oben",
   leiste_form_start: "Anmeldeleiste begonnen",
   leiste_submit: "Anmeldung über Anmeldeleiste",
+  followup_answer: "Zusatzfrage beantwortet",
+  followup_skip: "Zusatzfrage übersprungen",
+  followup_error: "Zusatzfrage nicht gespeichert",
 };
 
 function countGoat(step, data) {
@@ -140,7 +145,7 @@ function toBrevoFields(payload) {
     ADAM_NAME: (payload.name || "").trim(),
     ADAM_BERUF: payload.beruf || "",
     ADAM_PROBLEM: payload.problem || "",
-    ADAM_EINWILLIGUNG: payload.consent ? "ja, " + new Date().toISOString() : "",
+    ADAM_EINWILLIGUNG: payload.consent ? "ja, " + (payload.consentAt || new Date().toISOString()) : "",
     ADAM_VARIANTE: payload.variante || "",
     ADAM_ZIELGRUPPE: payload.zielgruppe || "",
   };
@@ -230,6 +235,8 @@ function initWaitlistForm(form) {
     const variantField = form.querySelector("[data-variant-field]");
     if (variantField) variantField.value = getVariant();
     const payload = Object.fromEntries(new FormData(form).entries());
+    // Zeitpunkt der Einwilligung einmal festhalten (die Zusatzfrage schickt denselben Wert mit).
+    payload.consentAt = new Date().toISOString();
     const submittedAudience = payload.zielgruppe || getAudience();
     const endpoint = WAITLIST_ENDPOINTS[submittedAudience];
 
@@ -264,7 +271,17 @@ function initWaitlistForm(form) {
       track("waitlist_submit", Object.assign({ position: position }, submitData));
       countGoat("waitlist_submit", submitData);
       if (position !== "unten") countGoat(position + "_submit", submitData);
-      document.dispatchEvent(new CustomEvent("adam:angemeldet", { detail: { position: position } }));
+      document.dispatchEvent(
+        new CustomEvent("adam:angemeldet", {
+          detail: {
+            position: position,
+            email: (payload.email || "").trim(),
+            zielgruppe: submittedAudience,
+            variante: payload.variante || getVariant(),
+            consentAt: payload.consentAt,
+          },
+        })
+      );
 
       const leadEl = successEl.querySelector("[data-success-lead]");
       const sentTo = (payload.email || "").trim();
@@ -280,7 +297,7 @@ function initWaitlistForm(form) {
       successEl.setAttribute("role", "status");
 
       successEl.focus({ preventScroll: true });
-      if (position !== "leiste") successEl.scrollIntoView({ block: "center" });
+      if (position !== "leiste") successEl.scrollIntoView({ block: position === "hero" ? "start" : "center" });
       form.reset();
       if (variantField) variantField.value = getVariant();
     } catch (error) {
@@ -333,6 +350,121 @@ function initShare() {
 }
 
 initShare();
+
+// Zusatzfrage nach der Kurzanmeldung oben: "Um welche Beschwerden geht es dir vor allem?"
+// Ein Tipp auf eine Antwort schickt EMAIL + ADAM_PROBLEM noch einmal an dasselbe Brevo-Formular;
+// Brevo ergänzt damit den eben angelegten Kontakt (getestet 13.11.: bestehender Kontakt wird aktualisiert).
+// Hinweis: Sendet Brevo dabei die Bestätigungsmail ein zweites Mal, hier ein zweites Brevo-Formular
+// (gleiche Liste #6, ohne Bestätigungsmail) eintragen – dann geht nur die erste Mail raus.
+const FOLLOWUP_ENDPOINT = WAITLIST_ENDPOINTS.patient;
+
+function initFollowup() {
+  const heroForm = document.getElementById("waitlist-form-hero");
+  const box = heroForm && heroForm.querySelector("[data-followup]");
+  if (!box) return;
+  const chips = Array.from(box.querySelectorAll(".followup__chip"));
+  const skip = box.querySelector("[data-followup-skip]");
+  const done = box.querySelector("[data-followup-done]");
+  let contact = null;
+
+  document.addEventListener("adam:angemeldet", (event) => {
+    const detail = event.detail || {};
+    if (detail.position !== "hero" || detail.zielgruppe !== "patient" || !detail.email) return;
+    contact = detail;
+    box.hidden = false;
+  });
+
+  function finish(message) {
+    chips.forEach((chip) => (chip.disabled = true));
+    skip.hidden = true;
+    if (message) {
+      done.textContent = message;
+      done.hidden = false;
+      done.setAttribute("role", "status");
+    }
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", async () => {
+      if (!contact || chip.disabled) return;
+      chip.classList.add("is-picked");
+      chip.setAttribute("aria-pressed", "true");
+      finish("Danke, das hilft uns sehr!");
+      box.classList.add("is-answered");
+      const value = chip.dataset.value;
+      const data = { zielgruppe: contact.zielgruppe, variante: contact.variante, wunsch: value };
+      track("followup_answer", data);
+      countGoat("followup_answer", data);
+      try {
+        const response = await fetch(FOLLOWUP_ENDPOINT + "?isAjax=1", {
+          method: "POST",
+          body: toBrevoFields({
+            email: contact.email,
+            problem: value,
+            consent: "on",
+            consentAt: contact.consentAt,
+            variante: contact.variante,
+            zielgruppe: contact.zielgruppe,
+          }),
+        });
+        let result = null;
+        try {
+          result = await response.json();
+        } catch (e) {}
+        if (!response.ok || (result && result.success === false)) throw new Error(String(response.status));
+      } catch (e) {
+        countGoat("followup_error", data);
+      }
+    });
+  });
+
+  skip.addEventListener("click", () => {
+    if (!contact) return;
+    countGoat("followup_skip", { zielgruppe: contact.zielgruppe, variante: contact.variante });
+    box.hidden = true;
+  });
+}
+
+initFollowup();
+
+// "Was sich mit ADAM ändert" auf dem Handy als Wisch-Karten: Punkte zeigen, welche Karte im Bild ist.
+function initServiceDots() {
+  document.querySelectorAll(".services__dots").forEach((dots) => {
+    const list = dots.previousElementSibling;
+    if (!list || !list.classList.contains("services")) return;
+    const marks = Array.from(dots.children);
+    const cards = Array.from(list.children);
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const left = list.getBoundingClientRect().left;
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((card, index) => {
+        const dist = Math.abs(card.getBoundingClientRect().left - left - parseFloat(getComputedStyle(list).scrollPaddingLeft || 0));
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = index;
+        }
+      });
+      if (list.scrollLeft + list.clientWidth >= list.scrollWidth - 4) best = cards.length - 1;
+      marks.forEach((mark, index) => mark.classList.toggle("is-active", index === best));
+    }
+    list.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
+    window.addEventListener("resize", update);
+    update();
+  });
+}
+
+initServiceDots();
 
 const PAGE_TITLES = {
   patient: "ADAM – Beschwerden festhalten, Arztbriefe verstehen",
@@ -541,8 +673,8 @@ function initHowto() {
   const filmControls = box.querySelector(".howto__film-controls");
   const filmToggle = box.querySelector(".howto__film-toggle");
   const filmBars = Array.from(box.querySelectorAll(".howto__film-bar i"));
-  // Gesamtdauer unter 10 Sekunden (Wunsch Team, 13.11.).
-  const FILM_MS = [1800, 3600, 2400, 1700];
+  // Schritt 1 kurz, Schritte 2–4 langsamer, damit man mitlesen kann (17.11.; vorher 3,6/2,4/1,7 s).
+  const FILM_MS = [1800, 6000, 5200, 4000];
   const film = Boolean(filmControls && filmToggle && filmBars.length === panels.length);
 
   const phone = box.querySelector(".demo-phone");
@@ -552,8 +684,10 @@ function initHowto() {
       phone.style.zoom = "";
       const natural = phone.offsetHeight || 443;
       const byWidth = box.clientWidth / 260;
-      const byHeight = (window.innerHeight - (window.innerWidth < 900 ? 220 : 320)) / natural;
-      const zoom = Math.max(0.8, Math.min(1.4, byWidth, byHeight));
+      // Handy: Schritt-Titel und ganzes Handy sollen gemeinsam in einen Bildschirm passen
+      // (Kopfzeile und Anmeldeleiste abgezogen), daher etwas kleiner als früher.
+      const byHeight = (window.innerHeight - (window.innerWidth < 900 ? 380 : 320)) / natural;
+      const zoom = Math.max(window.innerWidth < 900 ? 0.9 : 0.8, Math.min(1.4, byWidth, byHeight));
       phone.style.zoom = zoom.toFixed(3);
     } else if (window.innerWidth < 900) {
       const zoom = Math.min(1.7, box.clientWidth / 260);
