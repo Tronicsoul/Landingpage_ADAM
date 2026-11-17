@@ -6213,8 +6213,10 @@ body[data-audience="patient"] .trust--kompakt .trust-card p {
   transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
 }
 
-.followup__chip:hover:not(:disabled) {
-  background: rgba(52, 211, 153, 0.16);
+@media (hover: hover) {
+  .followup__chip:hover:not(:disabled) {
+    background: rgba(52, 211, 153, 0.16);
+  }
 }
 
 .followup__chip:active:not(:disabled) {
@@ -6453,8 +6455,7 @@ body[data-audience="patient"] .trust--kompakt .trust-card p {
 }
 
 /* ---------- Anmeldebereich (jetzt vor den Fragen) ---------- */
-.waitlist__pulse,
-.waitlist__perks {
+.waitlist__pulse {
   display: none;
 }
 
@@ -6469,31 +6470,6 @@ body[data-audience="patient"] .waitlist__pulse {
   stroke-width: 2;
 }
 
-body[data-audience="patient"] .waitlist__perks {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px 16px;
-  margin: calc(var(--space-6) * -1) 0 var(--space-6);
-  padding: 0;
-  list-style: none;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-}
-
-body[data-audience="patient"] .waitlist__perks li {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-body[data-audience="patient"] .waitlist__perks svg {
-  width: 15px;
-  height: 15px;
-  color: #6ee7b7;
-}
-
 @media (max-width: 759px) {
   body[data-audience="patient"] .waitlist {
     padding-block: var(--space-8) var(--space-10);
@@ -6504,16 +6480,6 @@ body[data-audience="patient"] .waitlist__perks svg {
     font-size: 27px;
     line-height: 1.15;
     margin-bottom: var(--space-8);
-  }
-
-  body[data-audience="patient"] .waitlist__perks {
-    margin: calc(var(--space-5) * -1) 0 var(--space-5);
-    font-size: 12.5px;
-    gap: 4px 8px;
-  }
-
-  body[data-audience="patient"] .waitlist__perks li {
-    gap: 4px;
   }
 
   :root:root:root body[data-audience="patient"] .waitlist .waitlist-card {
@@ -6606,4 +6572,179 @@ body[data-audience="patient"] .waitlist__perks svg {
     font-size: 14.5px;
     line-height: 1.55;
   }
+}
+
+/* ---------- Zusatzfrage nach Anmeldung über die Leiste: Fenster von unten ---------- */
+.followup-sheet[hidden] {
+  display: none;
+}
+
+.followup-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+html.has-sheet,
+html.has-sheet body {
+  overflow: hidden;
+}
+
+.followup-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 12, 9, 0.55);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.followup-sheet__panel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  border-radius: 24px 24px 0 0;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(110, 231, 183, 0.18), transparent 60%),
+    linear-gradient(160deg, #059669 0%, #047857 45%, #065f46 100%);
+  color: #ffffff;
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.35);
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+.followup-sheet.is-open .followup-sheet__backdrop {
+  opacity: 1;
+}
+
+.followup-sheet.is-open .followup-sheet__panel {
+  transform: none;
+}
+
+@media (min-width: 560px) {
+  .followup-sheet {
+    align-items: center;
+    padding: var(--space-5);
+  }
+
+  .followup-sheet__panel {
+    padding-bottom: var(--space-5);
+    border-radius: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .followup-sheet__backdrop,
+  .followup-sheet__panel {
+    transition: none;
+  }
+}
+
+.followup-sheet__grip {
+  display: block;
+  width: 40px;
+  height: 4px;
+  margin: 0 auto var(--space-4);
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.followup-sheet__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.followup-sheet__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.followup-sheet__close:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+.followup-sheet .followup-sheet__title {
+  margin: 0 48px var(--space-2) 0;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+.followup-sheet .form-success__check {
+  background: #fbbf24;
+  color: #064e3b;
+}
+
+.followup-sheet .followup-sheet__text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.followup-sheet .followup-sheet__text strong {
+  color: #ffffff;
+  word-break: break-all;
+}
+
+.followup-sheet .followup {
+  border-top-color: rgba(255, 255, 255, 0.22);
+}
+
+.followup-sheet .followup__lead {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.followup-sheet .followup .followup__q {
+  color: #ffffff;
+}
+
+.followup-sheet .followup__chip {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+@media (hover: hover) {
+  .followup-sheet .followup__chip:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.followup-sheet .followup__chip:focus-visible {
+  outline-color: #fbbf24;
+}
+
+.followup-sheet .followup__chip.is-picked {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  color: #064e3b;
+}
+
+.followup-sheet .followup__skip {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.followup-sheet .followup .followup__done {
+  color: #fde68a;
 }

@@ -21,8 +21,8 @@
 //     form_start und waitlist_submit zählen beide Formulare wie bisher (vergleichbar mit Kampagne 3);
 //     hero_form_start und hero_submit zählen zusätzlich nur das Formular oben,
 //     leiste_form_start und leiste_submit nur die mitlaufende Anmeldeleiste unten am Bildschirm.
-//     Seit 17.11.: Zusatzfrage nach der Anmeldung oben (Beschwerden) als followup_answer bzw.
-//     followup_skip; die Antwort geht als ADAM_PROBLEM an denselben Brevo-Kontakt.
+//     Seit 17.11.: Zusatzfrage nach der Anmeldung oben und über die Leiste (Beschwerden) als
+//     followup_answer bzw. followup_skip; die Antwort geht als ADAM_PROBLEM an denselben Brevo-Kontakt.
 //   - Tag Manager / GA4 (nach Zustimmung): variante und zielgruppe an jedem Ereignis,
 //     an waitlist_submit zusätzlich position = hero/leiste/unten.
 
@@ -358,43 +358,31 @@ initShare();
 // (gleiche Liste #6, ohne Bestätigungsmail) eintragen – dann geht nur die erste Mail raus.
 const FOLLOWUP_ENDPOINT = WAITLIST_ENDPOINTS.patient;
 
-function initFollowup() {
-  const heroForm = document.getElementById("waitlist-form-hero");
-  const box = heroForm && heroForm.querySelector("[data-followup]");
-  if (!box) return;
+// Bindet eine Zusatzfrage (Kacheln + Überspringen). getContact liefert die Anmeldedaten,
+// onAnswer/onSkip lassen Formular oben und Fenster (Leiste) unterschiedlich reagieren.
+function bindFollowup(box, position, getContact, hooks) {
   const chips = Array.from(box.querySelectorAll(".followup__chip"));
   const skip = box.querySelector("[data-followup-skip]");
   const done = box.querySelector("[data-followup-done]");
-  let contact = null;
-
-  document.addEventListener("adam:angemeldet", (event) => {
-    const detail = event.detail || {};
-    if (detail.position !== "hero" || detail.zielgruppe !== "patient" || !detail.email) return;
-    contact = detail;
-    box.hidden = false;
-  });
-
-  function finish(message) {
-    chips.forEach((chip) => (chip.disabled = true));
-    skip.hidden = true;
-    if (message) {
-      done.textContent = message;
-      done.hidden = false;
-      done.setAttribute("role", "status");
-    }
-  }
+  const state = { answered: false };
 
   chips.forEach((chip) => {
     chip.addEventListener("click", async () => {
-      if (!contact || chip.disabled) return;
+      const contact = getContact();
+      if (!contact || chip.disabled || state.answered) return;
+      state.answered = true;
       chip.classList.add("is-picked");
       chip.setAttribute("aria-pressed", "true");
-      finish("Danke, das hilft uns sehr!");
+      chips.forEach((other) => (other.disabled = true));
+      skip.hidden = true;
+      done.hidden = false;
+      done.setAttribute("role", "status");
       box.classList.add("is-answered");
       const value = chip.dataset.value;
-      const data = { zielgruppe: contact.zielgruppe, variante: contact.variante, wunsch: value };
+      const data = { zielgruppe: contact.zielgruppe, variante: contact.variante, wunsch: value, position: position };
       track("followup_answer", data);
       countGoat("followup_answer", data);
+      if (hooks && hooks.onAnswer) hooks.onAnswer(value);
       try {
         const response = await fetch(FOLLOWUP_ENDPOINT + "?isAjax=1", {
           method: "POST",
@@ -418,10 +406,97 @@ function initFollowup() {
     });
   });
 
-  skip.addEventListener("click", () => {
-    if (!contact) return;
+  function skipNow() {
+    const contact = getContact();
+    if (!contact || state.answered) return;
+    state.answered = true;
     countGoat("followup_skip", { zielgruppe: contact.zielgruppe, variante: contact.variante });
-    box.hidden = true;
+    track("followup_skip", { zielgruppe: contact.zielgruppe, variante: contact.variante, position: position });
+    if (hooks && hooks.onSkip) hooks.onSkip();
+  }
+
+  skip.addEventListener("click", skipNow);
+  return { skip: skipNow, state: state };
+}
+
+function initFollowup() {
+  // Formular oben: Frage erscheint in derselben Karte unter dem Danke.
+  const heroForm = document.getElementById("waitlist-form-hero");
+  const heroBox = heroForm && heroForm.querySelector("[data-followup]");
+  let heroContact = null;
+  if (heroBox) {
+    bindFollowup(heroBox, "hero", () => heroContact, {
+      onSkip: () => {
+        heroBox.hidden = true;
+      },
+    });
+  }
+
+  // Anmeldeleiste: Frage erscheint in einem Fenster, das von unten hochfährt.
+  const sheet = document.getElementById("followup-sheet");
+  const sheetBox = sheet && sheet.querySelector("[data-followup]");
+  const panel = sheet && sheet.querySelector(".followup-sheet__panel");
+  let sheetContact = null;
+  let sheetApi = null;
+  let closeTimer = null;
+  let lastFocus = null;
+
+  function closeSheet() {
+    if (!sheet || sheet.hidden) return;
+    window.clearTimeout(closeTimer);
+    if (sheetApi && !sheetApi.state.answered) sheetApi.skip();
+    sheet.classList.remove("is-open");
+    document.documentElement.classList.remove("has-sheet");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.setTimeout(() => {
+      sheet.hidden = true;
+    }, reduce ? 0 : 320);
+    if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus({ preventScroll: true });
+  }
+
+  function openSheet() {
+    lastFocus = document.activeElement;
+    sheet.hidden = false;
+    document.documentElement.classList.add("has-sheet");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => sheet.classList.add("is-open"));
+    });
+    panel.focus({ preventScroll: true });
+  }
+
+  if (sheetBox) {
+    sheetApi = bindFollowup(sheetBox, "leiste", () => sheetContact, {
+      onAnswer: () => {
+        closeTimer = window.setTimeout(closeSheet, 1800);
+      },
+      onSkip: () => {
+        window.setTimeout(closeSheet, 0);
+      },
+    });
+    sheet.querySelectorAll("[data-sheet-close]").forEach((el) => el.addEventListener("click", closeSheet));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeSheet();
+    });
+  }
+
+  document.addEventListener("adam:angemeldet", (event) => {
+    const detail = event.detail || {};
+    if (detail.zielgruppe !== "patient" || !detail.email) return;
+    if (detail.position === "hero" && heroBox) {
+      heroContact = detail;
+      heroBox.hidden = false;
+    }
+    if (detail.position === "leiste" && sheetBox) {
+      sheetContact = detail;
+      const lead = sheet.querySelector("[data-sheet-lead]");
+      if (lead) {
+        const address = document.createElement("strong");
+        address.textContent = detail.email;
+        lead.textContent = "";
+        lead.append("Wir haben eine E-Mail an ", address, " geschickt.");
+      }
+      openSheet();
+    }
   });
 }
 
@@ -1474,7 +1549,11 @@ function initStickySignup() {
   document.addEventListener("adam:angemeldet", (event) => {
     const fromBar = event.detail && event.detail.position === "leiste";
     done = true;
-    if (fromBar) {
+    if (fromBar && document.getElementById("followup-sheet")) {
+      // Danke und Zusatzfrage erscheinen im Fenster von unten (initFollowup); Leiste geht weg.
+      bar.classList.remove("is-open");
+      update();
+    } else if (fromBar) {
       // Danke-Meldung kurz in der Leiste zeigen, dann ausblenden.
       bar.classList.add("is-thanks");
       window.setTimeout(() => {

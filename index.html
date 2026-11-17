@@ -653,11 +653,6 @@ Leistungen
         <div class="waitlist__head" data-audience-content="patient">
           <svg class="footer-pulse waitlist__pulse" viewBox="0 0 240 40" aria-hidden="true"><path pathLength="1" d="M0 24H86l7-1 6-10 9 20 6-14 5 5H240"/></svg>
           <h2 class="section-title waitlist__title" id="warteliste-heading-patient">Sichere dir jetzt deinen frühen Zugang zu ADAM</h2>
-          <ul class="waitlist__perks">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Kostenlos</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Unverbindlich</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Jederzeit abmeldbar</li>
-          </ul>
         </div>
         <div data-audience-content="aerzte">
           <span class="eyebrow">Für Vorreiter:innen</span>
@@ -997,6 +992,35 @@ Leistungen
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
   </aside>
+
+  <!-- Zusatzfrage nach einer Anmeldung über die Anmeldeleiste: Fenster, das von unten hochfährt.
+       Gleiche Frage und gleiche Brevo-Übertragung wie im Formular oben (siehe initFollowup in assets/script.js). -->
+  <div class="followup-sheet" id="followup-sheet" hidden>
+    <div class="followup-sheet__backdrop" data-sheet-close></div>
+    <div class="followup-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="followup-sheet-title" tabindex="-1">
+      <span class="followup-sheet__grip" aria-hidden="true"></span>
+      <button type="button" class="followup-sheet__close" data-sheet-close aria-label="Schließen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <p class="followup-sheet__title" id="followup-sheet-title"><span class="form-success__check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Danke, du bist dabei!</p>
+      <p class="followup-sheet__text"><span data-sheet-lead>Wir haben dir eine E-Mail geschickt.</span> Darin steht, wie es weitergeht.</p>
+      <div class="followup" data-followup>
+        <p class="followup__lead">Mit einer weiteren Angabe hilfst du uns, ADAM weiter zu optimieren.</p>
+        <p class="followup__q" id="followup-q-sheet">Um welche Beschwerden geht es dir vor allem?</p>
+        <div class="followup__chips" role="group" aria-labelledby="followup-q-sheet">
+          <button type="button" class="followup__chip" data-value="zyklus">Zyklus, z.&nbsp;B. PMS</button>
+          <button type="button" class="followup__chip" data-value="wechseljahre">Wechseljahre</button>
+          <button type="button" class="followup__chip" data-value="migraene">Migräne, Kopfschmerzen</button>
+          <button type="button" class="followup__chip" data-value="schmerzen">Wiederkehrende Schmerzen</button>
+          <button type="button" class="followup__chip" data-value="chronisch">Chronische Beschwerden</button>
+          <button type="button" class="followup__chip" data-value="erschoepfung">Erschöpfung, Schlaf</button>
+          <button type="button" class="followup__chip" data-value="anderes">Etwas anderes</button>
+        </div>
+        <button type="button" class="followup__skip" data-followup-skip>Überspringen</button>
+        <p class="followup__done" data-followup-done hidden>Danke, das hilft uns sehr!</p>
+      </div>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="container">
