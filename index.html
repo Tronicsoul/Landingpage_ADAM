@@ -209,6 +209,9 @@ Leistungen
                      Schickt EMAIL + ADAM_PROBLEM noch einmal an Brevo; Brevo ergänzt den bestehenden Kontakt.
                      Zählt in GoatCounter als followup_answer bzw. followup_skip, nicht als zweite Anmeldung. -->
                 <div class="followup" data-followup hidden>
+                  <button type="button" class="followup__close" data-followup-close aria-label="Frage schließen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                  </button>
                   <p class="followup__lead">Mit einer weiteren Angabe hilfst du uns, ADAM weiter zu optimieren.</p>
                   <p class="followup__q" id="followup-q">Um welche Beschwerden geht es dir vor allem?</p>
                   <div class="followup__chips" role="group" aria-labelledby="followup-q">
@@ -223,6 +226,10 @@ Leistungen
                   <button type="button" class="followup__skip" data-followup-skip>Überspringen</button>
                   <p class="followup__done" data-followup-done hidden>Danke, das hilft uns sehr!</p>
                 </div>
+                <a class="form-success__next" href="#leistungen" data-followup-next hidden>
+                  Mehr über ADAM erfahren
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+                </a>
               </div>
             </form>
             <p class="hero__trust-note">Kostenlos und unverbindlich · Studienprojekt der FH Vorarlberg · Daten nur in der EU/EWR</p>
@@ -1018,6 +1025,7 @@ Leistungen
         </div>
         <button type="button" class="followup__skip" data-followup-skip>Überspringen</button>
         <p class="followup__done" data-followup-done hidden>Danke, das hilft uns sehr!</p>
+        <button type="button" class="followup-sheet__back" data-sheet-close data-followup-next hidden>Zurück zur Seite</button>
       </div>
     </div>
   </div>

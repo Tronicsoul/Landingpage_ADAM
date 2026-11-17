@@ -417,6 +417,13 @@ function bindFollowup(box, position, getContact, hooks) {
   }
 
   skip.addEventListener("click", skipNow);
+  const closeBtn = box.querySelector("[data-followup-close]");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      skipNow();
+      if (hooks && hooks.onClose) hooks.onClose();
+    });
+  }
   return { skip: skipNow, state: state };
 }
 
@@ -425,12 +432,32 @@ function initFollowup() {
   const heroForm = document.getElementById("waitlist-form-hero");
   const heroBox = heroForm && heroForm.querySelector("[data-followup]");
   let heroContact = null;
+  const heroNext = heroForm && heroForm.querySelector(".form-success [data-followup-next]");
+  function heroDone(collapse) {
+    // Kein Sackgassen-Zustand: Frage einklappen bzw. ausblenden und den Weg zurück zur Seite zeigen.
+    if (collapse) {
+      heroBox.classList.add("is-collapsed");
+    } else {
+      heroBox.hidden = true;
+    }
+    if (heroNext) heroNext.hidden = false;
+  }
   if (heroBox) {
     bindFollowup(heroBox, "hero", () => heroContact, {
-      onSkip: () => {
-        heroBox.hidden = true;
+      onAnswer: () => {
+        window.setTimeout(() => heroDone(true), 900);
       },
+      onSkip: () => heroDone(false),
+      onClose: () => heroDone(false),
     });
+    if (heroNext) {
+      heroNext.addEventListener("click", (event) => {
+        const target = document.getElementById("leistungen");
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      });
+    }
   }
 
   // Anmeldeleiste: Frage erscheint in einem Fenster, das von unten hochfährt.
@@ -468,7 +495,9 @@ function initFollowup() {
   if (sheetBox) {
     sheetApi = bindFollowup(sheetBox, "leiste", () => sheetContact, {
       onAnswer: () => {
-        closeTimer = window.setTimeout(closeSheet, 1800);
+        const back = sheetBox.querySelector("[data-followup-next]");
+        if (back) back.hidden = false;
+        closeTimer = window.setTimeout(closeSheet, 2500);
       },
       onSkip: () => {
         window.setTimeout(closeSheet, 0);
