@@ -5973,20 +5973,24 @@ body[data-audience="patient"] .trust--kompakt .trust-card p {
   text-wrap: balance;
 }
 
+/* ADAM-Herz (Form aus dem Logo) schlägt neben der Überschrift: doppelter Schlag, dann Pause. */
 .hero-signup__title::before {
   content: "";
   flex: none;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+  width: 20px;
+  height: 18px;
   background: #34d399;
-  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55);
-  animation: signup-ping 2.4s ease-out infinite;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='8 8.5 24 22.5'%3E%3Cpath d='M20 30.5C20 30.5 8 23 8 15.8C8 12.05 10.96 9 14.6 9C17.1 9 19.06 10.45 20 12.55C20.94 10.45 22.9 9 25.4 9C29.04 9 32 12.05 32 15.8C32 23 20 30.5 20 30.5Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='8 8.5 24 22.5'%3E%3Cpath d='M20 30.5C20 30.5 8 23 8 15.8C8 12.05 10.96 9 14.6 9C17.1 9 19.06 10.45 20 12.55C20.94 10.45 22.9 9 25.4 9C29.04 9 32 12.05 32 15.8C32 23 20 30.5 20 30.5Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform-origin: 50% 55%;
+  animation: adam-heartbeat 1.6s ease-in-out infinite;
 }
 
-@keyframes signup-ping {
-  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
-  70%, 100% { box-shadow: 0 0 0 10px rgba(52, 211, 153, 0); }
+@keyframes adam-heartbeat {
+  0%, 40%, 100% { transform: scale(1); }
+  10% { transform: scale(1.28); }
+  20% { transform: scale(1.02); }
+  30% { transform: scale(1.2); }
 }
 
 @media (prefers-reduced-motion: reduce) {
