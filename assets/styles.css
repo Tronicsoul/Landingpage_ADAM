@@ -5657,48 +5657,48 @@ body[data-audience="patient"] .sticky-signup.is-visible {
   }
 }
 
-/* Film: Schritt 1 kurz, Schritte 2–4 langsamer zum Mitlesen (17.11.; Schritte 6,0/5,2/4,0 s).
+/* Film: Schritt 1 kurz, Schritte 2–4 langsam zum Mitlesen (17.11. mittags; Schritte 9,0/8,0/6,0 s).
    Handy-Animationen entsprechend langsamer, Abläufe bleiben gleich. */
 .howto.is-film .demo-scene--2 {
-  --med-time: 3s;
-  --doc-delay: 3s;
-  --doc-time: 2.7s;
+  --med-time: 4.5s;
+  --doc-delay: 4.5s;
+  --doc-time: 4s;
 }
 
 .howto.is-film .demo-scene.is-run .demo-tap {
-  animation-duration: 0.7s;
+  animation-duration: 0.9s;
 }
 
 .howto.is-film .demo-scene--2 .demo-med__form .demo-tap {
-  --tap: 1.03s !important;
+  --tap: 1.55s !important;
 }
 
 .howto.is-film .demo-scene--2 .demo-btn > .demo-tap {
-  --tap: 0.1s !important;
+  --tap: 0.15s !important;
 }
 
 .howto.is-film .demo-scene--2 .demo-med__form .demo-btn > .demo-tap {
-  --tap: 1.03s !important;
+  --tap: 1.55s !important;
 }
 
 .howto.is-film .demo-scene--3 .demo-tap {
-  --tap: 0.3s !important;
+  --tap: 0.45s !important;
 }
 
 .howto.is-film .demo-scene--3.is-run .demo-explain__idle,
 .howto.is-film .demo-scene--3.is-run .demo-explain__busy {
-  animation-duration: 1.1s;
-  animation-delay: 0.5s;
+  animation-duration: 1.6s;
+  animation-delay: 0.8s;
 }
 
 .howto.is-film .demo-scene--3.is-run .demo-answer {
-  animation-duration: 1.2s;
-  animation-delay: 1.4s;
+  animation-duration: 1.8s;
+  animation-delay: 2.2s;
 }
 
 .howto.is-film .demo-scene--3.is-run .demo-say {
-  animation-duration: 0.5s;
-  animation-delay: calc(1.5s + var(--n, 0) * 0.42s);
+  animation-duration: 0.7s;
+  animation-delay: calc(2.3s + var(--n, 0) * 0.6s);
 }
 
 .howto.is-film .demo-scene {

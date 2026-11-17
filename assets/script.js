@@ -786,8 +786,9 @@ function initHowto() {
   const filmControls = box.querySelector(".howto__film-controls");
   const filmToggle = box.querySelector(".howto__film-toggle");
   const filmBars = Array.from(box.querySelectorAll(".howto__film-bar i"));
-  // Schritt 1 kurz, Schritte 2–4 langsamer, damit man mitlesen kann (17.11.; vorher 3,6/2,4/1,7 s).
-  const FILM_MS = [1800, 6000, 5200, 4000];
+  // Schritt 1 kurz, Schritte 2–4 langsam, damit man mitlesen kann
+  // (17.11. mittags; davor 6,0/5,2/4,0 s, bis 17.11. früh 3,6/2,4/1,7 s).
+  const FILM_MS = [1800, 9000, 8000, 6000];
   const film = Boolean(filmControls && filmToggle && filmBars.length === panels.length);
 
   const phone = box.querySelector(".demo-phone");
