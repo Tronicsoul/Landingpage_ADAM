@@ -352,11 +352,12 @@ function initShare() {
 initShare();
 
 // Zusatzfrage nach der Kurzanmeldung oben: "Um welche Beschwerden geht es dir vor allem?"
-// Ein Tipp auf eine Antwort schickt EMAIL + ADAM_PROBLEM noch einmal an dasselbe Brevo-Formular;
-// Brevo ergänzt damit den eben angelegten Kontakt (getestet 13.11.: bestehender Kontakt wird aktualisiert).
-// Hinweis: Sendet Brevo dabei die Bestätigungsmail ein zweites Mal, hier ein zweites Brevo-Formular
-// (gleiche Liste #6, ohne Bestätigungsmail) eintragen – dann geht nur die erste Mail raus.
-const FOLLOWUP_ENDPOINT = WAITLIST_ENDPOINTS.patient;
+// Ein Tipp auf eine Antwort schickt EMAIL + ADAM_PROBLEM noch einmal an Brevo.
+// Die Antwort geht an ein eigenes Brevo-Formular „ADAM Zusatzfrage Patientinnen (ohne Bestätigungsmail)“
+// (gleiche Liste #6, gleiche Felder, keine Bestätigungsmail). Brevo ergänzt damit den eben angelegten Kontakt.
+// Vorher ging die Antwort an das Anmeldeformular; das löste eine zweite Bestätigungsmail aus (Test 17.11.).
+const FOLLOWUP_ENDPOINT =
+  "https://0eee4b39.sibforms.com/serve/MUIFAKOWfZC8yLbA3RqZ-phTUTZlW1y3w1SFNnpZD4P4u_pZWqaK0TZ38Cvn9k-tB1nPZeIl2s4NtcGYpkiMTs9aQE5IYy89KdjaA5fmi0uurXfVBsLjHVxuLJMPvhhIQ5DPrmJbna2vJgfE6iQfjhwlLTgFIO5KCNaCUvCSsVm5VztyXIc9lg6Xi3dtqxZapz7dQilFoNNp9X82eA==";
 
 // Bindet eine Zusatzfrage (Kacheln + Überspringen). getContact liefert die Anmeldedaten,
 // onAnswer/onSkip lassen Formular oben und Fenster (Leiste) unterschiedlich reagieren.
