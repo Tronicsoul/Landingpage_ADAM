@@ -5657,12 +5657,12 @@ body[data-audience="patient"] .sticky-signup.is-visible {
   }
 }
 
-/* Film: Schritt 1 kurz, Schritte 2–4 langsam zum Mitlesen (17.11. mittags; Schritte 9,0/8,0/6,0 s).
+/* Film: Schritt 1 kurz, Schritte 2–4 langsam zum Mitlesen (17.11. nachmittags; Schritte 12,0/8,0/7,5 s).
    Handy-Animationen entsprechend langsamer, Abläufe bleiben gleich. */
 .howto.is-film .demo-scene--2 {
-  --med-time: 4.5s;
-  --doc-delay: 4.5s;
-  --doc-time: 4s;
+  --med-time: 6s;
+  --doc-delay: 6s;
+  --doc-time: 5.5s;
 }
 
 .howto.is-film .demo-scene.is-run .demo-tap {
@@ -5670,15 +5670,15 @@ body[data-audience="patient"] .sticky-signup.is-visible {
 }
 
 .howto.is-film .demo-scene--2 .demo-med__form .demo-tap {
-  --tap: 1.55s !important;
+  --tap: 2.07s !important;
 }
 
 .howto.is-film .demo-scene--2 .demo-btn > .demo-tap {
-  --tap: 0.15s !important;
+  --tap: 0.2s !important;
 }
 
 .howto.is-film .demo-scene--2 .demo-med__form .demo-btn > .demo-tap {
-  --tap: 1.55s !important;
+  --tap: 2.07s !important;
 }
 
 .howto.is-film .demo-scene--3 .demo-tap {
@@ -6874,4 +6874,43 @@ html.has-sheet body {
 
 :root body .hero__patient.is-form-dismissed .hero__story--more {
   margin-top: var(--space-4);
+}
+
+/* ---------- Film Schritt 4: Checkup wird erstellt, Ergebnis erscheint ---------- */
+.howto.is-film .demo-scene--4 .demo-group {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.howto.is-film .demo-scene--4.is-run .demo-btn {
+  animation: demo-check-press 0.5s ease-out 0.7s both;
+}
+
+.howto.is-film .demo-scene--4.is-run .demo-group {
+  animation: demo-check-in 0.6s ease-out calc(1.5s + var(--g, 0) * 0.7s) both;
+}
+
+@keyframes demo-check-press {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(0.95); }
+}
+
+@keyframes demo-check-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .howto.is-film .demo-scene--4 .demo-group {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Nur Handy: kurzer Datenschutz-Text, ein Satz im Hero weniger ---------- */
+@media (max-width: 759px) {
+  .consent-rest,
+  .hide-mobile {
+    display: none;
+  }
 }

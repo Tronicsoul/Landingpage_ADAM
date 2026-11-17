@@ -786,9 +786,10 @@ function initHowto() {
   const filmControls = box.querySelector(".howto__film-controls");
   const filmToggle = box.querySelector(".howto__film-toggle");
   const filmBars = Array.from(box.querySelectorAll(".howto__film-bar i"));
-  // Schritt 1 kurz, Schritte 2–4 langsam, damit man mitlesen kann
-  // (17.11. mittags; davor 6,0/5,2/4,0 s, bis 17.11. früh 3,6/2,4/1,7 s).
-  const FILM_MS = [1800, 9000, 8000, 6000];
+  // Schritt 1 kurz, Schritte 2–4 langsam, damit man mitlesen kann.
+  // Schritt 4: Tipp auf „Checkup erstellen“, dann erscheint das Ergebnis Gruppe für Gruppe.
+  // (17.11. nachmittags; mittags 9,0/8,0/6,0 s, davor 6,0/5,2/4,0 s, bis 17.11. früh 3,6/2,4/1,7 s).
+  const FILM_MS = [1800, 12000, 8000, 7500];
   const film = Boolean(filmControls && filmToggle && filmBars.length === panels.length);
 
   const phone = box.querySelector(".demo-phone");
