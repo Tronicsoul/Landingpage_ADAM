@@ -6865,3 +6865,13 @@ html.has-sheet body {
     backdrop-filter: blur(12px);
   }
 }
+
+/* Nach "Mehr über ADAM erfahren" ist die Karte oben weg. */
+:root body .waitlist-form--hero[hidden],
+:root body .waitlist-form--hero.is-dismissed {
+  display: none !important;
+}
+
+:root body .hero__patient.is-form-dismissed .hero__story--more {
+  margin-top: var(--space-4);
+}

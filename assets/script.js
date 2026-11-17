@@ -452,10 +452,18 @@ function initFollowup() {
     });
     if (heroNext) {
       heroNext.addEventListener("click", (event) => {
-        const target = document.getElementById("leistungen");
-        if (!target) return;
         event.preventDefault();
-        target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+        // Karte (Danke + Zusatzfrage) ganz ausblenden, Seite normal weiterlesen.
+        heroForm.hidden = true;
+        heroForm.classList.add("is-dismissed");
+        const heroWrap = heroForm.closest(".hero__patient");
+        if (heroWrap) heroWrap.classList.add("is-form-dismissed");
+        const target = document.getElementById("leistungen");
+        if (target) {
+          window.requestAnimationFrame(() => {
+            target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+          });
+        }
       });
     }
   }
